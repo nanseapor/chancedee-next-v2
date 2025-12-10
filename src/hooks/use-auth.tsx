@@ -1,5 +1,5 @@
 "use client";
-import { authenticateSession, login } from "@/actions/auth";
+import { authenticateSession, login } from "@/domains/authentication/services/server/actions/session";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { userAtom } from "@/store/atom-store";
 import { signInWithCustomToken } from "firebase/auth";

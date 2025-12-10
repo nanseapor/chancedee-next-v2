@@ -1,5 +1,5 @@
 "use client";
-import { fetchBookmarkedBlogs } from "@/actions/fetch-bookmark";
+import { fetchBookmarkedBlogs } from "@/domains/content/services/server/actions/bookmark";
 import type { Post } from "@/lib/posts";
 import type { User } from "firebase/auth";
 import { atom, createStore } from "jotai";

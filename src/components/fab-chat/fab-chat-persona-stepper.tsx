@@ -1,6 +1,6 @@
 "use client";
 
-import { saveUserPersona } from "@/actions/fab-chat-persona";
+import { saveUserPersona } from "@/domains/fab-chat/services/server/actions/persona";
 import { selectOptionsGet } from "@/domains/admin/services/server/actions/master-data-management";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { type educationHistory } from "@/types/candidate.types";

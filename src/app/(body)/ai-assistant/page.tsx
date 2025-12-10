@@ -2,7 +2,7 @@
 
 import {
   checkUserPersona,
-} from "@/actions/fab-chat-persona";
+} from "@/domains/fab-chat/services/server/actions/persona";
 import { FabChatPersonaStepper } from "@/components/fab-chat/fab-chat-persona-stepper";
 import { FabChatWelcome } from "@/components/fab-chat/fab-chat-welcome";
 import { Button } from "@/components/ui/button";

@@ -2,7 +2,7 @@
 
 import {
   checkUserPersona,
-} from "@/actions/fab-chat-persona";
+} from "@/domains/fab-chat/services/server/actions/persona";
 import {
   fabChatOpenAtom,
   fabChatPanelOpenAtom,

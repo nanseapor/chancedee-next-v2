@@ -1,6 +1,6 @@
 "use client";
 
-import { login, logout } from "@/actions/auth";
+import { login, logout } from "@/domains/authentication/services/server/actions/session";
 import { Button } from "@/components/ui/button";
 import {
   Form,

@@ -1,7 +1,7 @@
 "use client";
 
-import { logout } from "@/actions/auth";
-import getUserDataWithToken from "@/actions/user-data";
+import { logout } from "@/domains/authentication/services/server/actions/session";
+import getUserDataWithToken from "@/domains/authentication/services/server/actions/user-data";
 import { useFirebaseAuth } from "@/hooks/use-auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { swrKeys, userDataSWRConfig } from "@/lib/swr-config";
