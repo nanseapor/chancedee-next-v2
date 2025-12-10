@@ -16,7 +16,7 @@ interface SearchParams {
 export async function generateMetadata({
   searchParams,
 }: SearchParams): Promise<Metadata> {
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);
   global.title = `คำค้นหา CHANCEDEE | ${searchParams?.keyword || global.title}`;

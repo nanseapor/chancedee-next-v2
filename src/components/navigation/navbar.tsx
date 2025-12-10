@@ -1,3 +1,5 @@
+"use client";
+
 import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Separator } from "@/components/ui/separator";
 import type { Category } from "@/lib/categories";

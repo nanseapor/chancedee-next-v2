@@ -26,7 +26,7 @@ import type {
 export async function authenticateSession(
   options: AuthOptions = {},
 ): Promise<AuthResult | null> {
-  const sessionCookie = cookies().get("session")?.value;
+  const sessionCookie = (await cookies()).get("session")?.value;
 
   if (!sessionCookie) {
     console.error("No session cookie found");
@@ -42,7 +42,7 @@ export async function authenticateSession(
     console.error("Failed to verify session cookie:", error);
 
     // Clear invalid session cookie using robust utility
-    clearSessionCookie();
+    await clearSessionCookie();
 
     return null;
   }

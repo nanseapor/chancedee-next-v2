@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
 
   // Fetch all blog posts

@@ -41,7 +41,7 @@ export function FabChatPanel() {
   const [isCheckingPersona, setIsCheckingPersona] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const loadTimeoutRef = useRef<NodeJS.Timeout>();
+  const loadTimeoutRef = useRef<NodeJS.Timeout>(undefined);
 
   const toggleChat = () => setIsOpen((prev) => !prev);
 

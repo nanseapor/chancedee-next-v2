@@ -28,12 +28,12 @@ import { cookies } from "next/headers";
  *   clearSessionCookie();
  * }
  */
-export const clearSessionCookie = () => {
+export const clearSessionCookie = async () => {
   const isProduction = process.env.NODE_ENV === "production";
   const domain = isProduction ? ".chancedee.com" : undefined;
 
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     // Technique 1: Native delete method
     // This works for cookies set without special attributes
@@ -80,12 +80,12 @@ export const clearSessionCookie = () => {
  * @param sessionCookie - The session cookie value from Firebase Admin
  * @param expiresIn - Expiration time in milliseconds
  */
-export const setSessionCookie = (sessionCookie: string, expiresIn: number) => {
+export const setSessionCookie = async (sessionCookie: string, expiresIn: number) => {
   const isProduction = process.env.NODE_ENV === "production";
   const domain = isProduction ? ".chancedee.com" : undefined;
 
   try {
-    cookies().set("session", sessionCookie, {
+    (await cookies()).set("session", sessionCookie, {
       maxAge: expiresIn,
       httpOnly: true,
       secure: isProduction,

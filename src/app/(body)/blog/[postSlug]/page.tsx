@@ -32,7 +32,7 @@ export async function generateMetadata({
   const post = await getPostBySlug(params.postSlug, {
     fields: ["title", "meta_title", "meta_description", "featured_image"],
   });
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   return {
     title: `${post.meta_title}`,
@@ -156,7 +156,7 @@ const replacementFunction = (src: string, alt: string, mediaList: Media[]) => {
 };
 
 export default async function PostPage({ params }: PostParams) {
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
 
   const data = await getPostBySlug(params.postSlug);

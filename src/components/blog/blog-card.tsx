@@ -1,3 +1,5 @@
+"use client";
+
 import getAssets from "@/lib/assets";
 import type { Post } from "@/lib/posts";
 import dynamic from "next/dynamic";

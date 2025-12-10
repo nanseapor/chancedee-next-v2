@@ -29,7 +29,7 @@ export async function generateMetadata({
   const post = await getAdsBySlug(params.slug, {
     fields: ["title", "meta_title", "meta_description", "featured_image"],
   });
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   return {
     title: `${post.meta_title}`,

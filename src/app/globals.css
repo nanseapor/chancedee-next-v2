@@ -39,14 +39,14 @@
   }
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 
 /* Fix Radix UI Select scroll lock issues on desktop */
 /* Radix calculates scrollbar width and stores it in a CSS variable */

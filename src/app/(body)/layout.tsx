@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import { FabChat } from "@/components/fab-chat";
 import { Footer2 } from "@/components/features/footer-2";
@@ -8,15 +9,6 @@ import { default as dynamicImport } from "next/dynamic";
 const Navbar = dynamicImport(() => import("@/components/navigation/navbar"), {
   loading: () => <LoadingSpinner />,
 });
-const AuthProvider = dynamicImport(
-  () =>
-    import("@/components/auth/auth-provider").then((mod) => ({
-      default: mod.AuthProvider,
-    })),
-  {
-    ssr: false,
-  },
-);
 
 export default async function RootLayout({
   children,

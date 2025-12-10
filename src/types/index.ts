@@ -1,4 +1,5 @@
 import type { MasterJobApplicationStatuses } from "@/constant/application";
+import { JSX } from "react";
 
 export type SidebarLink = {
   icon: JSX.Element;

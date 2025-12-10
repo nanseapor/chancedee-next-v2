@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function verifySessionCookie() {
   console.log("🔐 [AUTH UTILS DEBUG] verifySessionCookie() called");
 
-  const sessionCookie = cookies().get("session")?.value;
+  const sessionCookie = (await cookies()).get("session")?.value;
   console.log("🔐 [AUTH UTILS DEBUG] Session cookie from request:", {
     hasCookie: !!sessionCookie,
     cookieLength: sessionCookie?.length || 0,
@@ -55,7 +55,7 @@ export async function verifySessionCookie() {
       console.log(
         "🔐 [AUTH UTILS DEBUG] Force deleting cross-environment session cookie",
       );
-      cookies().set("session", "", {
+      (await cookies()).set("session", "", {
         maxAge: 0,
         path: "/",
         httpOnly: true,
@@ -67,7 +67,7 @@ export async function verifySessionCookie() {
       const domain =
         process.env.NODE_ENV === "production" ? ".chancedee.com" : undefined;
       if (domain) {
-        cookies().set("session", "", {
+        (await cookies()).set("session", "", {
           maxAge: 0,
           path: "/",
           domain: domain,
@@ -82,7 +82,7 @@ export async function verifySessionCookie() {
         error,
       );
       console.log("🔐 [AUTH UTILS DEBUG] Clearing invalid session cookie");
-      cookies().set("session", "", { maxAge: 0 });
+      (await cookies()).set("session", "", { maxAge: 0 });
     }
     return null;
   }

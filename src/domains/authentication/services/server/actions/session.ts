@@ -66,7 +66,7 @@ export async function login(idToken?: string) {
     const domain =
       process.env.NODE_ENV === "production" ? ".chancedee.com" : undefined;
 
-    cookies().set("session", sessionCookie, {
+    (await cookies()).set("session", sessionCookie, {
       maxAge: expiresIn,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -85,7 +85,7 @@ export async function login(idToken?: string) {
 
 export async function logout() {
   try {
-    const sessionCookie = cookies().get("session")?.value;
+    const sessionCookie = (await cookies()).get("session")?.value;
 
     if (sessionCookie) {
       const auth = getFirebaseAdminAuth();
@@ -93,7 +93,7 @@ export async function logout() {
       await auth.revokeRefreshTokens(decodedClaims.sub);
     }
 
-    cookies().delete("session");
+    (await cookies()).delete("session");
     return { success: true };
   } catch (error) {
     console.error("Failed to logout:", error);

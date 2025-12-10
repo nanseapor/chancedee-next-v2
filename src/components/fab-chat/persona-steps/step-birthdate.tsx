@@ -6,11 +6,9 @@ import { KVMonths } from "@/constant/constant";
 import { th } from "date-fns/locale";
 import { motion } from "framer-motion";
 import {
-  type CaptionProps,
-  type DateFormatter,
-  DayContent,
-  type DayContentProps,
-  useNavigation,
+  type MonthCaptionProps,
+  type DayProps,
+  useDayPicker,
 } from "react-day-picker";
 import { BigCalendar } from "../../big-calendar/big-calendar";
 import { AIAvatar } from "./shared/ai-avatar";
@@ -28,7 +26,7 @@ type StepBirthdateProps = {
 };
 
 function CustomCaptionComponent(
-  props: CaptionProps,
+  props: MonthCaptionProps,
   selectedMonth: number,
   selectedYear: number,
   onMonthChange: (month: number) => void,
@@ -91,14 +89,14 @@ function CustomCaptionComponent(
   );
 }
 
-const formatYearCaption: DateFormatter = (year, options) => {
-  const yearNumber = year.getFullYear();
-  return <>{yearNumber}</>;
+const formatYearCaption = (year: Date) => {
+  return `${year.getFullYear()}`;
 };
 
-function DateTime(props: DayContentProps) {
-  const isSelected = props.activeModifiers.selected;
-  const isToday = props.activeModifiers.today;
+function CustomDay(props: DayProps) {
+  const { day, modifiers } = props;
+  const isSelected = modifiers.selected;
+  const isToday = modifiers.today;
 
   return (
     <div className="flex size-full flex-row justify-end p-1">
@@ -114,7 +112,7 @@ function DateTime(props: DayContentProps) {
             isToday ? "text-primary-500" : "text-slate-900"
           } flex size-6 items-center justify-center rounded-full`}
         >
-          <DayContent {...props} />
+          {day.date.getDate()}
         </div>
       </div>
     </div>
@@ -151,7 +149,7 @@ export function StepBirthdate({
             numberOfMonths={1}
             fromYear={new Date().getFullYear() - 100}
             toYear={new Date().getFullYear()}
-            formatters={{ formatYearCaption }}
+            formatters={{ formatYearDropdown: formatYearCaption }}
             selected={birthdate}
             disabled={(date) =>
               date > new Date() || date < new Date("1900-01-01") || currentStep > 1
@@ -161,9 +159,9 @@ export function StepBirthdate({
               onBirthdateChange(thisSelectedDate);
             }}
             components={{
-              DayContent: DateTime,
-              Caption: (props) => {
-                const { goToDate } = useNavigation();
+              Day: CustomDay,
+              MonthCaption: (props) => {
+                const { goToMonth } = useDayPicker();
                 return CustomCaptionComponent(
                   props,
                   selectedMonth,
@@ -171,7 +169,7 @@ export function StepBirthdate({
                   onMonthChange,
                   onYearChange,
                   birthdate,
-                  goToDate,
+                  goToMonth,
                 );
               },
             }}

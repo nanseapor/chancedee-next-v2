@@ -1,11 +1,11 @@
 "use client";
 
-import {
-  checkUserPersona,
-} from "@/domains/fab-chat/services/server/actions/persona";
 import { FabChatPersonaStepper } from "@/components/fab-chat/fab-chat-persona-stepper";
 import { FabChatWelcome } from "@/components/fab-chat/fab-chat-welcome";
 import { Button } from "@/components/ui/button";
+import {
+  checkUserPersona,
+} from "@/domains/fab-chat/services/server/actions/persona";
 import { userAtom } from "@/store/atom-store";
 import { PersonaCheckResult } from "@/types/persona.types";
 import { useAtom } from "jotai";
@@ -31,7 +31,7 @@ export default function AIAssistantPage() {
   );
   const [isCheckingPersona, setIsCheckingPersona] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const loadTimeoutRef = useRef<NodeJS.Timeout>();
+  const loadTimeoutRef = useRef<NodeJS.Timeout>(undefined);
 
   const hideLoading = useCallback(() => {
     setIsLoading(false);
