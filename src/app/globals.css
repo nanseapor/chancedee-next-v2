@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 199 42% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+
+    --popover: 0 0% 96%;
+    --popover-foreground: 0 0% 4%;
+
+    --primary: 22 72% 50%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 240 100% 97%;
+    --secondary-foreground: 0 0% 9%;
+
+    --tertiary: 332, 72%, 50%;
+    --tertiary-foreground: 0 0% 98%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 200 6% 50%;
+
+    --accent: 0 0% 88%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 4%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Fix Radix UI Select scroll lock issues on desktop */
+/* Radix calculates scrollbar width and stores it in a CSS variable */
+/* On desktop with visible scrollbars, it adds this as padding but doesn't hide the scrollbar */
+/* This causes unwanted layout shift - force the variable to 0 */
+body[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0px !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Custom Select elegant scrollbar */
+.custom-select-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.custom-select-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225);
+  border-radius: 3px;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(148 163 184);
+}
+
+@keyframes rise {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-200%);
+  }
+}
+
+.animate-rise {
+  animation: rise 15s infinite;
+}
+
+.animate-rise-slow {
+  animation: rise 20s infinite;
+}
+
+.animate-rise-slower {
+  animation: rise 25s infinite;
+}
