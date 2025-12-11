@@ -2,10 +2,12 @@
 import {
   createUserDataProps,
   getUserDataPropsById,
+  updateUserDataProps as updateUserDataPropsRepo,
 } from "@/lib/database/repositories/web-user-data-props";
 import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
 import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedUserData } from "@/lib/utils/shared/utils";
+import { userDataProps } from "@/types/auth.types";
 
 const getUserDataWithToken = async (idToken: string) => {
   return PerformanceMonitor.measure("getUserDataWithToken", async () => {
@@ -35,3 +37,10 @@ const getUserDataWithToken = async (idToken: string) => {
 };
 
 export default getUserDataWithToken;
+
+export async function updateUserDataProps(
+  uid: string,
+  data: userDataProps
+): Promise<void> {
+  return updateUserDataPropsRepo(uid, data);
+}

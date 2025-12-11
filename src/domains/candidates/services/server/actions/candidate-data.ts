@@ -2,10 +2,12 @@
 import {
   createCandidateDataProps,
   getCandidateDataPropsById,
+  updateCandidateDataProps as updateCandidateDataPropsRepo,
 } from "@/lib/database/repositories/web-candidate-data-props";
 import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
 import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedCandidateData } from "@/lib/utils/shared/utils";
+import { candidateDataProps } from "@/types/candidate.types";
 
 const getCandidateDataWithToken = async (idToken: string) => {
   return PerformanceMonitor.measure("getCandidateDataWithToken", async () => {
@@ -37,3 +39,10 @@ const getCandidateDataWithToken = async (idToken: string) => {
 };
 
 export default getCandidateDataWithToken;
+
+export async function updateCandidateDataProps(
+  uid: string,
+  data: candidateDataProps
+): Promise<void> {
+  return updateCandidateDataPropsRepo(uid, data);
+}

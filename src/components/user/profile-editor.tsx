@@ -1,20 +1,20 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  UncontrolledFormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    UncontrolledFormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PHONE_REGEX_THAI } from "@/constant/constant";
+import { PHONE_REGEX_THAI } from "@/constants/constant";
 import { useToast } from "@/hooks/use-toast-notification";
-import { updateCandidateDataProps } from "@/lib/database/repositories/web-candidate-data-props";
-import { updateUserDataProps } from "@/lib/database/repositories/web-user-data-props";
+import { updateCandidateDataProps } from "@/domains/candidates/services/server/actions/candidate-data";
+import { updateUserDataProps } from "@/domains/authentication/services/server/actions/user-data";
 import { auth, getFirebaseAuth } from "@/lib/firebase";
 import { userAtom } from "@/store/atom-store";
 import type { userDataProps } from "@/types/auth.types";
@@ -27,14 +27,14 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-  type Address,
-  CreateInput,
+    type Address,
+    CreateInput,
 } from "thai-address-autocomplete-react";
-
-const InputThaiAddress = CreateInput();
 import * as z from "zod";
 import AvatarPlaceholder from "../media/avatar-placeholder";
 import ImageUploader from "../media/image-uploader";
+
+const InputThaiAddress = CreateInput();
 
 const ProfileEditorFormSchema = z.object({
   avatar: z.string(),
