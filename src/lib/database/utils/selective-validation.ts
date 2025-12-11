@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Selective validation utilities for critical fields
  * Schema-first approach using zod-to-ts pattern with performance optimization

@@ -1,12 +1,12 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { transactionType } from "@/types/wallet.types";
 
 import {
-    FirebaseCurrencyType,
-    FirebaseWalletTransactionType,
+  FirebaseCurrencyType,
+  FirebaseWalletTransactionType
 } from "../schemas/wallet-transactions.schema";
 
 const webWalletTransactionGetById = async (uid: string) => {
@@ -25,8 +25,8 @@ const webWalletTransactionGetById = async (uid: string) => {
         transactionType: firebaseWalletTransaction.transaction_type,
         transactionAmount: firebaseWalletTransaction.transaction_amount,
         transactionTime: firebaseWalletTransaction.transaction_time.toMillis(),
-        remark: firebaseWalletTransaction.remark,
-      };
+        remark: firebaseWalletTransaction.remark
+};
       return data;
     } else {
       return null;
@@ -35,7 +35,7 @@ const webWalletTransactionGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webWalletTransactionGetByFilter = async (
   walletId: string,
@@ -80,8 +80,8 @@ const webWalletTransactionGetByFilter = async (
           transactionAmount: firebaseWalletTransaction.transaction_amount,
           transactionTime:
             firebaseWalletTransaction.transaction_time.toMillis(),
-          remark: firebaseWalletTransaction.remark,
-        };
+          remark: firebaseWalletTransaction.remark
+};
         return data;
       });
       return lists;
@@ -92,7 +92,7 @@ const webWalletTransactionGetByFilter = async (
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webWalletTransactionCreate = async (
   payload: transactionType,
@@ -118,8 +118,8 @@ const webWalletTransactionCreate = async (
       created_by: actorRef,
       created_at: Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await WalletTransactionRef.set(dataToWrite, { merge: true });
     return WalletTransactionRef.id;
   } catch (e) {
@@ -129,8 +129,7 @@ const webWalletTransactionCreate = async (
 };
 
 export {
-    webWalletTransactionCreate,
-    webWalletTransactionGetByFilter,
-    webWalletTransactionGetById
+  webWalletTransactionCreate,
+  webWalletTransactionGetByFilter,
+  webWalletTransactionGetById
 };
-

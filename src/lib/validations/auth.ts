@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { PASSWORD_REGEX, PHONE_REGEX_THAI } from "@/constant/constant";
+import { PASSWORD_REGEX, PHONE_REGEX_THAI } from "@/constants/constant";
 import { emailSchema } from "@/lib/validations/email";
 
 const passwordSchema = z

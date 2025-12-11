@@ -1,6 +1,9 @@
+import "server-only";
+
 import { DocumentReference, Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { wrapError, DocumentNotFoundError } from "../errors";
 
 // Helper function to extract DocumentReference ID safely
 export function extractDocumentId(docRef: DocumentReference | string | undefined | null): string {
@@ -42,7 +45,7 @@ export async function getDocumentById<T>(collectionName: string, id: string): Pr
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
       throw new Error(`Invalid collectionName: ${collectionName}. Collection name must be a non-empty string.`);
     }
-    
+
     if (!id || typeof id !== 'string' || id.trim() === '') {
       throw new Error(`Invalid document id: ${id}. Document ID must be a non-empty string.`);
     }
@@ -61,8 +64,7 @@ export async function getDocumentById<T>(collectionName: string, id: string): Pr
       _updateTime: snapshot.updateTime?.toMillis() || 0,
     } as unknown as T;
   } catch (error) {
-    console.error(`Error getting document from ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'read', id);
   }
 }
 
@@ -96,8 +98,7 @@ export async function getDocumentsByFilter<T>(
       _updateTime: doc.updateTime?.toMillis() || 0,
     })) as unknown as T[];
   } catch (error) {
-    console.error(`Error getting documents from ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'query');
   }
 }
 
@@ -113,7 +114,7 @@ export async function createDocument<T extends { uid?: string }>(
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
       throw new Error(`Invalid collectionName: ${collectionName}. Collection name must be a non-empty string.`);
     }
-    
+
     if (!actorId || typeof actorId !== 'string' || actorId.trim() === '') {
       throw new Error(`Invalid actorId: ${actorId}. ActorId must be a non-empty string.`);
     }
@@ -124,11 +125,11 @@ export async function createDocument<T extends { uid?: string }>(
 
     // Special handling for user_accounts: use string IDs instead of DocumentReferences
     // to avoid self-referencing issues
-    const createdBy = collectionName === "user_accounts" 
-      ? actorId 
+    const createdBy = collectionName === "user_accounts"
+      ? actorId
       : getFirebaseAdminFirestore().collection("user_accounts").doc(actorId);
-    const updatedBy = collectionName === "user_accounts" 
-      ? actorId 
+    const updatedBy = collectionName === "user_accounts"
+      ? actorId
       : getFirebaseAdminFirestore().collection("user_accounts").doc(actorId);
 
     const dataToWrite = {
@@ -143,8 +144,7 @@ export async function createDocument<T extends { uid?: string }>(
     await docRef.set(dataToWrite, { merge: true });
     return docRef.id;
   } catch (error) {
-    console.error(`Error creating document in ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'create', id);
   }
 }
 
@@ -199,8 +199,7 @@ export async function updateDocument<T>(
     await docRef.update(dataToWrite);
     return docRef.id;
   } catch (error) {
-    console.error(`Error updating document in ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'update', id);
   }
 }
 
@@ -214,7 +213,7 @@ export async function deleteDocument(
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
       throw new Error(`Invalid collectionName: ${collectionName}. Collection name must be a non-empty string.`);
     }
-    
+
     if (!id || typeof id !== 'string' || id.trim() === '') {
       throw new Error(`Invalid document id: ${id}. Document ID must be a non-empty string.`);
     }
@@ -222,8 +221,7 @@ export async function deleteDocument(
     const docRef = getFirebaseAdminFirestore().collection(collectionName).doc(id);
     await docRef.delete();
   } catch (error) {
-    console.error(`Error deleting document from ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'delete', id);
   }
 }
 
@@ -238,11 +236,11 @@ export async function deleteDocumentsByFilter(
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
       throw new Error(`Invalid collectionName: ${collectionName}. Collection name must be a non-empty string.`);
     }
-    
+
     if (!field || typeof field !== 'string' || field.trim() === '') {
       throw new Error(`Invalid field: ${field}. Field must be a non-empty string.`);
     }
-    
+
     if (!value || typeof value !== 'string' || value.trim() === '') {
       throw new Error(`Invalid value: ${value}. Value must be a non-empty string.`);
     }
@@ -256,8 +254,7 @@ export async function deleteDocumentsByFilter(
 
     return true;
   } catch (error) {
-    console.error(`Error deleting documents from ${collectionName}:`, error);
-    throw error;
+    throw wrapError(error, collectionName, 'delete');
   }
 }
 

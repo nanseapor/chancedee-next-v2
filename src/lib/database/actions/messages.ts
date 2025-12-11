@@ -1,209 +1,142 @@
 "use server";
-import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
-import { FirebaseMessageToMessage } from "@/lib/utils/client/message-conversion";
+import { Filter, Timestamp } from "firebase-admin/firestore";
+
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { ChatMessage, MessageWithId } from "@/types/chat.types";
 
-import { FirebaseMessagesType } from "../schemas/messages.schema";
+import { messagesRepository } from "../repositories/messages-repository";
 
-const ChatMessageToFirebaseMessage = (chatMessage: MessageWithId) => {
-  const creatorRef = getFirebaseAdminFirestore().collection("user_accounts").doc(chatMessage.createdBy);
-  const updatorRef = getFirebaseAdminFirestore().collection("user_accounts").doc(chatMessage.updatedBy);
-  const senderId = getFirebaseAdminFirestore().collection("user_accounts").doc(chatMessage.senderId);
-  const roomId = chatMessage.roomId ? getFirebaseAdminFirestore().collection("chats").doc(chatMessage.roomId) : undefined;
-  const companyId = chatMessage.companyId ? getFirebaseAdminFirestore().collection("company_information").doc(chatMessage.companyId) : undefined;
-  const candidateId = chatMessage.candidateId ? getFirebaseAdminFirestore().collection("candidate_information").doc(chatMessage.candidateId) : undefined;
-  const jobId = chatMessage.jobId ? getFirebaseAdminFirestore().collection("jobs").doc(chatMessage.jobId) : undefined;
-  const applicationId = chatMessage.applicationId ? getFirebaseAdminFirestore().collection("job_applications").doc(chatMessage.applicationId) : undefined;
-  const data: FirebaseMessagesType = {
-    uid: chatMessage.uid,
-    timestamp: Timestamp.fromMillis(chatMessage.timestamp),
-    room_id: roomId,
-    sender_id: senderId,
-    type: chatMessage.type,
-    action_link: chatMessage.actionLink,
-    sender_avatar: chatMessage.avatar,
-    sender_name: chatMessage.name,
-    message: chatMessage.message,
-    unread: chatMessage.unread,
-    created_by: creatorRef,
-    updated_by: updatorRef,
-    created_at: Timestamp.fromMillis(chatMessage.createdAt),
-    updated_at: Timestamp.fromMillis(chatMessage.updatedAt),
-    file_url: chatMessage.attachments,
-    interview_id: chatMessage.interviewId,
-    schedule_date: chatMessage.interviewDate,
-    schedule_time_from: chatMessage.interviewTimeFrom,
-    schedule_time_to: chatMessage.interviewTimeTo,
-    channel: chatMessage.interviewChannel,
-    location: chatMessage.interviewLocation,
-    status: chatMessage.interviewStatus,
-    job_title: chatMessage.jobTitle,
-    candidate_name: chatMessage.candidateName,
-    application_id: applicationId,
-    candidate_id: candidateId,
-    company_id: companyId,
-    job_id: jobId,
-    note: chatMessage.note,
-    reschedule_old_date: chatMessage.oldInterviewDate,
-    reschedule_new_date: chatMessage.oldInterviewDate,
-    reschedule_time_from: chatMessage.oldInterviewDate,
-    reschedule_time_to: chatMessage.oldInterviewDate,
-  };
-  return data;
-};
-
-
-const webMessagesGetByRoomId = async (roomId: string) => {
+/**
+ * Get messages by room ID
+ */
+export const webMessagesGetByRoomId = async (roomId: string) => {
   try {
-    const RoomRef = getFirebaseAdminFirestore()
-      .collection("chats").doc(roomId);
-    const MessagesRef = getFirebaseAdminFirestore().collection("messages");
-    const MessagesQuery = MessagesRef.where(
-      Filter.where("room_id", "==", RoomRef)
-    );
-    const MessagesSnap = await MessagesQuery.get();
-    if (!MessagesSnap.empty) {
-      const lists = MessagesSnap.docs.map((doc) => {
-        const firebaseMessages = doc.data();
-        return FirebaseMessageToMessage(firebaseMessages);
-      });
-      return lists;
-    } else {
-      return null;
-    }
+    const roomRef = getFirebaseAdminFirestore().collection("chats").doc(roomId);
+    const filter = Filter.where("room_id", "==", roomRef);
+    return await messagesRepository.getByFilter(filter);
   } catch (e) {
     const error = e as Error;
     throw error;
   }
 };
 
-const webMessagesGetByFilter = async (filter?: Filter) => {
+/**
+ * Get messages by filter
+ */
+export const webMessagesGetByFilter = async (filter?: Filter) => {
   try {
-    const MessagesRef = getFirebaseAdminFirestore().collection("messages");
-    let MessagesQuery = MessagesRef as Query;
-    if (filter) MessagesQuery = MessagesRef.where(filter);
-    const MessagesSnap = await MessagesQuery.get();
-    if (!MessagesSnap.empty) {
-      const lists = MessagesSnap.docs.map((doc) => {
-        const firebaseMessages = doc.data();
-        return FirebaseMessageToMessage(firebaseMessages);
-      });
-      return lists;
-    } else {
-      return null;
-    }
+    return await messagesRepository.getByFilter(filter);
   } catch (e) {
     const error = e as Error;
     throw error;
   }
 };
 
-const webMessagesCreate = async (
+/**
+ * Create a new message
+ */
+export const webMessagesCreate = async (
   payload: ChatMessage,
   actorId: string,
   uid?: string
 ) => {
   try {
-    const MessagesRef = uid
-      ? getFirebaseAdminFirestore().collection("messages").doc(uid)
-      : getFirebaseAdminFirestore().collection("messages").doc();
-
-    const newPayload: MessageWithId = {
+    const messageId = uid || messagesRepository.generateId();
+    const messageWithId: MessageWithId = {
       ...payload,
-      uid: MessagesRef.id,
-      updatedBy: actorId,
+      uid: messageId,
+      messageId: messageId,
       createdBy: actorId,
+      updatedBy: actorId,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      messageId: MessagesRef.id,
     };
-
-    const dataToWrite = ChatMessageToFirebaseMessage(newPayload);
-    await MessagesRef.set(dataToWrite, { merge: true });
-    return MessagesRef.id;
+    await messagesRepository.create(messageWithId, actorId, messageId);
+    return messageId;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
 };
 
-const webMessagesUpdate = async (
+/**
+ * Update an existing message
+ */
+export const webMessagesUpdate = async (
   payload: Omit<ChatMessage, "uid" | "createdBy" | "updatedBy" | "messageId">,
   actorId: string,
   uid: string
 ) => {
   try {
-    const MessagesRef = getFirebaseAdminFirestore()
-      .collection("messages")
-      .doc(uid);
-    const prevData = await MessagesRef.get();
-    const newPayload: MessageWithId = {
+    const existingMessage = await messagesRepository.getById(uid);
+
+    const messageWithId: MessageWithId = {
       ...payload,
-      uid: MessagesRef.id,
+      uid: uid,
+      messageId: uid,
+      createdBy: existingMessage?.createdBy || actorId,
       updatedBy: actorId,
-      createdBy: prevData.data()?.created_by.id || actorId,
-      createdAt: prevData.createTime?.toMillis() || Date.now(),
+      createdAt: existingMessage?.createdAt || Date.now(),
       updatedAt: Date.now(),
-      messageId: MessagesRef.id,
     };
-    const dataToWrite = ChatMessageToFirebaseMessage(newPayload);
-    await MessagesRef.set(dataToWrite, { merge: true });
-    return MessagesRef.id;
+
+    await messagesRepository.update(uid, messageWithId, actorId);
+    return uid;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
 };
 
-
-const webMessagesBatchUpdate = async (
+/**
+ * Batch update messages
+ */
+export const webMessagesBatchUpdate = async (
   payload: Omit<ChatMessage, "createdBy" | "updatedBy">[],
-  actorId: string,
+  actorId: string
 ) => {
   try {
     if (payload.length === 0) return;
 
-    // Extract all message IDs
     const messageIds = payload.map((item) => item.messageId);
 
-    // Batch read all existing messages at once (1 read instead of N reads)
-    const messagesRef = getFirebaseAdminFirestore().collection("messages");
-    const messageDocsPromises = messageIds.map((id) => messagesRef.doc(id).get());
-    const messageDocs = await Promise.all(messageDocsPromises);
+    const existingMessages = await Promise.all(
+      messageIds.map(id => messagesRepository.getById(id))
+    );
 
-    // Create a map of existing message data for quick lookup
     const existingDataMap = new Map(
-      messageDocs.map((doc, index) => [
+      existingMessages.map((msg, index) => [
         messageIds[index],
-        {
-          createdById: doc.data()?.created_by.id,
-          createTime: doc.createTime?.toMillis(),
-        },
+        msg ? { createdBy: msg.createdBy, createdAt: msg.createdAt } : null
       ])
     );
 
-    // Prepare batch write
     const batch = getFirebaseAdminFirestore().batch();
+    const messagesRef = getFirebaseAdminFirestore().collection("messages");
 
-    payload.forEach((item) => {
-      const MessagesRef = messagesRef.doc(item.messageId);
+    for (const item of payload) {
+      const docRef = messagesRef.doc(item.messageId);
       const existingData = existingDataMap.get(item.messageId);
 
-      const newPayload: MessageWithId = {
+      const messageWithId: MessageWithId = {
         ...item,
-        uid: MessagesRef.id,
+        uid: item.messageId,
+        messageId: item.messageId,
+        createdBy: existingData?.createdBy || actorId,
         updatedBy: actorId,
-        createdBy: existingData?.createdById || actorId,
-        createdAt: existingData?.createTime || Date.now(),
+        createdAt: existingData?.createdAt || Date.now(),
         updatedAt: Date.now(),
-        messageId: MessagesRef.id,
       };
 
-      const dataToWrite = ChatMessageToFirebaseMessage(newPayload);
-      batch.update(MessagesRef, dataToWrite);
-    });
+      // Use repository's transform function through a helper
+      // For now, we'll keep direct batch update for performance
+      batch.update(docRef, {
+        ...item,
+        updated_by: getFirebaseAdminFirestore().collection("user_accounts").doc(actorId),
+        updated_at: Timestamp.now(),
+      });
+    }
 
     await batch.commit();
   } catch (e) {
@@ -212,11 +145,14 @@ const webMessagesBatchUpdate = async (
   }
 };
 
-export {
-    webMessagesBatchUpdate,
-    webMessagesCreate,
-    webMessagesGetByFilter,
-    webMessagesGetByRoomId,
-    webMessagesUpdate
+/**
+ * Delete a message
+ */
+export const webMessagesDelete = async (uid: string) => {
+  try {
+    return await messagesRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
 };
-

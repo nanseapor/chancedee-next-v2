@@ -1,24 +1,24 @@
-import type { MasterJobApplicationStatuses } from "@/constant/application";
+import type { MasterJobApplicationStatuses } from "@/constants/application";
 import type { LanguageRecord } from "@/lib/validations/candidates/languages-validation";
 import type { LicenseRecord } from "@/lib/validations/candidates/licenses-validation";
 import type { SkillRecord } from "@/lib/validations/candidates/skills-validation";
 
 import type { userDataProps } from "./auth.types";
 import type {
-  ContentFlag,
-  SuspensionRecord,
-  profileVerificationStatus,
+    ContentFlag,
+    SuspensionRecord,
+    profileVerificationStatus,
 } from "./candidate-screening.types";
 import type { ActivityLog, companyDataProps } from "./company.types";
 import type { IBaseDatabaseInterface, address } from "./database.types";
 import type {
-  jobApplicationData,
-  jobApplicationReturnData,
+    jobApplicationData,
+    jobApplicationReturnData,
 } from "./job-application.types";
 import type {
-  IJobPostFilterTypeV3,
-  IJobReturnData,
-  jobDataProps,
+    IJobPostFilterTypeV3,
+    IJobReturnData,
+    jobDataProps,
 } from "./job.types";
 
 /**

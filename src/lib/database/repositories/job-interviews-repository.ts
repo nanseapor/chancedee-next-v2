@@ -1,14 +1,16 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { MasterJobApplicationStatuses } from "@/constant/application";
 import { extractDocumentId, extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseJobInterviewData } from "@/types/interview.types";
+import { MasterJobApplicationStatuses } from "@/constants/application";
 
 import { FirebaseJobInterviewType } from "../schemas/job-interviews.schema";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

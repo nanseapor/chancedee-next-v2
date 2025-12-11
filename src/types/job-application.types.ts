@@ -1,4 +1,4 @@
-import type { MasterJobApplicationStatuses } from "@/constant/application";
+import type { MasterJobApplicationStatuses } from "@/constants/application";
 
 import type { IBaseDatabaseInterface } from "./database.types";
 import type { jobInterviewData } from "./interview.types";

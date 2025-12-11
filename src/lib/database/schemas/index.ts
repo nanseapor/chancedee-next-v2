@@ -323,3 +323,35 @@ export const criticalFieldsRegistry = {
     })),
   },
 };
+
+/**
+ * Collection name constants
+ */
+export const COLLECTIONS = {
+  USER_ACCOUNTS: 'user_accounts',
+  USER_INFO: 'user_info',
+  USER_TRANSFER: 'user_transfer',
+  JOBS: 'jobs',
+  MESSAGES: 'messages',
+  CHATS: 'chats',
+  JOB_APPLICATIONS: 'job_applications',
+  JOB_INTERVIEWS: 'job_interviews',
+  JOB_OFFERS: 'job_offers',
+  COMPANY_INFORMATION: 'company_information',
+  COMPANY_REQUESTS: 'company_requests',
+  CANDIDATE_INFORMATION: 'candidate_information',
+  CANDIDATE_PREFERENCE: 'candidate_preference',
+  CANDIDATE_REFERRAL: 'candidate_referral',
+  CANDIDATE_SCREENING: 'candidate_screening',
+  ADDRESS: 'address',
+  CONTACT: 'contact',
+  FCM_TOKEN: 'fcm_token',
+  OTP_CODES: 'otp_codes',
+  ADMIN_INVITATION: 'admin_invitation',
+  WALLET_TRANSACTIONS: 'wallet_transactions',
+  POCKETS: 'pockets',
+  DELETE_REQUESTS: 'delete_requests',
+  CONSENT_RECORDS: 'consent_records',
+} as const;
+
+export type CollectionName = typeof COLLECTIONS[keyof typeof COLLECTIONS];

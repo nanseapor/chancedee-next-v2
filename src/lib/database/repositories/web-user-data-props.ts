@@ -1,7 +1,9 @@
-"use server";
+import "server-only";
+
 import { Filter } from "firebase-admin/firestore";
 
 import { fetchDataByFilter } from "@/lib/utils/shared/utils";
+import { PerformanceMonitor } from "@/lib/utils/performance-monitor";
 import { userDataProps } from "@/types/auth.types";
 
 import {
@@ -25,34 +27,39 @@ import {
 // !Cache user info here make registration sequence failed as user infor was not loaded fast enough.
 // PERFORMANCE OPTIMIZED: Uses single Firestore query instead of 3 separate queries
 export const getUserDataPropsById = async (uid: string) => {
-  try {
-    // OPTIMIZATION: Single consolidated query (3 queries → 1 query)
-    const completeData = await webUserAccountGetCompleteById(uid);
+  return PerformanceMonitor.measure(
+    `getUserDataPropsById(${uid})`,
+    async () => {
+      try {
+        // OPTIMIZATION: Single consolidated query (3 queries → 1 query)
+        const completeData = await webUserAccountGetCompleteById(uid);
 
-    if (!completeData) {
-      return null;
+        if (!completeData) {
+          return null;
+        }
+
+        const { userData, userInfo, userTransfer } = completeData;
+
+        if (userData && userInfo && userTransfer) {
+          const userdata: userDataProps = {
+            ...userData,
+            info: {
+              ...userInfo,
+            },
+            transfer: {
+              ...userTransfer,
+            },
+          };
+          return userdata;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error(`UNHANDLED: Get user data props for user ${uid} error`, error);
+        return null;
+      }
     }
-
-    const { userData, userInfo, userTransfer } = completeData;
-
-    if (userData && userInfo && userTransfer) {
-      const userdata: userDataProps = {
-        ...userData,
-        info: {
-          ...userInfo,
-        },
-        transfer: {
-          ...userTransfer,
-        },
-      };
-      return userdata;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error(`UNHANDLED: Get user data props for user ${uid} error`, error);
-    return null;
-  }
+  );
 };
 
 export const getUserDataPropsByFilter = async (props?: {
@@ -114,26 +121,33 @@ export const getUserDataPropsByFilter = async (props?: {
 };
 
 export const createUserDataProps = async (data: userDataProps): Promise<void> => {
+  const { runTransaction, createTransactionalOperations } = await import("../utils/transaction-utils");
   const { info, transfer, ...userdata } = data;
 
   if (!userdata.uid) {
     throw new Error("No uid found in userdata when creating");
   }
 
-  // Ensure required timestamp fields are present for FirebaseUserDataProps compatibility
-  const userDataWithTimestamps = {
-    ...userdata,
-    createdAt: userdata.createdAt ?? Date.now(),
-    updatedAt: userdata.updatedAt ?? Date.now(),
-    isActive: userdata.isActive ?? true, // Ensure required boolean field is present
-  };
+  // Use atomic transaction to ensure all-or-nothing creation
+  await runTransaction(async (ctx) => {
+    const ops = createTransactionalOperations(ctx, userdata.uid);
 
-  // Execute all creates in parallel for efficiency
-  await Promise.all([
-    webUserAccountCreate(userDataWithTimestamps, userdata.uid, userdata.uid),
-    webUserInfoCreate(info, userdata.uid, userdata.uid),
-    transfer ? webUserTransferCreate(transfer, userdata.uid, userdata.uid) : Promise.resolve(),
-  ]);
+    // Create user account
+    ops.create('user_accounts', userdata.uid, {
+      ...userdata,
+      createdAt: userdata.createdAt ?? Date.now(),
+      updatedAt: userdata.updatedAt ?? Date.now(),
+      isActive: userdata.isActive ?? true,
+    });
+
+    // Create user info
+    ops.create('user_info', userdata.uid, info);
+
+    // Create user transfer if provided
+    if (transfer) {
+      ops.create('user_transfer', userdata.uid, transfer);
+    }
+  });
 };
 
 export const updateUserDataProps = async (uid: string, data: userDataProps): Promise<void> => {
@@ -145,6 +159,7 @@ export const updateUserDataProps = async (uid: string, data: userDataProps): Pro
   });
 
   try {
+    const { runTransaction, createTransactionalOperations } = await import("../utils/transaction-utils");
     const { info, transfer, ...userdata } = data;
 
     if (!uid) {
@@ -162,26 +177,26 @@ export const updateUserDataProps = async (uid: string, data: userDataProps): Pro
     userdata.email = userdata.email || "";
     userdata.phone = userdata.phone || "";
 
-    // Ensure required timestamp fields are present for FirebaseUserDataProps compatibility
-    const userDataWithTimestamps = {
-      ...userdata,
-      createdAt: userdata.createdAt ?? Date.now(),
-      updatedAt: userdata.updatedAt ?? Date.now(),
-      isActive: userdata.isActive ?? true, // Ensure required boolean field is present
-    };
+    // Use atomic transaction to ensure all-or-nothing update
+    await runTransaction(async (ctx) => {
+      const ops = createTransactionalOperations(ctx, uid);
 
-    console.log('💾 [updateUserDataProps] Calling Promise.all with:', {
-      webUserAccountUpdate: { uid },
-      webUserInfoUpdate: { uid, infoUid: info.uid, roles: info.roles },
-      webUserTransferUpdate: !!transfer
+      // Update user account
+      ops.update('user_accounts', userdata.uid, {
+        ...userdata,
+        createdAt: userdata.createdAt ?? Date.now(),
+        updatedAt: userdata.updatedAt ?? Date.now(),
+        isActive: userdata.isActive ?? true,
+      });
+
+      // Update user info
+      ops.update('user_info', info.uid, info);
+
+      // Update user transfer if provided
+      if (transfer) {
+        ops.update('user_transfer', transfer.uid, transfer);
+      }
     });
-
-    // Execute all updates in parallel for efficiency
-    await Promise.all([
-      webUserAccountUpdate(userDataWithTimestamps, userdata.uid, uid),
-      webUserInfoUpdate(info, info.uid, uid),
-      transfer ? webUserTransferUpdate(transfer, transfer.uid, uid) : Promise.resolve(),
-    ]);
 
     console.log('✅ [updateUserDataProps] All updates completed successfully');
 

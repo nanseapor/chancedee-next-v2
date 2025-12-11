@@ -1,9 +1,9 @@
-import { DocumentReference, Timestamp } from 'firebase-admin/firestore';
 import { z } from 'zod';
+import { DocumentReference, Timestamp } from 'firebase-admin/firestore';
 
-import { MasterJobApplicationStatuses } from '@/constant/application';
+import { MasterJobApplicationStatuses } from '@/constants/application';
 
-import { BaseAppSchema, BaseFirebaseSchema } from './base.schema';
+import { BaseFirebaseSchema, BaseAppSchema } from './base.schema';
 
 /**
  * Interview status schema - based on MasterJobApplicationStatuses enum

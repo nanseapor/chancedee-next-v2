@@ -1,4 +1,5 @@
-"use server";
+import "server-only";
+
 import { Filter } from "firebase-admin/firestore";
 
 import { fetchDataByFilter } from "@/lib/utils/shared/utils";

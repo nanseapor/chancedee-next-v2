@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseJobInterviewData } from "@/types/interview.types";
 
 import { FirebaseJobInterviewType } from "../schemas/job-interviews.schema";
@@ -38,8 +38,8 @@ const webJobInterviewGetById = async (uid: string) => {
         updatedBy: firebaseJobInterview.updated_by?.id,
         note: firebaseJobInterview.note,
         rejectFeedback: firebaseJobInterview.reject_feedback,
-        room: firebaseJobInterview.room,
-      };
+        room: firebaseJobInterview.room
+};
       return data;
     } else {
       return null;
@@ -48,7 +48,7 @@ const webJobInterviewGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webJobInterviewGetByFilter = async (filter?: Filter) => {
   try {
@@ -83,8 +83,8 @@ const webJobInterviewGetByFilter = async (filter?: Filter) => {
           updatedBy: firebaseJobInterview.updated_by?.id,
           note: firebaseJobInterview.note,
           rejectFeedback: firebaseJobInterview.reject_feedback,
-          room: firebaseJobInterview.room,
-        };
+          room: firebaseJobInterview.room
+};
         return data;
       });
       return lists;
@@ -95,7 +95,7 @@ const webJobInterviewGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webJobInterviewCreate = async (
   payload: FirebaseJobInterviewData,
@@ -135,15 +135,15 @@ const webJobInterviewCreate = async (
       is_accepted: payload.isAccepted,
       note: payload.note,
       reject_feedback: payload.rejectFeedback,
-      room: payload.room,
-    };
+      room: payload.room
+};
     await JobInterviewRef.set(dataToWrite, { merge: true });
     return JobInterviewRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webJobInterviewUpdate = async (
   payload: FirebaseJobInterviewData,
@@ -185,8 +185,8 @@ const webJobInterviewUpdate = async (
       is_accepted: payload.isAccepted,
       note: payload.note,
       reject_feedback: payload.rejectFeedback,
-      room: payload.room,
-    };
+      room: payload.room
+};
     await JobInterviewRef.set(dataToWrite, { merge: true });
     return JobInterviewRef.id;
   } catch (e) {
@@ -196,9 +196,8 @@ const webJobInterviewUpdate = async (
 };
 
 export {
-    webJobInterviewCreate,
-    webJobInterviewGetByFilter,
-    webJobInterviewGetById,
-    webJobInterviewUpdate
+  webJobInterviewCreate,
+  webJobInterviewGetByFilter,
+  webJobInterviewGetById,
+  webJobInterviewUpdate
 };
-

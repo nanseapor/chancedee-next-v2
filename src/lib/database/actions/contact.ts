@@ -58,8 +58,19 @@ const webContactUpdate = async (
   }
 };
 
+
+const webContactDelete = async (uid: string) => {
+  try {
+    return await contactRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webContactCreate,
+  webContactDelete,
   webContactGetByFilter,
   webContactGetById,
   webContactUpdate

@@ -1,6 +1,8 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseUserDataProps } from "@/types/auth.types";
 
 // Import from schema-first approach

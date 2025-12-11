@@ -1,12 +1,15 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { userTransferProps } from "@/types/auth.types";
 
 import { FirebaseUserTransferType } from "../schemas/user-transfer.schema";
 import { extractTimestamp } from "../utils/firebase-utils";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

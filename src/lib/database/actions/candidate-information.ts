@@ -62,8 +62,19 @@ const webCandidateInformationUpdate = async (
   }
 };
 
+
+const webCandidateInformationDelete = async (uid: string) => {
+  try {
+    return await candidateInformationRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webCandidateInformationCreate,
+  webCandidateInformationDelete,
   webCandidateInformationGetByFilter,
   webCandidateInformationGetById,
   webCandidateInformationUpdate

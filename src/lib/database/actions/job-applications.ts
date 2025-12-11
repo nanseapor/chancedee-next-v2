@@ -2,9 +2,9 @@
 
 import { Filter } from "firebase-admin/firestore";
 
-import { MasterJobApplicationStatuses } from "@/constant/application";
-import { JobApplicationData } from "@/lib/database/schemas/job-applications.schema";
+import { MasterJobApplicationStatuses } from "@/constants/application";
 import { jobApplicationData } from "@/types/job-application.types";
+import { convertStatusToEnum, JobApplicationData } from "@/lib/database/schemas/job-applications.schema";
 
 import { jobApplicationsRepository } from "../repositories/job-applications-repository";
 import { jobsRepository } from "../repositories/jobs-repository";
@@ -112,10 +112,21 @@ const webJobApplicationUpdate = async (
   }
 };
 
+
+const webJobApplicationDelete = async (uid: string) => {
+  try {
+    return await jobApplicationsRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
-    webJobApplicationCreate,
-    webJobApplicationGetByFilter,
-    webJobApplicationGetById,
-    webJobApplicationUpdate
+  webJobApplicationCreate,
+  webJobApplicationDelete,
+  webJobApplicationGetByFilter,
+  webJobApplicationGetById,
+  webJobApplicationUpdate
 };
 

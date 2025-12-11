@@ -1,4 +1,4 @@
-import { PASSWORD_REGEX } from "@/constant/constant";
+import { PASSWORD_REGEX } from "@/constants/constant";
 import * as z from "zod";
 
 export const signUpSchema = z

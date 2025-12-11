@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { MasterJobApplicationStatuses } from "@/constant/application";
+import { MasterJobApplicationStatuses } from "@/constants/application";
 
 import { convertLocalToUTC } from "../utils/shared/date-utils";
 

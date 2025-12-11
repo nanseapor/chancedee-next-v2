@@ -50,8 +50,19 @@ const webAddressUpdate = async (
   }
 };
 
+
+const webAddressDelete = async (uid: string) => {
+  try {
+    return await addressRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webAddressCreate,
+  webAddressDelete,
   webAddressGetByFilter,
   webAddressGetById,
   webAddressUpdate

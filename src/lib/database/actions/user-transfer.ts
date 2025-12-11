@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { userTransferProps } from "@/types/auth.types";
 
 import { FirebaseUserTransferType } from "../schemas/user-transfer.schema";
@@ -20,8 +20,8 @@ const webUserTransferGetById = async (uid: string) => {
         targetCompany: firebaseUserTransfer.target_company || "",
         requestTimestamp:
           firebaseUserTransfer.request_timestamp?.toMillis() || Date.now(),
-        transferApproved: firebaseUserTransfer.transfer_approved || false,
-      };
+        transferApproved: firebaseUserTransfer.transfer_approved || false
+};
       return data;
     } else {
       return null;
@@ -31,7 +31,7 @@ const webUserTransferGetById = async (uid: string) => {
     console.error("Read user_accounts transfer error as", e)
     throw error;
   }
-};
+}
 
 const webUserTransferGetByFilter = async (filter?: Filter) => {
   try {
@@ -48,8 +48,8 @@ const webUserTransferGetByFilter = async (filter?: Filter) => {
           targetCompany: firebaseUserTransfer.target_company || "",
           requestTimestamp:
             firebaseUserTransfer.request_timestamp?.toMillis() || Date.now(),
-          transferApproved: firebaseUserTransfer.transfer_approved || false,
-        };
+          transferApproved: firebaseUserTransfer.transfer_approved || false
+};
         return data;
       });
       return lists;
@@ -61,7 +61,7 @@ const webUserTransferGetByFilter = async (filter?: Filter) => {
     console.error("Read user_accounts transfer error as", e)
     throw error;
   }
-};
+}
 
 const webUserTransferCreate = async (
   payload: userTransferProps,
@@ -81,15 +81,15 @@ const webUserTransferCreate = async (
       created_by: actorId,
       created_at: Timestamp.now(),
       updated_by: actorId,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await UserTransferRef.set(dataToWrite, { merge: true });
     return UserTransferRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webUserTransferUpdate = async (
   payload: userTransferProps,
@@ -109,8 +109,8 @@ const webUserTransferUpdate = async (
       created_by: prevDataSnap.data()?.created_by || actorId,
       created_at: prevDataSnap.createTime || Timestamp.now(),
       updated_by: actorId,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await UserTransferRef.set(dataToWrite, { merge: true });
     return UserTransferRef.id;
   } catch (e) {
@@ -120,9 +120,8 @@ const webUserTransferUpdate = async (
 };
 
 export {
-    webUserTransferCreate,
-    webUserTransferGetByFilter,
-    webUserTransferGetById,
-    webUserTransferUpdate
+  webUserTransferCreate,
+  webUserTransferGetByFilter,
+  webUserTransferGetById,
+  webUserTransferUpdate
 };
-

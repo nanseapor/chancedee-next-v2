@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { PHONE_REGEX_THAI } from '@/constant/constant';
+import { PHONE_REGEX_THAI } from '@/constants/constant';
 
-import { BaseAppSchema, BaseFirebaseSchema } from './base.schema';
+import { BaseFirebaseSchema, BaseAppSchema } from './base.schema';
 
 /**
  * Delete request status schema

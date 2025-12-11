@@ -1,15 +1,18 @@
-import { Filter, Timestamp } from "firebase-admin/firestore";
+import "server-only";
 
+import { Timestamp, Filter } from "firebase-admin/firestore";
+
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { extractDocumentId, extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
 
 // Import from zod-to-ts schemas instead of old types
 import { jobApplicationData } from "@/types/job-application.types";
 
-import {
-    convertToLegacyJobApplicationData,
-    FirebaseJobApplicationType,
-    JobApplicationData
+import { 
+  FirebaseJobApplicationType, 
+  JobApplicationData,
+  JobApplicationStatus,
+  convertToLegacyJobApplicationData
 } from "../schemas/job-applications.schema";
 
 // Compatibility alias for gradual migration
@@ -17,8 +20,8 @@ import {
 // Import selective validation utilities
 import { validateCriticalFields, ValidationMetrics } from "../utils/selective-validation";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model with selective validation (async version)
 async function transformToAppModelWithValidation(

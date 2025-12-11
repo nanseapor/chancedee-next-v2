@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { IJobOfferData, IOfferReturnData } from "@/types/job.types";
 
 import { FirebaseJobOfferType } from "../schemas/job-offers.schema";
@@ -25,8 +25,8 @@ const webJobOfferGetByFilter = async (filter?: Filter) => {
           offerCount: firebaseJobOffer.offer_count,
           isApplied: firebaseJobOffer.is_applied || false,
           isActive: firebaseJobOffer.is_active,
-          note: firebaseJobOffer.note || "",
-        };
+          note: firebaseJobOffer.note || ""
+};
         return data;
       });
       return lists;
@@ -37,7 +37,7 @@ const webJobOfferGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webJobOfferCreate = async (
   payload: IJobOfferData,
@@ -61,15 +61,15 @@ const webJobOfferCreate = async (
       created_by: actorRef,
       created_at: Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await JobOfferRef.set(dataToWrite, { merge: true });
     return JobOfferRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webJobOfferUpdate = async (
   payload: IJobOfferData,
@@ -93,8 +93,8 @@ const webJobOfferUpdate = async (
       created_by: prevDataSnap.data()?.created_by || actorRef,
       created_at: prevDataSnap.createTime || Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await JobOfferRef.set(dataToWrite, { merge: true });
     return JobOfferRef.id;
   } catch (e) {
@@ -103,11 +103,8 @@ const webJobOfferUpdate = async (
   }
 };
 
-
-
 export {
-    webJobOfferCreate,
-    webJobOfferGetByFilter,
-    webJobOfferUpdate
+  webJobOfferCreate,
+  webJobOfferGetByFilter,
+  webJobOfferUpdate
 };
-

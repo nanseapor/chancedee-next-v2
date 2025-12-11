@@ -1,13 +1,15 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
 import { extractDocumentId, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { RoomData } from "@/types/chat.types";
 
 import { FirebaseChatType } from "../schemas/chat.schema";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

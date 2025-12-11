@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { candidateReferral } from "@/types/candidate.types";
 
 import { FirebaseCandidateReferralType } from "../schemas/candidate-referral.schema";
@@ -25,8 +25,8 @@ const webCandidateReferralGetById = async (uid: string) => {
         createdBy: firebaseCandidateReferral.created_by?.id,
         updatedBy: firebaseCandidateReferral.updated_by?.id,
         createdAt: CandidateReferralSnap.createTime?.toMillis() || 0,
-        updatedAt: CandidateReferralSnap.updateTime?.toMillis() || 0,
-      };
+        updatedAt: CandidateReferralSnap.updateTime?.toMillis() || 0
+};
       return data;
     } else {
       return null;
@@ -35,7 +35,7 @@ const webCandidateReferralGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCandidateReferralGetByFilter = async (filter?: Filter) => {
   try {
@@ -58,8 +58,8 @@ const webCandidateReferralGetByFilter = async (filter?: Filter) => {
           createdBy: firebaseCandidateReferral.created_by?.id,
           updatedBy: firebaseCandidateReferral.updated_by?.id,
           createdAt: doc.createTime?.toMillis() || 0,
-          updatedAt: doc.updateTime?.toMillis() || 0,
-        };
+          updatedAt: doc.updateTime?.toMillis() || 0
+};
         return data;
       });
       return lists;
@@ -70,7 +70,7 @@ const webCandidateReferralGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCandidateReferralCreate = async (
   payload: candidateReferral,
@@ -96,15 +96,15 @@ const webCandidateReferralCreate = async (
       created_by: actorRef,
       created_at: Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await CandidateReferralRef.set(dataToWrite, { merge: true });
     return CandidateReferralRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCandidateReferralUpdate = async (
   payload: candidateReferral,
@@ -131,8 +131,8 @@ const webCandidateReferralUpdate = async (
       created_by: prevDataSnap.data()?.created_by || actorRef,
       created_at: prevDataSnap.createTime || Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await CandidateReferralRef.set(dataToWrite, { merge: true });
     return CandidateReferralRef.id;
   } catch (e) {
@@ -142,9 +142,8 @@ const webCandidateReferralUpdate = async (
 };
 
 export {
-    webCandidateReferralCreate,
-    webCandidateReferralGetByFilter,
-    webCandidateReferralGetById,
-    webCandidateReferralUpdate
+  webCandidateReferralCreate,
+  webCandidateReferralGetByFilter,
+  webCandidateReferralGetById,
+  webCandidateReferralUpdate
 };
-

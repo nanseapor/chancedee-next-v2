@@ -1,11 +1,11 @@
-import type { MasterJobApplicationStatuses } from "@/constant/application";
+import type { MasterJobApplicationStatuses } from "@/constants/application";
 
 import type { userDataProps } from "./auth.types";
 import type { candidateDataProps } from "./candidate.types";
 import type {
-  IBaseDatabaseInterface,
-  address,
-  contact,
+    IBaseDatabaseInterface,
+    address,
+    contact,
 } from "./database.types";
 import type { jobApplicationData } from "./job-application.types";
 import type { IJobReturnData } from "./job.types";

@@ -1,7 +1,7 @@
 "use server";
 import { FieldValue, Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { userInfoProps } from "@/types/auth.types";
 
 import { FirebaseUserInfoType } from "../schemas/user-info.schema";
@@ -20,8 +20,8 @@ const webUserInfoGetById = async (uid: string) => {
         companyId: firebaseUserInfo.company_id?.id,
         currentStep: firebaseUserInfo.current_step,
         currentStepName: firebaseUserInfo.current_step_name,
-        remark: firebaseUserInfo.remark,
-      };
+        remark: firebaseUserInfo.remark
+};
       return data;
     } else {
       return null;
@@ -31,7 +31,7 @@ const webUserInfoGetById = async (uid: string) => {
     console.error("Read user_accounts info error as", e)
     throw error;
   }
-};
+}
 
 const webUserInfoGetByFilter = async (filter?: Filter) => {
   try {
@@ -48,8 +48,8 @@ const webUserInfoGetByFilter = async (filter?: Filter) => {
           companyId: firebaseUserInfo.company_id?.id,
           currentStep: firebaseUserInfo.current_step,
           currentStepName: firebaseUserInfo.current_step_name,
-          remark: firebaseUserInfo.remark,
-        };
+          remark: firebaseUserInfo.remark
+};
         return data;
       });
       return lists;
@@ -61,7 +61,7 @@ const webUserInfoGetByFilter = async (filter?: Filter) => {
     console.error("Read user_accounts info error as", e)
     throw error;
   }
-};
+}
 
 const webUserInfoCreate = async (
   payload: userInfoProps,
@@ -85,8 +85,8 @@ const webUserInfoCreate = async (
       company_id: companyRef,
       current_step: payload.currentStep,
       current_step_name: payload.currentStepName,
-      remark: payload.remark,
-    };
+      remark: payload.remark
+};
     // console.warn("User Info dataToWrite", dataToWrite);
     await UserInfoRef.set(dataToWrite, { merge: true });
     return UserInfoRef.id;
@@ -95,7 +95,7 @@ const webUserInfoCreate = async (
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webUserInfoUpdate = async (
   payload: userInfoProps,
@@ -132,8 +132,8 @@ const webUserInfoUpdate = async (
       company_id: companyRef,
       current_step: payload.currentStep,
       current_step_name: payload.currentStepName,
-      remark: payload.remark,
-    };
+      remark: payload.remark
+};
 
     console.log('💾 [webUserInfoUpdate] Writing to Firestore:', {
       path: UserInfoRef.path,
@@ -158,7 +158,7 @@ const webUserInfoUpdate = async (
     });
     throw error;
   }
-};
+}
 
 const addRoleToUser = async (uid: string, roleId: string) => {
   try {
@@ -168,8 +168,8 @@ const addRoleToUser = async (uid: string, roleId: string) => {
     await UserInfoRef.update({
       roles: FieldValue.arrayUnion(roleId),
       updated_by: uid,
-      updated_at: new Date(),
-    });
+      updated_at: new Date()
+});
   } catch (e) {
     console.error("Error adding role to user: ", e);
     throw e;
@@ -184,7 +184,7 @@ const removeRoleFromUser = async (uid: string, roleId: string) => {
     await UserInfoRef.update({
       roles: FieldValue.arrayRemove(roleId),
       updated_by: uid,
-      updated_at: new Date(),
+      updated_at: new Date()
     });
   } catch (e) {
     console.error("Error removing role from user: ", e);
@@ -193,11 +193,10 @@ const removeRoleFromUser = async (uid: string, roleId: string) => {
 };
 
 export {
-    addRoleToUser,
-    removeRoleFromUser,
-    webUserInfoCreate,
-    webUserInfoGetByFilter,
-    webUserInfoGetById,
-    webUserInfoUpdate
+  addRoleToUser,
+  removeRoleFromUser,
+  webUserInfoCreate,
+  webUserInfoGetByFilter,
+  webUserInfoGetById,
+  webUserInfoUpdate
 };
-

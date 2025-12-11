@@ -1,11 +1,11 @@
 "use server";
 
-import getCandidateDataWithToken from "@/domains/candidates/services/server/actions/candidate-data";
+import { DEFAULT_CANDIDATE_DATA } from "@/constants/candidateConstants";
 import getUserDataWithToken from "@/domains/authentication/services/server/actions/user-data";
-import { DEFAULT_CANDIDATE_DATA } from "@/constant/candidateConstants";
+import getCandidateDataWithToken from "@/domains/candidates/services/server/actions/candidate-data";
 import {
-  createCandidateDataProps,
-  updateCandidateDataProps,
+    createCandidateDataProps,
+    updateCandidateDataProps,
 } from "@/lib/database/repositories/web-candidate-data-props";
 import { updateUserDataProps } from "@/lib/database/repositories/web-user-data-props";
 import { getFirebaseAdminAuth } from "@/lib/firebase-admin";

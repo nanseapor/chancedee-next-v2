@@ -24,18 +24,36 @@ const webOTPCodesGetByFilter = async (filter?: Filter) => {
   }
 };
 
-const webOTPCodesCreate = async (payload: FirebaseOTPData, uid?: string) => {
+const webOTPCodesCreate = async (
+  payload: FirebaseOTPData,
+  uid?: string,
+  actorId: string = "system"
+) => {
   try {
-    return await otpCodesRepository.create(payload, "system", uid);
+    return await otpCodesRepository.create(payload, actorId, uid);
   } catch (e) {
     const error = e as Error;
     throw error;
   }
 };
 
-const webOTPCodesUpdate = async (payload: FirebaseOTPData, uid: string) => {
+const webOTPCodesUpdate = async (
+  payload: FirebaseOTPData,
+  uid: string,
+  actorId: string = "system"
+) => {
   try {
-    return await otpCodesRepository.update(uid, payload, "system");
+    return await otpCodesRepository.update(uid, payload, actorId);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
+
+const webOTPCodeDelete = async (uid: string) => {
+  try {
+    return await otpCodesRepository.delete(uid);
   } catch (e) {
     const error = e as Error;
     throw error;
@@ -43,8 +61,9 @@ const webOTPCodesUpdate = async (payload: FirebaseOTPData, uid: string) => {
 };
 
 export {
+  webOTPCodeDelete,
   webOTPCodesCreate,
   webOTPCodesGetByFilter,
   webOTPCodesGetById,
-  webOTPCodesUpdate,
+  webOTPCodesUpdate
 };

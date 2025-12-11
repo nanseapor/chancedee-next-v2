@@ -1,8 +1,8 @@
-import { MasterJobApplicationStatuses } from "@/constant/application";
+import { MasterJobApplicationStatuses } from "@/constants/application";
 import type { userDataProps } from "@/types/auth.types";
 import type {
-  ICandiateSearchResume,
-  candidateDataProps,
+    ICandiateSearchResume,
+    candidateDataProps,
 } from "@/types/candidate.types";
 import type { jobApplicationData } from "@/types/job-application.types";
 import type { IJobReturnData } from "@/types/job.types";

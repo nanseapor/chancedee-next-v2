@@ -1,14 +1,14 @@
 "use server";
-import { Timestamp } from "firebase-admin/firestore";
+import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { currency, pocketType } from "@/types/wallet.types";
 
 import { FirebasePocketsType } from "../schemas/pockets.schema";
 
 import {
-    webWalletTransactionGetByFilter,
-    webWalletTransactionGetById,
+  webWalletTransactionGetByFilter,
+  webWalletTransactionGetById
 } from "./wallet-transactions";
 
 /**
@@ -34,8 +34,8 @@ const webPocketsGetById = async (walletId: string, currency: currency) => {
         uid: firebasePockets.uid,
         currency: firebasePockets.currency,
         balance: firebasePockets.balance,
-        latest: latest.filter((item) => item !== null) as pocketType["latest"],
-      };
+        latest: latest.filter((item) => item !== null) as pocketType["latest"]
+};
       return data;
     } else {
       return null;
@@ -99,8 +99,8 @@ const webPocketsUpdate = async (
       updated_at: Timestamp.now(),
       currency: payload.currency as currency,
       balance: payload.balance,
-      latest,
-    };
+      latest
+};
     await PocketsRef.set(dataToWrite, { merge: true });
     return PocketsRef.id;
   } catch (e) {
@@ -110,7 +110,6 @@ const webPocketsUpdate = async (
 };
 
 export {
-    webPocketsGetById,
-    webPocketsUpdate
+  webPocketsGetById,
+  webPocketsUpdate
 };
-

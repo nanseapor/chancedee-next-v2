@@ -1,4 +1,4 @@
-import type { MESSAGE_TYPES } from "@/constant/message";
+import type { MESSAGE_TYPES } from "@/constants/message";
 
 export type UserData = {
   id: number;

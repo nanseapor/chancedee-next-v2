@@ -5,8 +5,7 @@ import { useToast } from "@/hooks/use-toast-notification";
 import { subscribeNewsletter } from "@/lib/subscription";
 import { userAtom } from "@/store/atom-store";
 import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -79,7 +78,7 @@ const initialState: FormState = {};
 export default function NewsletterSubscription() {
   const [email, setEmail] = useState("");
   const { addToast } = useToast();
-  const [state, formAction, isPending] = useFormState(
+  const [state, formAction, isPending] = useActionState(
     subscribeUser,
     initialState,
   );

@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { RoomData } from "@/types/chat.types";
 
 import { FirebaseChatType } from "../schemas/chat.schema";
@@ -22,8 +22,8 @@ const webChatGetById = async (uid: string) => {
         companyName: firebaseChat.company_name || "",
         hrName: firebaseChat.responsible_hr_name || "",
         lastMessage: firebaseChat.last_message_text || "",
-        lastupdate: firebaseChat.last_message_time?.toMillis() || 0,
-      };
+        lastupdate: firebaseChat.last_message_time?.toMillis() || 0
+};
       return data;
     } else {
       return null;
@@ -32,14 +32,14 @@ const webChatGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webChatGetByFilter = async (filter?: Filter) => {
   try {
     console.log("🔍 webChatGetByFilter: Starting query", {
       hasFilter: !!filter,
-      filterString: filter?.toString(),
-    });
+      filterString: filter?.toString()
+});
 
     const ChatRef = getFirebaseAdminFirestore().collection("chats");
     let ChatQuery = ChatRef as Query;
@@ -69,8 +69,8 @@ const webChatGetByFilter = async (filter?: Filter) => {
           companyName: firebaseChat.company_name || "",
           hrName: firebaseChat.responsible_hr_name || "",
           lastMessage: firebaseChat.last_message_text || "",
-          lastupdate: firebaseChat.last_message_time?.toMillis() || 0,
-        };
+          lastupdate: firebaseChat.last_message_time?.toMillis() || 0
+};
         
         return data;
       });
@@ -82,7 +82,7 @@ const webChatGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webChatCreate = async (
   payload: RoomData,
@@ -112,15 +112,15 @@ const webChatCreate = async (
       last_message_text: payload.lastMessage,
       last_message_time: Timestamp.fromMillis(payload.lastupdate),
       last_message_sender: actorId,
-      timestamp: Timestamp.now(),
-    };
+      timestamp: Timestamp.now()
+};
     await ChatRef.set(dataToWrite, { merge: true });
     return ChatRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webChatUpdate = async (
   payload: RoomData,
@@ -149,8 +149,8 @@ const webChatUpdate = async (
       last_message_text: payload.lastMessage,
       last_message_time: Timestamp.fromMillis(payload.lastupdate),
       last_message_sender: actorId,
-      timestamp: Timestamp.now(),
-    };
+      timestamp: Timestamp.now()
+};
     await ChatRef.set(dataToWrite, { merge: true });
     return ChatRef.id;
   } catch (e) {
@@ -159,4 +159,9 @@ const webChatUpdate = async (
   }
 };
 
-export { webChatCreate, webChatGetByFilter, webChatGetById, webChatUpdate };
+export {
+  webChatCreate,
+  webChatGetByFilter,
+  webChatGetById,
+  webChatUpdate
+};

@@ -1,13 +1,15 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { pocketType } from "@/types/wallet.types";
 
 // Import from schema-first approach
-import { FirebaseCurrencyType, FirebasePocketsType } from "../schemas/wallet-transactions.schema";
+import { FirebasePocketsType, FirebaseCurrencyType } from "../schemas/wallet-transactions.schema";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

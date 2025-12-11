@@ -1,8 +1,9 @@
-import { DocumentReference, Timestamp } from 'firebase-admin/firestore';
 import { z } from 'zod';
+import { DocumentReference, Timestamp } from 'firebase-admin/firestore';
 
-import { MasterJobApplicationStatuses } from '@/constant/application';
-import { BaseAppSchema, BaseFirebaseSchema } from './base.schema';
+import { MasterJobApplicationStatuses } from '@/constants/application';
+
+import { BaseFirebaseSchema, BaseAppSchema } from './base.schema';
 
 /**
  * Job application status enum values (what's actually stored in Firebase)

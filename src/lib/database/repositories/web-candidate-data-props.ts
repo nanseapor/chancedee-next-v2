@@ -1,11 +1,13 @@
-"use server";
+import "server-only";
+
 import { Filter } from "firebase-admin/firestore";
 
 import { calWorkHistory } from "@/lib/utils/shared/calculate-work-experience";
-
+import { PerformanceMonitor } from "@/lib/utils/performance-monitor";
 import {
   fetchDataByFilter
 } from "@/lib/utils/shared/utils";
+import { userDataProps } from "@/types/auth.types";
 import {
   candidateDataProps,
   FirebaseCandidateData,
@@ -31,41 +33,48 @@ import {
 } from "../actions/candidate-referral";
 import { webCandidateScreeningGetById } from "../actions/candidate-screening";
 
-export const getCandidateDataPropsById = async (uid: string) => {
-    const [
-      candidateInformation,
-      candidatePreference,
-      candidateReferral,
-      candidateScreening,
-    ] = await Promise.all([
-      webCandidateInformationGetById(uid),
-      webCandidatePreferenceGetById(uid),
-      webCandidateReferralGetById(uid),
-      webCandidateScreeningGetById(uid),
-    ]);
+import { getUserDataPropsById } from "./web-user-data-props";
 
-    if (candidateInformation) {
-      const candidate: candidateDataProps = {
-        ...candidateInformation,
-        lastActive: candidateScreening?.lastActive || Date.now(),
-        flagCount: candidateScreening?.flagCount || -1,
-        profileStatus: candidateScreening?.profileStatus,
-        preference: candidatePreference || undefined,
-        referral: candidateReferral || undefined,
-        createdAt: candidateInformation.createdAt,
-        createdBy: candidateInformation.createdBy,
-        updatedAt: candidateInformation.updatedAt,
-        updatedBy: candidateInformation.updatedBy,
-      };
-      return candidate;
-    } else {
-      console.error(
-        "Fetching candidate:",
-        "Failed to get candidate data properties by ID: ",
-        uid
-      );
-      return null;
+export const getCandidateDataPropsById = async (uid: string) => {
+  return PerformanceMonitor.measure(
+    `getCandidateDataPropsById(${uid})`,
+    async () => {
+      const [
+        candidateInformation,
+        candidatePreference,
+        candidateReferral,
+        candidateScreening,
+      ] = await Promise.all([
+        webCandidateInformationGetById(uid),
+        webCandidatePreferenceGetById(uid),
+        webCandidateReferralGetById(uid),
+        webCandidateScreeningGetById(uid),
+      ]);
+
+      if (candidateInformation) {
+        const candidate: candidateDataProps = {
+          ...candidateInformation,
+          lastActive: candidateScreening?.lastActive || Date.now(),
+          flagCount: candidateScreening?.flagCount || -1,
+          profileStatus: candidateScreening?.profileStatus,
+          preference: candidatePreference || undefined,
+          referral: candidateReferral || undefined,
+          createdAt: candidateInformation.createdAt,
+          createdBy: candidateInformation.createdBy,
+          updatedAt: candidateInformation.updatedAt,
+          updatedBy: candidateInformation.updatedBy,
+        };
+        return candidate;
+      } else {
+        console.error(
+          "Fetching candidate:",
+          "Failed to get candidate data properties by ID: ",
+          uid
+        );
+        return null;
+      }
     }
+  );
 };
 
 export const getCandidateDataPropsByFilter = async (props?: {

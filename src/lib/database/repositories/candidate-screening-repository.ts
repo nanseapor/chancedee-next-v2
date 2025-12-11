@@ -1,13 +1,15 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseCandidateScreeningData } from "@/types/candidate-screening.types";
 
 import { FirebaseCandidateScreeningType } from "../schemas/candidate-screening.schema";
 import { toFirebaseTimestamp, toMillis } from "../utils/data-mapper";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseCompanyAccountRequests } from "@/types/admin.types";
 
 import { FirebaseCompanyRequestsType } from "../schemas/company-requests.schema";
@@ -34,8 +34,8 @@ const webCompanyRequestsGetById = async (uid: string) => {
         uid: firebaseCompanyRequests.uid,
         attachedFiles: firebaseCompanyRequests.attached_files,
         createdBy: firebaseCompanyRequests.created_by?.id,
-        updatedBy: firebaseCompanyRequests.updated_by?.id,
-      };
+        updatedBy: firebaseCompanyRequests.updated_by?.id
+};
       return data;
     } else {
       return null;
@@ -44,7 +44,7 @@ const webCompanyRequestsGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCompanyRequestsGetByFilter = async (filter?: Filter) => {
   try {
@@ -73,8 +73,8 @@ const webCompanyRequestsGetByFilter = async (filter?: Filter) => {
           uid: firebaseCompanyRequests.uid,
           attachedFiles: firebaseCompanyRequests.attached_files,
           createdBy: firebaseCompanyRequests.created_by?.id,
-          updatedBy: firebaseCompanyRequests.updated_by?.id,
-        };
+          updatedBy: firebaseCompanyRequests.updated_by?.id
+};
         return data;
       });
       return lists;
@@ -85,7 +85,7 @@ const webCompanyRequestsGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCompanyRequestsCreate = async (
   payload: FirebaseCompanyAccountRequests,
@@ -112,15 +112,15 @@ const webCompanyRequestsCreate = async (
       company_logo: payload.companyLogo,
       country: payload.country,
       company_size: payload.companySize,
-      attached_files: payload.attachedFiles,
-    };
+      attached_files: payload.attachedFiles
+};
     await CompanyRequestsRef.set(dataToWrite, { merge: true });
     return CompanyRequestsRef.id;
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCompanyRequestsUpdate = async (
   payload: FirebaseCompanyAccountRequests,
@@ -147,8 +147,8 @@ const webCompanyRequestsUpdate = async (
       company_logo: payload.companyLogo,
       country: payload.country,
       company_size: payload.companySize,
-      attached_files: payload.attachedFiles,
-    };
+      attached_files: payload.attachedFiles
+};
 
     await CompanyRequestsRef.set(dataToWrite, { merge: true });
     return CompanyRequestsRef.id;
@@ -159,9 +159,8 @@ const webCompanyRequestsUpdate = async (
 };
 
 export {
-    webCompanyRequestsCreate,
-    webCompanyRequestsGetByFilter,
-    webCompanyRequestsGetById,
-    webCompanyRequestsUpdate
+  webCompanyRequestsCreate,
+  webCompanyRequestsGetByFilter,
+  webCompanyRequestsGetById,
+  webCompanyRequestsUpdate
 };
-

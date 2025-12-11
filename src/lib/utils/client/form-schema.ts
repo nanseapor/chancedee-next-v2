@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { PHONE_REGEX_THAI } from "@/constant/constant";
+import { PHONE_REGEX_THAI } from "@/constants/constant";
 
 export const profileSchema = z.object({
   firstname: z.string().min(1, { message: "ข้อมูลไม่ถูกต้อง" }),

@@ -2,7 +2,7 @@
 
 import { Filter } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseUserDataProps, userInfoProps, userTransferProps } from "@/types/auth.types";
 
 import { userAccountsRepository } from "../repositories/user-accounts-repository";
@@ -138,11 +138,21 @@ const webUserAccountGetCompleteById = async (uid: string) => {
   }
 };
 
+const webUserAccountDelete = async (uid: string) => {
+  try {
+    return await userAccountsRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
-    webUserAccountCreate,
-    webUserAccountGetByFilter,
-    webUserAccountGetById,
-    webUserAccountGetCompleteById,
-    webUserAccountUpdate
+  webUserAccountCreate,
+  webUserAccountGetByFilter,
+  webUserAccountGetById,
+  webUserAccountGetCompleteById,
+  webUserAccountUpdate,
+  webUserAccountDelete
 };
 

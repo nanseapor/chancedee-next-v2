@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { candidatePreferences } from "@/types/candidate.types";
 
 import { FirebaseCandidatePreferenceType } from "../schemas/candidate-preference.schema";
@@ -36,8 +36,8 @@ const webCandidatePreferenceGetById = async (uid: string) => {
         headlines: firebaseCandidatePreference.headlines || "",
         overheadDays: firebaseCandidatePreference.overhead_days || "ทันที",
         createdBy: firebaseCandidatePreference.created_by?.id,
-        updatedBy: firebaseCandidatePreference.updated_by?.id,
-      };
+        updatedBy: firebaseCandidatePreference.updated_by?.id
+};
 
       return data;
     } else {
@@ -83,8 +83,8 @@ const webCandidatePreferenceGetByFilter = async (filter?: Filter) => {
           headlines: firebaseCandidatePreference.headlines || "",
           overheadDays: firebaseCandidatePreference.overhead_days || "ทันที",
           createdBy: firebaseCandidatePreference.created_by?.id,
-          updatedBy: firebaseCandidatePreference.updated_by?.id,
-        };
+          updatedBy: firebaseCandidatePreference.updated_by?.id
+};
         return data;
       });
       return lists;
@@ -132,8 +132,8 @@ const webCandidatePreferenceCreate = async (
       created_by: actorRef,
       created_at: Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await CandidatePreferenceRef.set(dataToWrite, { merge: true });
     return CandidatePreferenceRef.id;
   } catch (e) {
@@ -178,8 +178,8 @@ const webCandidatePreferenceUpdate = async (
       created_by: prevDataSnap.data()?.created_by || actorRef,
       created_at: prevDataSnap.createTime || Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await CandidatePreferenceRef.set(dataToWrite, { merge: true });
     return CandidatePreferenceRef.id;
   } catch (e) {
@@ -189,9 +189,9 @@ const webCandidatePreferenceUpdate = async (
 };
 
 export {
-    webCandidatePreferenceCreate,
-    webCandidatePreferenceGetByFilter,
-    webCandidatePreferenceGetById,
-    webCandidatePreferenceUpdate
+  webCandidatePreferenceCreate,
+  webCandidatePreferenceGetByFilter,
+  webCandidatePreferenceGetById,
+  webCandidatePreferenceUpdate
 };
 

@@ -1,4 +1,4 @@
-import { CSR, LEGALS } from "@/constant/constant";
+import { CSR, LEGALS } from "@/constants/constant";
 import { getCategories } from "@/lib/categories";
 import Image from "next/image";
 import Link from "next/link";

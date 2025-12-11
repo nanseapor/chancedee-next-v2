@@ -1,4 +1,4 @@
-import type { MasterJobApplicationStatuses } from "@/constant/application";
+import type { MasterJobApplicationStatuses } from "@/constants/application";
 import { JSX } from "react";
 
 export type SidebarLink = {

@@ -7,8 +7,7 @@ import { useToast } from "@/hooks/use-toast-notification";
 import { sendContactUsMessage } from "@/lib/send-mail";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
 import { z } from "zod";
 
 const schema = z.object({
@@ -83,7 +82,7 @@ const initialState: FormState = {};
 export default function ContactUs({ cover_image }: { cover_image: string }) {
   const router = useRouter();
   const { addToast } = useToast();
-  const [state, formAction, isPending] = useFormState(
+  const [state, formAction, isPending] = useActionState(
     sendMessage,
     initialState,
   );

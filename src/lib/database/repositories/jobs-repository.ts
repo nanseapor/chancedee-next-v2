@@ -1,13 +1,15 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseJobData } from "@/types/job.types";
+import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
 
 import { FirebaseJobType } from "../schemas/jobs.schema";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

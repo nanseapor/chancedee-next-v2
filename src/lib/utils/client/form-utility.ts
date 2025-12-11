@@ -1,6 +1,6 @@
 "use client";
 
-import { KVMonths } from "@/constant/constant";
+import { KVMonths } from "@/constants/constant";
 
 export const checkKeyDown = (
   e: React.KeyboardEvent<

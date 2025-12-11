@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseCandidateScreeningData } from "@/types/candidate-screening.types";
 
 import { FirebaseCandidateScreeningType } from "../schemas/candidate-screening.schema";
@@ -28,8 +28,8 @@ const webCandidateScreeningGetById = async (uid: string) => {
         createdBy: firebaseCandidateScreening.created_by?.id,
         updatedBy: firebaseCandidateScreening.updated_by?.id,
         createdAt: CandidateScreeningSnap.createTime?.toMillis() || 0,
-        updatedAt: CandidateScreeningSnap.updateTime?.toMillis() || 0,
-      };
+        updatedAt: CandidateScreeningSnap.updateTime?.toMillis() || 0
+};
       // Remove fields with undefined values
       return data;
     } else {
@@ -39,7 +39,7 @@ const webCandidateScreeningGetById = async (uid: string) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCandidateScreeningGetByFilter = async (filter?: Filter) => {
   try {
@@ -66,8 +66,8 @@ const webCandidateScreeningGetByFilter = async (filter?: Filter) => {
           createdBy: firebaseCandidateScreening.created_by?.id,
           updatedBy: firebaseCandidateScreening.updated_by?.id,
           createdAt: doc.createTime?.toMillis() || 0,
-          updatedAt: doc.updateTime?.toMillis() || 0,
-        };
+          updatedAt: doc.updateTime?.toMillis() || 0
+};
         return data;
       });
       return lists;
@@ -78,7 +78,7 @@ const webCandidateScreeningGetByFilter = async (filter?: Filter) => {
     const error = e as Error;
     throw error;
   }
-};
+}
 
 const webCandidateScreeningUpdate = async (
   payload: Omit<FirebaseCandidateScreeningData, "uid" | "createdAt" | "updatedAt">,
@@ -103,8 +103,8 @@ const webCandidateScreeningUpdate = async (
       created_by: prevDataSnap.data()?.created_by || actorRef,
       created_at: prevDataSnap.createTime || Timestamp.now(),
       updated_by: actorRef,
-      updated_at: Timestamp.now(),
-    };
+      updated_at: Timestamp.now()
+};
     await CandidateScreeningRef.set(dataToWrite, { merge: true });
     return CandidateScreeningRef.id;
   } catch (e) {
@@ -114,8 +114,7 @@ const webCandidateScreeningUpdate = async (
 };
 
 export {
-    webCandidateScreeningGetByFilter,
-    webCandidateScreeningGetById,
-    webCandidateScreeningUpdate
+  webCandidateScreeningGetByFilter,
+  webCandidateScreeningGetById,
+  webCandidateScreeningUpdate
 };
-

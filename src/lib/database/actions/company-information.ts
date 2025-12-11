@@ -59,8 +59,19 @@ const webCompanyInformationUpdate = async (
   }
 };
 
+
+const webCompanyInformationDelete = async (uid: string) => {
+  try {
+    return await companyInformationRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webCompanyInformationCreate,
+  webCompanyInformationDelete,
   webCompanyInformationGenerateId,
   webCompanyInformationGetByFilter,
   webCompanyInformationGetById,

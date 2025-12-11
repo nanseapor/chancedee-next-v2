@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Timestamp, DocumentReference, Filter } from "firebase-admin/firestore";
 
 import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";

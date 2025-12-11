@@ -50,10 +50,21 @@ const webAdminInvitationUpdate = async (
   }
 };
 
+
+const webAdminInviteDelete = async (uid: string) => {
+  try {
+    return await adminInviteRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webAdminInvitationCreate,
   webAdminInvitationGetByFilter,
   webAdminInvitationGetById,
-  webAdminInvitationUpdate
+  webAdminInvitationUpdate,
+  webAdminInviteDelete
 };
 

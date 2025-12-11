@@ -1,15 +1,16 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
 import { extractTimestamp } from "@/lib/database/utils/firebase-utils";
-
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { transactionType } from "@/types/wallet.types";
 
 // Import from schema-first approach
 import { FirebaseWalletTransactionType } from "../schemas/wallet-transactions.schema";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model
 function transformToAppModel(

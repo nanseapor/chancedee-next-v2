@@ -59,8 +59,18 @@ const webJobUpdate = async (
   }
 };
 
+const webJobDelete = async (uid: string) => {
+  try {
+    return await jobsRepository.delete(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webJobCreate,
+  webJobDelete,
   webJobGenerateId,
   webJobGetByFilter,
   webJobGetById,

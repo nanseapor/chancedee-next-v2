@@ -1,4 +1,5 @@
-"use server";
+import "server-only";
+
 
 import { FirebaseCompanyAccountRequests } from "@/types/admin.types";
 import { address, contact } from "@/types/database.types";

@@ -1,3 +1,5 @@
+import "server-only";
+
 "use server";
 
 /**
@@ -17,10 +19,12 @@
  * const company = companiesMap.get(companyId);
  */
 
-import { getCandidateDataPropsById } from "@/lib/database/repositories/web-candidate-data-props";
 import { getCompanyDataPropsById } from "@/lib/database/repositories/web-company-data-props";
-import { candidateDataProps } from "@/types/candidate.types";
+import { getCandidateDataPropsById } from "@/lib/database/repositories/web-candidate-data-props";
 import { companyDataProps } from "@/types/company.types";
+import { candidateDataProps } from "@/types/candidate.types";
+import { PerformanceMonitor } from "@/lib/utils/performance-monitor";
+
 /**
  * Batch fetch company data by IDs
  * Eliminates N+1 query pattern by fetching all companies in parallel
@@ -44,36 +48,40 @@ import { companyDataProps } from "@/types/company.types";
 export async function getCompaniesByIds(
   companyIds: string[]
 ): Promise<Map<string, companyDataProps | null>> {
+  return PerformanceMonitor.measure(
+    `batch-fetch-companies-${companyIds.length}`,
+    async () => {
+      // Remove duplicates for efficiency
+      const uniqueIds = Array.from(new Set(companyIds));
 
-  // Remove duplicates for efficiency
-  const uniqueIds = Array.from(new Set(companyIds));
-
-  if (uniqueIds.length === 0) {
-    return new Map();
-  }
-
-  console.log(`🔥 Batch fetching ${uniqueIds.length} companies`);
-
-  // Fetch all companies in parallel (much faster than sequential)
-  const companies = await Promise.all(
-    uniqueIds.map(async (companyId) => {
-      try {
-        const company = await getCompanyDataPropsById(companyId);
-        return { id: companyId, data: company };
-      } catch (error) {
-        console.warn(`Failed to fetch company ${companyId}:`, error);
-        return { id: companyId, data: null };
+      if (uniqueIds.length === 0) {
+        return new Map();
       }
-    })
-  );
 
-  // Convert to Map for O(1) lookup
-  const companyMap = new Map(
-    companies.map(({ id, data }) => [id, data])
-  );
+      console.log(`🔥 Batch fetching ${uniqueIds.length} companies`);
 
-  console.log(`✅ Batch fetched ${companies.length} companies successfully`);
-  return companyMap;
+      // Fetch all companies in parallel (much faster than sequential)
+      const companies = await Promise.all(
+        uniqueIds.map(async (companyId) => {
+          try {
+            const company = await getCompanyDataPropsById(companyId);
+            return { id: companyId, data: company };
+          } catch (error) {
+            console.warn(`Failed to fetch company ${companyId}:`, error);
+            return { id: companyId, data: null };
+          }
+        })
+      );
+
+      // Convert to Map for O(1) lookup
+      const companyMap = new Map(
+        companies.map(({ id, data }) => [id, data])
+      );
+
+      console.log(`✅ Batch fetched ${companies.length} companies successfully`);
+      return companyMap;
+    }
+  );
 }
 
 /**
@@ -91,32 +99,37 @@ export async function getCompaniesByIds(
 export async function getCandidatesByIds(
   candidateUids: string[]
 ): Promise<Map<string, candidateDataProps | null>> {
-  const uniqueIds = Array.from(new Set(candidateUids));
+  return PerformanceMonitor.measure(
+    `batch-fetch-candidates-${candidateUids.length}`,
+    async () => {
+      const uniqueIds = Array.from(new Set(candidateUids));
 
-  if (uniqueIds.length === 0) {
-    return new Map();
-  }
-
-  console.log(`🔥 Batch fetching ${uniqueIds.length} candidates`);
-
-  const candidates = await Promise.all(
-    uniqueIds.map(async (uid) => {
-      try {
-        const candidate = await getCandidateDataPropsById(uid);
-        return { id: uid, data: candidate };
-      } catch (error) {
-        console.warn(`Failed to fetch candidate ${uid}:`, error);
-        return { id: uid, data: null };
+      if (uniqueIds.length === 0) {
+        return new Map();
       }
-    })
-  );
 
-  const candidateMap = new Map(
-    candidates.map(({ id, data }) => [id, data])
-  );
+      console.log(`🔥 Batch fetching ${uniqueIds.length} candidates`);
 
-  console.log(`✅ Batch fetched ${candidates.length} candidates successfully`);
-  return candidateMap;
+      const candidates = await Promise.all(
+        uniqueIds.map(async (uid) => {
+          try {
+            const candidate = await getCandidateDataPropsById(uid);
+            return { id: uid, data: candidate };
+          } catch (error) {
+            console.warn(`Failed to fetch candidate ${uid}:`, error);
+            return { id: uid, data: null };
+          }
+        })
+      );
+
+      const candidateMap = new Map(
+        candidates.map(({ id, data }) => [id, data])
+      );
+
+      console.log(`✅ Batch fetched ${candidates.length} candidates successfully`);
+      return candidateMap;
+    }
+  );
 }
 
 /**
@@ -141,30 +154,32 @@ export async function batchFetch<T, K = string>(
   fetcher: (id: K) => Promise<T>,
   label: string
 ): Promise<Map<K, T | null>> {
-  const uniqueIds = Array.from(new Set(ids));
+  return PerformanceMonitor.measure(`batch-fetch-${label}`, async () => {
+    const uniqueIds = Array.from(new Set(ids));
 
-  if (uniqueIds.length === 0) {
-    return new Map();
-  }
+    if (uniqueIds.length === 0) {
+      return new Map();
+    }
 
-  console.log(`🔥 Batch fetching ${uniqueIds.length} ${label}`);
+    console.log(`🔥 Batch fetching ${uniqueIds.length} ${label}`);
 
-  const results = await Promise.all(
-    uniqueIds.map(async (id) => {
-      try {
-        const data = await fetcher(id);
-        return { id, data };
-      } catch (error) {
-        console.warn(`Failed to fetch ${label} ${id}:`, error);
-        return { id, data: null };
-      }
-    })
-  );
+    const results = await Promise.all(
+      uniqueIds.map(async (id) => {
+        try {
+          const data = await fetcher(id);
+          return { id, data };
+        } catch (error) {
+          console.warn(`Failed to fetch ${label} ${id}:`, error);
+          return { id, data: null };
+        }
+      })
+    );
 
-  const resultMap = new Map(results.map(({ id, data }) => [id, data]));
+    const resultMap = new Map(results.map(({ id, data }) => [id, data]));
 
-  console.log(`✅ Batch fetched ${results.length} ${label} successfully`);
-  return resultMap;
+    console.log(`✅ Batch fetched ${results.length} ${label} successfully`);
+    return resultMap;
+  });
 }
 
 /**

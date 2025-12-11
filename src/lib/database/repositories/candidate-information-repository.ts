@@ -1,14 +1,16 @@
+import "server-only";
+
 import { Timestamp } from "firebase-admin/firestore";
 
-import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { validateCriticalFields } from "@/lib/database/utils/selective-validation";
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
 import { FirebaseCandidateData } from "@/types/candidate.types";
+import { validateCriticalFields } from "@/lib/database/utils/selective-validation";
+import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
 
 import { FirebaseCandidateInformationType } from "../schemas/candidate-information.schema";
 
-import { IRepository } from "./interfaces/repository.interface";
 import { createRepository } from "./repository-factory";
+import { IRepository } from "./interfaces/repository.interface";
 
 // Transform Firebase model to App model with validation
 function transformToAppModel(
