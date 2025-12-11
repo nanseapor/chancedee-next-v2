@@ -4,7 +4,7 @@ import {
   getCandidateDataPropsById,
   updateCandidateDataProps as updateCandidateDataPropsRepo,
 } from "@/lib/database/repositories/web-candidate-data-props";
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedCandidateData } from "@/lib/utils/shared/utils";
 import { candidateDataProps } from "@/types/candidate.types";

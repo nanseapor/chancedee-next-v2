@@ -2,7 +2,7 @@ import "server-only";
 
 "use server"
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin"
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin"
 import type { masterData } from "@/types/master-data.types"
 
 export async function getMasterData() {

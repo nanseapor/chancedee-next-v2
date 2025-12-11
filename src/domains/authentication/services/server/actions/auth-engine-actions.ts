@@ -10,7 +10,7 @@ import {
   AuthorizationError,
 } from "@/domains/authentication/utils/auth-errors";
 import { getUserDataPropsById } from "@/lib/database/repositories/web-user-data-props";
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import type {
   AuthOptions,
   AuthResult,

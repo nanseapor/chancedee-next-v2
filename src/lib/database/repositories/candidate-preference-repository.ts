@@ -2,7 +2,7 @@ import "server-only";
 
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { candidatePreferences } from "@/types/candidate.types";
 
 import { FirebaseCandidatePreferenceType } from "../schemas/candidate-preference.schema";

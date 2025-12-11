@@ -1,6 +1,6 @@
 "use server";
 
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { loadEnvConfig } from "@next/env";
 
 const projectDir = process.cwd();

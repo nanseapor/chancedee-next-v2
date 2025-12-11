@@ -1,6 +1,6 @@
 "use client";
 
-import { getFirebaseApp } from "@/lib/firebase";
+import { getFirebaseApp } from "./client";
 import {
   deleteObject,
   getDownloadURL,

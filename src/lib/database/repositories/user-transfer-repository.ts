@@ -2,7 +2,7 @@ import "server-only";
 
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { userTransferProps } from "@/types/auth.types";
 
 import { FirebaseUserTransferType } from "../schemas/user-transfer.schema";

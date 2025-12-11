@@ -2,7 +2,7 @@ import "server-only";
 
 import { Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { FirebaseCandidateData } from "@/types/candidate.types";
 import { validateCriticalFields } from "@/lib/database/utils/selective-validation";
 import { extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";

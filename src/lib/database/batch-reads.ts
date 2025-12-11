@@ -12,17 +12,11 @@ import "server-only";
  * @module lib/database/batch-reads
  */
 
-import { getFirebaseFirestore } from '@/lib/firebase/firebase';
-import {
-  collection,
-  doc,
-  getDoc,
-  DocumentSnapshot,
-  DocumentData,
-} from 'firebase/firestore';
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
+import { DocumentData } from "firebase-admin/firestore";
 
-// Get Firestore instance
-const db = getFirebaseFirestore();
+// Get Firestore instance (lazily initialized)
+const getDb = () => getFirebaseAdminFirestore();
 
 /**
  * Firestore has a limit of 500 document IDs per batch read
@@ -146,21 +140,19 @@ async function readChunk<T>(
   const failed: string[] = [];
 
   try {
-    const collectionRef = collection(db, collectionName);
+    const db = getDb();
 
-    // Create document references
-    const docRefs = ids.map((id) => doc(collectionRef, id));
+    // Create document references for Firebase Admin SDK
+    const docRefs = ids.map((id) => db.collection(collectionName).doc(id));
 
-    // Fetch all documents in parallel
-    const snapshots = await Promise.all(
-      docRefs.map((docRef) => getDoc(docRef))
-    );
+    // Use getAll for efficient batch read (Firebase Admin SDK)
+    const snapshots = await db.getAll(...docRefs);
 
     // Process results
     snapshots.forEach((snapshot, index) => {
       const id = ids[index];
 
-      if (snapshot.exists()) {
+      if (snapshot.exists) {
         documents.set(id, snapshot.data() as T);
       } else {
         notFound.push(id);

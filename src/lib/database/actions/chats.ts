@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { RoomData } from "@/types/chat.types";
 
 import { FirebaseChatType } from "../schemas/chat.schema";

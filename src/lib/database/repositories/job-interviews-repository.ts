@@ -3,7 +3,7 @@ import "server-only";
 import { Timestamp } from "firebase-admin/firestore";
 
 import { extractDocumentId, extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { FirebaseJobInterviewData } from "@/types/interview.types";
 import { MasterJobApplicationStatuses } from "@/constants/application";
 

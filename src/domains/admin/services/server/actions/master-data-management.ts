@@ -3,7 +3,7 @@ import { loadEnvConfig } from "@next/env";
 import { Timestamp } from "firebase-admin/firestore";
 import { revalidatePath, unstable_cache } from "next/cache";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import {
   masterDataSchema,
   validateMasterData,

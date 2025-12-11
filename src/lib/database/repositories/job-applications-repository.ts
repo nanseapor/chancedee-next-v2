@@ -2,7 +2,7 @@ import "server-only";
 
 import { Timestamp, Filter } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { extractDocumentId, extractDocumentIdOptional, extractTimestamp } from "@/lib/database/utils/firebase-utils";
 
 // Import from zod-to-ts schemas instead of old types

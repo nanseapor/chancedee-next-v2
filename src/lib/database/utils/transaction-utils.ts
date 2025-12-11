@@ -7,7 +7,7 @@ import "server-only";
  * All operations succeed or all fail together.
  */
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { Timestamp, DocumentReference, Transaction } from "firebase-admin/firestore";
 
 /**

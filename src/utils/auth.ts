@@ -1,4 +1,4 @@
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { cookies } from "next/headers";
 
 export async function verifySessionCookie() {

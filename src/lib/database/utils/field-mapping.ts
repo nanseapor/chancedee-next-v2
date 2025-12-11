@@ -7,7 +7,7 @@ import "server-only";
  */
 
 import { Timestamp, DocumentReference } from "firebase-admin/firestore";
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 
 /**
  * Field transformation function type

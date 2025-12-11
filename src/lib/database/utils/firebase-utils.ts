@@ -2,7 +2,7 @@ import "server-only";
 
 import { DocumentReference, Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { wrapError, DocumentNotFoundError } from "../errors";
 
 // Helper function to extract DocumentReference ID safely

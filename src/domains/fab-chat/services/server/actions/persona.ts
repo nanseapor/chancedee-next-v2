@@ -8,7 +8,7 @@ import {
     updateCandidateDataProps,
 } from "@/lib/database/repositories/web-candidate-data-props";
 import { updateUserDataProps } from "@/lib/database/repositories/web-user-data-props";
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { PersonaCheckResult, PersonaData } from "@/types/persona.types";
 
 

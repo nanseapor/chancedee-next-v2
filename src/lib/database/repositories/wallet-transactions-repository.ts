@@ -3,7 +3,7 @@ import "server-only";
 import { Timestamp } from "firebase-admin/firestore";
 
 import { extractTimestamp } from "@/lib/database/utils/firebase-utils";
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { transactionType } from "@/types/wallet.types";
 
 // Import from schema-first approach

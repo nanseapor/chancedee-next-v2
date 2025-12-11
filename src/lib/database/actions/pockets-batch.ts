@@ -1,5 +1,5 @@
 "use server";
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { currency, pocketType } from "@/types/wallet.types";
 import { FirebasePocketsType } from "../schemas/pockets.schema";
 import { webWalletTransactionGetById } from "./wallet-transactions";

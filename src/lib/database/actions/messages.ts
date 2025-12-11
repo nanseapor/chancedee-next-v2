@@ -2,7 +2,7 @@
 
 import { Filter, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { ChatMessage, MessageWithId } from "@/types/chat.types";
 
 import { messagesRepository } from "../repositories/messages-repository";

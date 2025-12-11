@@ -4,7 +4,7 @@ import {
   getUserDataPropsById,
   updateUserDataProps as updateUserDataPropsRepo,
 } from "@/lib/database/repositories/web-user-data-props";
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedUserData } from "@/lib/utils/shared/utils";
 import { userDataProps } from "@/types/auth.types";

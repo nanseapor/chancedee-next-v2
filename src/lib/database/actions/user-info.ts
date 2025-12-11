@@ -1,7 +1,7 @@
 "use server";
 import { FieldValue, Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { userInfoProps } from "@/types/auth.types";
 
 import { FirebaseUserInfoType } from "../schemas/user-info.schema";

@@ -4,7 +4,7 @@
  * Manages Firestore onSnapshot listeners with automatic cleanup.
  */
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { DocumentSnapshot, Filter, Query, QuerySnapshot } from "firebase-admin/firestore";
 
 export type UnsubscribeFn = () => void;

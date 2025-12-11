@@ -2,7 +2,7 @@
 
 import { Filter } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { FirebaseUserDataProps, userInfoProps, userTransferProps } from "@/types/auth.types";
 
 import { userAccountsRepository } from "../repositories/user-accounts-repository";

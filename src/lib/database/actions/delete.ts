@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { DeleteAccountProps } from "@/types/auth.types";
 
 import { FirebaseDeleteRequestType } from "../schemas/delete.schema";

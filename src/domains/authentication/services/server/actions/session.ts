@@ -1,6 +1,6 @@
 "use server";
 
-import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
+import { getFirebaseAdminAuth } from "@/lib/firebase/admin";
 import { createCustomToken, verifySessionCookie } from "@/utils/auth";
 import { cookies } from "next/headers";
 

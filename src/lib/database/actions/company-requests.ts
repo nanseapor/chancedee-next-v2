@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { FirebaseCompanyAccountRequests } from "@/types/admin.types";
 
 import { FirebaseCompanyRequestsType } from "../schemas/company-requests.schema";

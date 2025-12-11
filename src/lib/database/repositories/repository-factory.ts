@@ -1,7 +1,7 @@
 import "server-only";
 
 import { Filter, Query } from "firebase-admin/firestore";
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 
 import {
   createDocument,

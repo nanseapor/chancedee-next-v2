@@ -1,7 +1,7 @@
 "use server";
 import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/firebase-admin";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { currency, pocketType } from "@/types/wallet.types";
 
 import { FirebasePocketsType } from "../schemas/pockets.schema";
