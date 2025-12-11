@@ -48,21 +48,50 @@ This is a Thai-language career/lifestyle content platform built with Next.js 16 
 
 ```
 src/
-├── actions/          # Server actions for data mutations
-├── app/              # Next.js App Router pages
-│   ├── (body)/       # Main layout group (header/footer)
-│   ├── api/          # API routes
-│   └── auth/         # Auth pages
+├── app/                    # Next.js App Router
+│   ├── api/                # API routes (adk, ai-chat, newsletter, etc.)
+│   ├── content/(body)/     # Main content layout group
+│   └── jobsmarket/         # Job market pages
 ├── components/
-│   ├── ui/           # shadcn/ui base components
-│   ├── fab-chat/     # AI chat floating button
-│   └── [feature]/    # Feature-specific components
-├── hooks/            # React hooks (auth, chat, bookmarks)
+│   ├── ui/                 # shadcn/ui base components
+│   ├── fab-chat/           # AI chat floating button
+│   ├── auth/               # Authentication components
+│   ├── blog/               # Blog components
+│   ├── forms/              # Form components
+│   ├── layout/             # Layout components
+│   ├── navigation/         # Navigation components
+│   └── [feature]/          # Feature-specific components
+├── domains/                # Domain-driven modules
+│   ├── admin/              # Admin domain (services, utils)
+│   ├── ai/                 # AI domain services
+│   ├── authentication/     # Auth domain (services, utils)
+│   ├── candidates/         # Candidate domain services
+│   ├── content/            # Content domain services
+│   ├── fab-chat/           # FAB chat domain services
+│   └── search/             # Search domain services
+├── hooks/                  # React hooks
 ├── lib/
-│   ├── database/     # Firebase repository layer
-│   ├── adk/          # AI agent development kit
-│   └── [service].ts  # Service modules (directus, posts, auth)
-└── types/            # TypeScript type definitions
+│   ├── adk/                # AI agent development kit
+│   ├── database/           # Firebase repository layer
+│   │   ├── actions/        # Server actions
+│   │   ├── repositories/   # Data access layer
+│   │   ├── schemas/        # Zod schemas
+│   │   └── utils/          # DB utilities
+│   ├── firebase/           # Firebase client/admin setup
+│   ├── utils/              # Utilities (client, server, shared)
+│   └── validations/        # Validation schemas (auth, candidates, jobs)
+├── store/                  # Jotai atom store
+└── types/                  # TypeScript type definitions
+
+docs/
+├── RIS/                    # Route Implementation Specs (per-route technical specs)
+├── ฺBLS/                    # Business Logic Specs (actions, validation, workflows)
+├── design-systems/         # UI specs (atoms, molecules, organisms, routes)
+│   ├── atoms/              # Buttons, badges, form elements, indicators
+│   ├── molecules/          # Feedback, form groups, list items
+│   ├── organisms/          # Cards, modals, navigation, tables
+│   └── routes/             # Per-route component compositions
+└── DOCUMENTATION-GUIDE.md  # How to use these docs
 ```
 
 ### Path Alias
@@ -75,3 +104,20 @@ src/
 - Directus CMS
 - SendGrid (email)
 - Google Analytics
+
+## Project Documentation
+
+Detailed specifications are in `docs/`. See [docs/DOCUMENTATION-GUIDE.md](docs/DOCUMENTATION-GUIDE.md) for full usage guide.
+
+| Directory | Purpose | When to Use |
+|-----------|---------|-------------|
+| `docs/RIS/` | Route Implementation Specs | Implementing routes/pages |
+| `docs/ฺBLS/` | Business Logic Specs | Server actions, validation, workflows |
+| `docs/design-systems/` | UI Component Specs | Building/styling components |
+
+### Quick Reference
+
+- **New route:** Read `RIS/{DOMAIN}-R{NN}_*.md` + `design-systems/routes/`
+- **Server action:** Read `BLS/BLS-{NN}_*.md` for action specs
+- **Component:** Read `design-systems/atoms|molecules|organisms/`
+- **Cross-cutting patterns:** Check `*-R00_cross-cutting` or `BLS-00`
