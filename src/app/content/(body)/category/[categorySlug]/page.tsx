@@ -8,9 +8,9 @@ import { getPosts } from "@/lib/posts";
 import Image from "next/image";
 
 interface CategoryParams {
-  params: {
+  params: Promise<{
     categorySlug: string;
-  };
+  }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -18,8 +18,9 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: CategoryParams): Promise<Metadata> {
+  const { categorySlug } = await params;
   const global = await getGlobalMetadata();
-  const Category = await getCategoryBySlug(params.categorySlug, {
+  const Category = await getCategoryBySlug(categorySlug, {
     fields: ["meta_title", "meta_description"],
   });
   global.title = `CATEGORY | ${Category?.meta_title || global.title}`;
@@ -29,7 +30,8 @@ export async function generateMetadata({
 }
 
 export default async function CategoryPage({ params }: CategoryParams) {
-  const data = await getCategoryBySlug(params.categorySlug);
+  const { categorySlug } = await params;
+  const data = await getCategoryBySlug(categorySlug);
   const featuredPosts = await getPosts({
     filter: {
       categories: {

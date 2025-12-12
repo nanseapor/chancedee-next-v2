@@ -1,7 +1,7 @@
 "use client";
 
-import { saveUserPersona } from "@/domains/fab-chat/services/server/actions/persona";
 import { selectOptionsGet } from "@/domains/admin/services/server/actions/master-data-management";
+import { saveUserPersona } from "@/domains/fab-chat/services/server/actions/persona";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { type educationHistory } from "@/types/candidate.types";
 import { type PersonaData } from "@/types/persona.types";
@@ -64,7 +64,7 @@ export function FabChatPersonaStepper({
     if (existingData?.educationLevel && existingData.educationLevel.length > 0) {
       const existing = existingData.educationLevel[0];
       // Validate that required fields exist and are valid
-      if (existing.educationLevel && existing.educationLevel > 0) {
+      if (existing?.educationLevel && existing?.educationLevel > 0) {
         return existing;
       }
     }
@@ -189,7 +189,7 @@ export function FabChatPersonaStepper({
       ) {
         const existingHighest = existingData.educationLevel[0];
         const newLevel = highestEducation.educationLevel;
-        const existingLevel = existingHighest.educationLevel;
+        const existingLevel = existingHighest?.educationLevel;
 
         // Validate that existingLevel is a valid number > 0
         if (!existingLevel || existingLevel <= 0) {
@@ -208,7 +208,7 @@ export function FabChatPersonaStepper({
           console.log(
             `⚠️ Keeping existing higher education level ${existingLevel}, ignoring input level ${newLevel}`,
           );
-          const educationLabelText = existingHighest.educationLabel || `ระดับ ${existingLevel}`;
+          const educationLabelText = existingHighest?.educationLabel || `ระดับ ${existingLevel}`;
           setError(`คุณมีวุฒิการศึกษา${educationLabelText}อยู่แล้ว`);
           setIsSaving(false);
           return;

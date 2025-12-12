@@ -115,7 +115,7 @@ export default function SignUpPage({
 
   const { data, isLoading } = useSWR("register-banner", getRegisterBanner);
   const imageBanner =
-    data && data.length > 0 && data[0].image
+    data && data.length > 0 && data[0]?.image
       ? getAssets(data[0].image)
       : "/images/article-3.avif";
 
@@ -128,7 +128,7 @@ export default function SignUpPage({
           <div className="flex items-center justify-center px-8 md:px-12 lg:px-16">
             <div className="w-full max-w-[440px] space-y-6">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold">{data && data[0].title}</h1>
+                <h1 className="text-3xl font-bold">{data && data[0]?.title}</h1>
               </div>
               <div className="space-y-4">
                 <div className="space-y-4">

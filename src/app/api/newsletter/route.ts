@@ -17,6 +17,13 @@ export async function GET(request: NextRequest) {
 
     if (cmsPayload.length > 0) {
       const cmsData = cmsPayload[0];
+      if (!cmsData) {
+        console.log("No newsletter data found");
+        return NextResponse.json(
+          { message: "No newsletter data found" },
+          { status: 404, headers: { "Cache-Control": "no-store" } },
+        );
+      }
       console.log(`Sending newsletter id=${cmsData.id}`);
       if (
         !cmsData.sent_date ||

@@ -24,7 +24,7 @@ const BlogPagination = () => {
     isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < pagination.limit);
+    isEmpty || (data && (data[data.length - 1]?.length ?? 0) < pagination.limit);
 
   const loadMore = () => {
     if (!isReachingEnd && !isLoadingMore) {

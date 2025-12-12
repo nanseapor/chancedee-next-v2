@@ -8,9 +8,9 @@ import { headers } from "next/headers";
 import Image from "next/image";
 
 interface SlugParams {
-  params: {
+  params: Promise<{
     authorSlug: string;
-  };
+  }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: SlugParams): Promise<Metadata> {
+  await params; // Need to await even if not using the value
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);
@@ -28,7 +29,8 @@ export async function generateMetadata({
 }
 
 export default async function TagsPage({ params }: SlugParams) {
-  const author = await getAuthorBySlug(params.authorSlug);
+  const { authorSlug } = await params;
+  const author = await getAuthorBySlug(authorSlug);
 
   return (
     <>
@@ -73,7 +75,7 @@ export default async function TagsPage({ params }: SlugParams) {
           </header>
         </Container>
       </section>
-      <AuthorBlogExtender slug={params.authorSlug} />
+      <AuthorBlogExtender slug={authorSlug} />
     </>
   );
 }

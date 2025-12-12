@@ -7,14 +7,15 @@ import CatergoryCrumb from "@/components/navigation/category-crumb";
 import { CalendarDays } from "lucide-react";
 
 interface LegalParams {
-  params: {
+  params: Promise<{
     legalSlug: string;
-  };
+  }>;
 }
 
 export default async function LegalPage({ params }: LegalParams) {
+  const { legalSlug } = await params;
   // console.log("Get blog by params", params);
-  const data = await getLegalBySlug(params.legalSlug);
+  const data = await getLegalBySlug(legalSlug);
 
   return (
     <>

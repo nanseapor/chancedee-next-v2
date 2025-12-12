@@ -7,9 +7,9 @@ import { getPostByTag } from "@/lib/tags";
 import { headers } from "next/headers";
 
 interface TagsParams {
-  params: {
+  params: Promise<{
     tagSlug: string;
-  };
+  }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -17,17 +17,19 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: TagsParams): Promise<Metadata> {
+  const { tagSlug } = await params;
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);
-  global.title = `TAG CHANCEDEE | ${params?.tagSlug || global.title}`;
-  global.openGraph.title = `TAG CHANCEDEE | ${params?.tagSlug || global.title}`;
-  global.twitter.title = `TAG CHANCEDEE | ${params?.tagSlug || global.title}`;
+  global.title = `TAG CHANCEDEE | ${tagSlug || global.title}`;
+  global.openGraph.title = `TAG CHANCEDEE | ${tagSlug || global.title}`;
+  global.twitter.title = `TAG CHANCEDEE | ${tagSlug || global.title}`;
   return global;
 }
 
 export default async function TagsPage({ params }: TagsParams) {
-  const tag = decodeURI(params.tagSlug);
+  const { tagSlug } = await params;
+  const tag = decodeURI(tagSlug);
   const featuredPosts = await getPostByTag(tag);
 
   console.log("tag", tag);

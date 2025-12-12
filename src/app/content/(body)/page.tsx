@@ -35,13 +35,13 @@ export default async function Home() {
       <BubbleHero />
       <Features2 />
       <Hero
-        featuredPosts={homeData[0].featured_posts.map(
+        featuredPosts={homeData[0]?.featured_posts.map(
           (post: PinnedPosts) => post.Blog_id,
-        )}
+        ) || []}
       />
       {homeData &&
         homeData.length > 0 &&
-        homeData[0].pinned_category.map((categoryData: PinnedCategory) => {
+        homeData[0]?.pinned_category.map((categoryData: PinnedCategory) => {
           return (
             <HomeContentSection
               key={categoryData.Pinned_Category_id.category.id}

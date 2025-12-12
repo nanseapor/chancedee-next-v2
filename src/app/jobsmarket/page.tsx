@@ -9,6 +9,20 @@ import { getHome } from "@/lib/utils/server/home";
 
 const HomePage = async () => {
   const homeData = await getHome();
+  const firstHome = homeData[0];
+
+  if (!firstHome) {
+    return (
+      <>
+        <main className={`flex min-h-[calc(100dvh-80px)] flex-row bg-background`}>
+          <div className="m-auto w-full bg-background p-8 text-center">
+            <p>ไม่พบข้อมูล</p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -16,12 +30,12 @@ const HomePage = async () => {
         className={`flex min-h-[calc(100dvh-80px)] flex-row bg-background`}
       >
         <div className="m-auto w-full bg-background">
-          <HeroSection homeData={homeData[0]} />
+          <HeroSection homeData={firstHome} />
           {/* <CTASection /> */}
           {/* <ServiceSection /> */}
-          <JobCategorySections homeData={homeData[0]} />
+          <JobCategorySections homeData={firstHome} />
           <NewJobSection />
-          <RecommendationSection homeData={homeData[0]} />
+          <RecommendationSection homeData={firstHome} />
           {/* <TestimonialSection featuredJobs={featuredJobsData || []} /> */}
         </div>
       </main>

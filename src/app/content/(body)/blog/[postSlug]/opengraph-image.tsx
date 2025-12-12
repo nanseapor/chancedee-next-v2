@@ -8,11 +8,12 @@ export const contentType = "image/png";
 
 export default async function Image({
   params,
-}: { params: { postSlug: string } }) {
+}: { params: Promise<{ postSlug: string }> }) {
+  const { postSlug } = await params;
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);
-  const post = await getPostBySlug(params.postSlug, {
+  const post = await getPostBySlug(postSlug, {
     fields: ["title", "meta_title", "meta_description", "featured_image"],
   });
   const ogImageSrc = post.open_graph_image

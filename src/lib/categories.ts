@@ -92,7 +92,7 @@ export async function getCategoryBySlug(
     throw new Error("Category not found");
   }
 
-  const categoryId = items[0]!.id;
+  const categoryId = items[0]?.id;
   if (!categoryId) {
     throw new Error("Category ID is missing");
   }

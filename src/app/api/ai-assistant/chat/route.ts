@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const userMessage = message.toLowerCase().trim();
 
     // Check for specific responses
-    let response: string;
+    let response: string = "";
     const matchedResponse = Object.entries(helpfulResponses).find(([key]) =>
       userMessage.includes(key),
     );
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     } else {
       // Use random mock response
       response =
-        mockResponses[Math.floor(Math.random() * mockResponses.length)];
+        mockResponses[Math.floor(Math.random() * mockResponses.length)] || "ขอโทษครับ ผมไม่เข้าใจคำถามของคุณ";
     }
 
     return NextResponse.json({

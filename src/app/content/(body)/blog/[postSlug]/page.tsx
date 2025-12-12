@@ -19,9 +19,9 @@ import { headers } from "next/headers";
 import Image from "next/image";
 
 interface PostParams {
-  params: {
+  params: Promise<{
     postSlug: string;
-  };
+  }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
-  const post = await getPostBySlug(params.postSlug, {
+  const { postSlug } = await params;
+  const post = await getPostBySlug(postSlug, {
     fields: ["title", "meta_title", "meta_description", "featured_image"],
   });
   const headersList = await headers();
@@ -41,7 +42,7 @@ export async function generateMetadata({
       type: "website", // This sets the og:type
       title: `${post.open_graph_title ? post.open_graph_title : post.meta_title}`,
       description: `${post.meta_description}`,
-      url: `https://${hostname}/blog/${params.postSlug}`,
+      url: `https://${hostname}/blog/${postSlug}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -156,10 +157,11 @@ const replacementFunction = (src: string, alt: string, mediaList: Media[]) => {
 };
 
 export default async function PostPage({ params }: PostParams) {
+  const { postSlug } = await params;
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
 
-  const data = await getPostBySlug(params.postSlug);
+  const data = await getPostBySlug(postSlug);
   let newCount = 1;
   if (data.id) {
     newCount = data.view_count ? data.view_count + 1 : 1;
@@ -226,7 +228,7 @@ export default async function PostPage({ params }: PostParams) {
         </Container>
         <div className="max-w-4xl mx-auto pt-6 px-4">
           <ShareButtons
-            url={`https://${hostname}/blog/${params.postSlug}`}
+            url={`https://${hostname}/blog/${postSlug}`}
             title={data.title || ""}
           />
         </div>

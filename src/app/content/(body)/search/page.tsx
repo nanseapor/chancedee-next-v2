@@ -10,23 +10,25 @@ import { headers } from "next/headers";
 export const dynamic = "force-dynamic";
 export const revalidate = false;
 interface SearchParams {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateMetadata({
   searchParams,
 }: SearchParams): Promise<Metadata> {
+  const params = await searchParams;
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);
-  global.title = `คำค้นหา CHANCEDEE | ${searchParams?.keyword || global.title}`;
-  global.openGraph.title = `คำค้นหา CHANCEDEE | ${searchParams?.keyword || global.title}`;
-  global.twitter.title = `คำค้นหา CHANCEDEE | ${searchParams?.keyword || global.title}`;
+  global.title = `คำค้นหา CHANCEDEE | ${params?.keyword || global.title}`;
+  global.openGraph.title = `คำค้นหา CHANCEDEE | ${params?.keyword || global.title}`;
+  global.twitter.title = `คำค้นหา CHANCEDEE | ${params?.keyword || global.title}`;
   return global;
 }
 
 export default async function SearchPage({ searchParams }: SearchParams) {
-  if (!searchParams?.keyword) {
+  const params = await searchParams;
+  if (!params?.keyword) {
     return (
       <section
         className={`relative h-[30dvh] flex justify-center items-center bg-gradient-to-r from-primary-200 to-secondary-200`}
@@ -41,9 +43,9 @@ export default async function SearchPage({ searchParams }: SearchParams) {
       </section>
     );
   }
-  const search = Array.isArray(searchParams.keyword)
-    ? searchParams.keyword.map((kw) => decodeURI(kw)).join(" ")
-    : decodeURI(searchParams.keyword);
+  const search = Array.isArray(params.keyword)
+    ? params.keyword.map((kw) => decodeURI(kw)).join(" ")
+    : decodeURI(params.keyword);
   const featuredPosts = await searchPosts(search);
 
   return (

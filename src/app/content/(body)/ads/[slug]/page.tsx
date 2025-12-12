@@ -16,9 +16,9 @@ import { headers } from "next/headers";
 import Image from "next/image";
 
 interface PostParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
-  const post = await getAdsBySlug(params.slug, {
+  const { slug } = await params;
+  const post = await getAdsBySlug(slug, {
     fields: ["title", "meta_title", "meta_description", "featured_image"],
   });
   const headersList = await headers();
@@ -38,7 +39,7 @@ export async function generateMetadata({
       type: "website", // This sets the og:type
       title: `${post.open_graph_title ? post.open_graph_title : post.meta_title}`,
       description: `${post.meta_description}`,
-      url: `https://${hostname}/ads/${params.slug}`,
+      url: `https://${hostname}/ads/${slug}`,
     },
   };
 }
@@ -131,7 +132,8 @@ const replacementFunction = (src: string, alt: string, mediaList: Media[]) => {
 };
 
 export default async function AdsPage({ params }: PostParams) {
-  const data = await getAdsBySlug(params.slug);
+  const { slug } = await params;
+  const data = await getAdsBySlug(slug);
   let newCount = 1;
   if (data.id) {
     newCount = data.view_count ? data.view_count + 1 : 1;

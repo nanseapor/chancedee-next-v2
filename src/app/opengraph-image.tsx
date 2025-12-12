@@ -4,9 +4,7 @@ import { ImageResponse } from "next/og";
 
 export const contentType = "image/png";
 
-export default async function Image({
-  params,
-}: { params: { postSlug: string } }) {
+export default async function Image() {
   const headersList = await headers();
   const hostname = headersList.get("host") || "www.chancedee.com";
   const global = await getGlobalMetadata(hostname);

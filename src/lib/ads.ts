@@ -87,5 +87,9 @@ export async function getAdsBySlug(
   if (items.length === 0) {
     throw new Error("Ads not found");
   }
-  return items[0]!;
+  const ad = items[0];
+  if (!ad) {
+    throw new Error("Ads not found");
+  }
+  return ad;
 }

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function Contact() {
   const data = await getContactusBanner();
   const imageBanner =
-    data && data.length > 0 && data[0].cover_image
+    data && data.length > 0 && data[0]?.cover_image
       ? getAssets(data[0].cover_image)
       : "/images/article-3.avif";
   return (

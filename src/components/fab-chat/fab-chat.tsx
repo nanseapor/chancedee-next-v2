@@ -18,6 +18,7 @@ export function FabChat() {
 
     if (document.readyState === "complete") {
       setIsPageLoaded(true);
+      return;
     } else {
       // Wait for the page to fully load
       // Use 'load' event which fires after all resources (images, styles, etc.) are loaded
