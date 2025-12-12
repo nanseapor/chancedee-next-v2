@@ -48,7 +48,7 @@
     "jspdf": "^3.0.1",
     "lucide-react": "^0.441.0",
     "meilisearch": "^0.53.0",
-    "next": "16.0.8",
+    "next": "^16.0.10",
     "playwright": "^1.55.0",
     "prettier": "^3.3.3",
     "react": "19.2.1",

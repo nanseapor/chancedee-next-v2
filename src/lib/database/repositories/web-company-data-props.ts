@@ -2,8 +2,8 @@ import "server-only";
 
 import { Filter } from "firebase-admin/firestore";
 
-import { fetchDataByFilter } from "@/lib/utils/shared/utils";
 import { convertHtmlToText } from "@/lib/utils/server/text-processing";
+import { fetchDataByFilter } from "@/lib/utils/shared/utils";
 import { companyDataProps, FirebaseCompanyData } from "@/types/company.types";
 
 import {
@@ -41,7 +41,7 @@ export const getCompanyDataPropsById = async (uid: string) => {
     };
     return company;
   } else {
-    console.error("Useless read: Company data not found for uid:", uid);
+    console.warn("Useless read: Company data not found for uid:", uid);
     return null;
   }
 };

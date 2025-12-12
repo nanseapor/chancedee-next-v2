@@ -29,7 +29,7 @@ export async function authenticateSession(
   const sessionCookie = (await cookies()).get("session")?.value;
 
   if (!sessionCookie) {
-    console.error("No session cookie found");
+    console.warn("No session cookie found");
     return null;
   }
 
