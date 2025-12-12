@@ -3,6 +3,7 @@
 import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Separator } from "@/components/ui/separator";
 import type { Category } from "@/lib/categories";
+import { JOBS_HOST } from "@/config/hosts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import ChancedeeLogo from "../media/chancedee-logo";
@@ -20,7 +21,7 @@ export default function Navbar({ categories }: { categories: Category[] }) {
           <Link href="/" className="flex items-center gap-3">
             <ChancedeeLogo />
           </Link>
-          <nav className="hidden items-center xl:flex w-full justify-center gap-1.5">
+          <nav className="pl-2 hidden xl:grid w-full auto-cols-fr grid-flow-col gap-1.5 items-stretch">
             {categories &&
               categories?.length > 0 &&
               categories
@@ -35,17 +36,15 @@ export default function Navbar({ categories }: { categories: Category[] }) {
                 ))}
             <Link
               href="/ai-assistant"
-              className="flex rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500"
+              className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
             >
               Chancedee mentor - AI
-              <br />
             </Link>
             <Link
-              href="https://jobs.chancedee.com"
-              className="flex rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500"
+              href={JOBS_HOST}
+              className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
             >
               Job Market
-              <br />
             </Link>
           </nav>
         </div>
@@ -76,7 +75,7 @@ export default function Navbar({ categories }: { categories: Category[] }) {
                 <br />
               </Link>
               <Link
-                href="https://jobs.chancedee.com"
+                href={JOBS_HOST}
                 className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
               >
                 Job Market

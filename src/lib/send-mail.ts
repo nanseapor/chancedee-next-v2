@@ -1,6 +1,7 @@
 "use server";
 import client, { type MailDataRequired } from "@sendgrid/mail";
 import * as cheerio from "cheerio";
+import { CONTENT_HOST } from "@/config/hosts";
 import { createCollectionItem } from "./directus";
 import type { NewsletterProps } from "./newsletter";
 import { getAllSubscribers } from "./subscription";
@@ -121,8 +122,8 @@ export async function sendNewsletter(cmsData: NewsletterProps) {
                 }),
                 htmlUnsubscribe: `<div align="center" valign="top" style="padding-top: 20px; font-size: 12px; color: #666666;">
                     <p style="margin: 0;">
-                    If you no longer wish to receive these emails, you can 
-                    <a href="https://www.chancedee.com/unsubscribe?email=${target.email}" style="color: #666666; text-decoration: underline;">unsubscribe here</a>.
+                    If you no longer wish to receive these emails, you can
+                    <a href="${CONTENT_HOST}/unsubscribe?email=${target.email}" style="color: #666666; text-decoration: underline;">unsubscribe here</a>.
                     </p>
                 </div>`,
                 subject: messageToSend.subject,

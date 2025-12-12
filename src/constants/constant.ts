@@ -1,3 +1,5 @@
+import { JOBS_HOST } from "@/config/hosts";
+
 export const LEGALS = [
   { title: "นโยบายการใช้ข้อมูลส่วนบุคคล", link: "/legal/privacy-policy" },
   { title: "นโยบายการใช้คุ้กกี้", link: "/legal/cookies-policy" },
@@ -9,7 +11,7 @@ export const CSR = [
   { title: "โฆษณาประกาศงาน", link: "/ads/job-advertisement" },
   { title: "โฆษณาบริษัท", link: "/ads/company-advertisement" },
   { title: "โฆษณาผลิตภัณฑ์", link: "/ads/product-advertisement" },
-  { title: "Jobs Market", link: "https://jobs.chancedee.com" },
+  { title: "Jobs Market", link: JOBS_HOST },
 ];
 
 export const PHONE_REGEX_THAI = /^([0])([1,2,3,4,5,7]|([6,8,9]\d{1}))\d{7}$/;

@@ -95,16 +95,16 @@ function validateHomeData(data: Array<Home>): boolean {
     );
   }
 
-  console.log("✅ Home data validation passed", {
-    has_hero_title: !!homeItem.hero_title,
-    has_hero_sub_title: !!homeItem.hero_sub_title,
-    has_hero_image: !!homeItem.hero_image,
-    hero_image_value: homeItem.hero_image,
-    has_meta_title: !!homeItem.meta_title,
-    featured_companies_count: homeItem.featured_companies?.length || 0,
-    featured_jobs_count: homeItem.featured_jobs?.length || 0,
-    job_categories_count: homeItem.job_categories?.length || 0,
-  });
+  // console.log("✅ Home data validation passed", {
+  //   has_hero_title: !!homeItem.hero_title,
+  //   has_hero_sub_title: !!homeItem.hero_sub_title,
+  //   has_hero_image: !!homeItem.hero_image,
+  //   hero_image_value: homeItem.hero_image,
+  //   has_meta_title: !!homeItem.meta_title,
+  //   featured_companies_count: homeItem.featured_companies?.length || 0,
+  //   featured_jobs_count: homeItem.featured_jobs?.length || 0,
+  //   job_categories_count: homeItem.job_categories?.length || 0,
+  // });
 
   return true;
 }
@@ -159,19 +159,19 @@ export async function getHome(options?: ItemsQuery): Promise<Array<Home>> {
 
       clearTimeout(timeoutId);
 
-      console.log("🔍 Directus raw response:", {
-        type: typeof response,
-        isArray: Array.isArray(response),
-        isNull: response === null,
-        isUndefined: response === undefined,
-        length: Array.isArray(response) ? response.length : "N/A",
-        keys:
-          typeof response === "object" && response
-            ? Object.keys(response).slice(0, 10)
-            : "N/A",
-        hasHomeData:
-          typeof response === "object" && response && "hero_title" in response,
-      });
+      // console.log("🔍 Directus raw response:", {
+      //   type: typeof response,
+      //   isArray: Array.isArray(response),
+      //   isNull: response === null,
+      //   isUndefined: response === undefined,
+      //   length: Array.isArray(response) ? response.length : "N/A",
+      //   keys:
+      //     typeof response === "object" && response
+      //       ? Object.keys(response).slice(0, 10)
+      //       : "N/A",
+      //   hasHomeData:
+      //     typeof response === "object" && response && "hero_title" in response,
+      // });
 
       // Check if response looks like request config (has method, headers, etc.)
       if (

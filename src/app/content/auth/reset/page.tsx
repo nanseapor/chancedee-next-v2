@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CONTENT_HOST } from "@/config/hosts";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendPasswordResetEmail } from "firebase/auth";
@@ -28,7 +29,7 @@ const ResetSchema = z.object({
 
 const resetPassword = async (email: string) => {
   const actionCodeSettings = {
-    url: "https://www.chancedee.com/auth/sign-in",
+    url: `${CONTENT_HOST}/auth/sign-in`,
     handleCodeInApp: true,
   };
   const result = await sendPasswordResetEmail(

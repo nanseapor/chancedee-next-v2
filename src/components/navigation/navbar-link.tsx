@@ -28,14 +28,13 @@ const NavbarLink = ({
       <Link
         key={category.slug}
         href={`/category/${category.slug}`}
-        className={`flex rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 ${
+        className={`flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 break-words hyphens-auto h-full ${
           pathname.endsWith(`/category/${category.slug}`)
             ? "bg-primary-100 text-primary-600"
             : "hover:bg-primary-100"
         }`}
       >
         {category.name}
-        <br />
       </Link>
     );
   }

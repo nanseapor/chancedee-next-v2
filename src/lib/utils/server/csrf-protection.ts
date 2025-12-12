@@ -14,6 +14,7 @@
  */
 
 import { type NextRequest, NextResponse } from "next/server";
+import { CONTENT_HOST, JOBS_HOST } from "@/config/hosts";
 
 /**
  * Allowed origins for production
@@ -21,9 +22,9 @@ import { type NextRequest, NextResponse } from "next/server";
  */
 const ALLOWED_ORIGINS = [
   "https://chancedee.com",
-  "https://www.chancedee.com",
+  CONTENT_HOST,
   "https://dev.chancedee.com",
-  "https://jobs.chancedee.com",
+  JOBS_HOST,
 ];
 
 /**
