@@ -84,14 +84,11 @@ src/
 └── types/                  # TypeScript type definitions
 
 docs/
-├── RIS/                    # Route Implementation Specs (per-route technical specs)
-├── ฺBLS/                    # Business Logic Specs (actions, validation, workflows)
-├── design-systems/         # UI specs (atoms, molecules, organisms, routes)
-│   ├── atoms/              # Buttons, badges, form elements, indicators
-│   ├── molecules/          # Feedback, form groups, list items
-│   ├── organisms/          # Cards, modals, navigation, tables
-│   └── routes/             # Per-route component compositions
-└── DOCUMENTATION-GUIDE.md  # How to use these docs
+└── jobsmarket/             # Jobs subdomain (jobs.*) → src/app/jobsmarket/
+    ├── RIS/                # Route Implementation Specs (paths relative to /jobsmarket)
+    ├── BLS/                # Business Logic Specs (actions, validation, workflows)
+    ├── design-systems/     # UI specs (atoms, molecules, organisms, routes)
+    └── DOCUMENTATION-GUIDE.md  # Guide for jobsmarket docs
 ```
 
 ### Path Alias
@@ -107,13 +104,19 @@ docs/
 
 ## Project Documentation
 
-Detailed specifications are in `docs/`. See [docs/DOCUMENTATION-GUIDE.md](docs/DOCUMENTATION-GUIDE.md) for full usage guide.
+Documentation is organized by subdomain in `docs/[subdomain]/`. Each subdomain maps to a route group in `src/app/[subdomain]/`.
+
+### Subdomain: jobsmarket
+
+For implementing `src/app/jobsmarket/` (jobs.* subdomain), see [docs/jobsmarket/DOCUMENTATION-GUIDE.md](docs/jobsmarket/DOCUMENTATION-GUIDE.md).
 
 | Directory | Purpose | When to Use |
 |-----------|---------|-------------|
-| `docs/RIS/` | Route Implementation Specs | Implementing routes/pages |
-| `docs/ฺBLS/` | Business Logic Specs | Server actions, validation, workflows |
-| `docs/design-systems/` | UI Component Specs | Building/styling components |
+| `docs/jobsmarket/RIS/` | Route Implementation Specs | Implementing routes/pages under `/jobsmarket` |
+| `docs/jobsmarket/BLS/` | Business Logic Specs | Server actions, validation, workflows |
+| `docs/jobsmarket/design-systems/` | UI Component Specs | Building/styling components |
+
+**Note:** Routes in RIS docs are relative to `/jobsmarket`. For example, `/jobs` in docs means `/jobsmarket/jobs` in implementation.
 
 ### Quick Reference
 
