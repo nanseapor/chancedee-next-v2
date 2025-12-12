@@ -14,6 +14,8 @@ function getSubdomainApp(hostname: string): "content" | "jobsmarket" | null {
   // Remove port for local development
   const host = hostname.split(":")[0];
 
+  if (!host) return null;
+
   // Check for jobs subdomain
   if (host === JOBS_HOST || host.startsWith("jobs.")) {
     return "jobsmarket";

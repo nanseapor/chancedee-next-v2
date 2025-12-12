@@ -35,7 +35,7 @@ function initializeFirebase() {
         console.error("Error setting Firebase persistence:", error);
       });
   } else {
-    firebaseApp = getApps()[0];
+    firebaseApp = getApps()[0]!;
     auth = getAuth(firebaseApp);
   }
 }

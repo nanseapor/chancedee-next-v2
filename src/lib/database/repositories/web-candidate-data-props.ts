@@ -125,7 +125,7 @@ export const getCandidateDataPropsByFilter = async (props?: {
   }
 
   // Find intersection: UIDs present in ALL sets
-  const uniqueCandidateList = Array.from(uidSets[0]).filter(uid =>
+  const uniqueCandidateList = Array.from(uidSets[0]!).filter(uid =>
     uidSets.every(set => set.has(uid))
   );
 

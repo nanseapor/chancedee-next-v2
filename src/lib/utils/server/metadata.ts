@@ -25,7 +25,7 @@ export async function getGlobalMetadata(hostname?: string) {
   };
 
   if (meta.length || meta.length > 0) {
-    const metadata = meta[0];
+    const metadata = meta[0]!;
     return Promise.resolve({
       title: metadata.meta_title,
       description: metadata.meta_description,

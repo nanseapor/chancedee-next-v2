@@ -200,10 +200,10 @@ class PerformanceMonitorClass {
     return {
       count: matchingMetrics.length,
       average: durations.reduce((a, b) => a + b, 0) / durations.length,
-      median: durations[Math.floor(durations.length / 2)],
-      min: durations[0],
-      max: durations[durations.length - 1],
-      p95: durations[Math.floor(durations.length * 0.95)],
+      median: durations[Math.floor(durations.length / 2)] ?? 0,
+      min: durations[0] ?? 0,
+      max: durations[durations.length - 1] ?? 0,
+      p95: durations[Math.floor(durations.length * 0.95)] ?? 0,
       successRate: (successCount / matchingMetrics.length) * 100,
     };
   }

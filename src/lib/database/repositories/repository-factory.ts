@@ -115,7 +115,7 @@ export function createRepository<T, F>(
 
       // Get next cursor
       const nextCursor = hasMore && resultDocs.length > 0
-        ? resultDocs[resultDocs.length - 1].id
+        ? resultDocs[resultDocs.length - 1]!.id
         : null;
 
       return {

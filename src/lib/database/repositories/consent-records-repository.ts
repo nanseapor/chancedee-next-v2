@@ -184,7 +184,7 @@ export const consentRecordsRepositoryExtended = {
     };
 
     const results = await consentRecordsRepository.getByFilter(filter as Filter);
-    return (results && results.length > 0) ? results[0] : null;
+    return (results && results.length > 0) ? results[0]! : null;
   },
 
   /**

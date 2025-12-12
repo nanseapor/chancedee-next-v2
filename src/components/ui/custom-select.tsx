@@ -43,6 +43,7 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
           document.removeEventListener("mousedown", handleClickOutside);
         };
       }
+      return undefined;
     }, [isOpen]);
 
     // Close on escape key
@@ -59,6 +60,7 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
           document.removeEventListener("keydown", handleEscape);
         };
       }
+      return undefined;
     }, [isOpen]);
 
     const handleSelect = (optionValue: string) => {

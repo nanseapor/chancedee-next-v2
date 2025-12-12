@@ -110,7 +110,8 @@ export async function batchReadByIds<T = DocumentData>(
     } else {
       // Entire chunk failed - mark all IDs in chunk as failed
       console.error(`❌ Chunk ${index + 1} failed:`, result.reason);
-      failed.push(...chunks[index]);
+      const chunk = chunks[index];
+      if (chunk) failed.push(...chunk);
     }
   });
 
@@ -151,6 +152,7 @@ async function readChunk<T>(
     // Process results
     snapshots.forEach((snapshot, index) => {
       const id = ids[index];
+      if (!id) return;
 
       if (snapshot.exists) {
         documents.set(id, snapshot.data() as T);

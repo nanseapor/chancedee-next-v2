@@ -419,7 +419,10 @@ export class PDFImageConverter {
         const pixels = imageData.data;
         let nonBlackPixels = 0;
         for (let i = 0; i < pixels.length; i += 4) {
-          if (pixels[i] > 10 || pixels[i + 1] > 10 || pixels[i + 2] > 10) {
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          if ((r !== undefined && r > 10) || (g !== undefined && g > 10) || (b !== undefined && b > 10)) {
             nonBlackPixels++;
           }
         }

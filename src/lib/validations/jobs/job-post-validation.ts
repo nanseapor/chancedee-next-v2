@@ -51,6 +51,7 @@ export const JobPostSchema2 = z.object({
       if (data.length > 0) {
         return true;
       }
+      return false;
     }),
 });
 
@@ -265,6 +266,7 @@ export const RequirementsSchema = z.object({
       if (data.length > 0) {
         return true;
       }
+      return false;
     }),
 });
 

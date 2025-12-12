@@ -75,5 +75,5 @@ export async function getPopupBySlug(
   if (items.length === 0) {
     throw new Error("Ads not found");
   }
-  return items[0];
+  return items[0]!;
 }

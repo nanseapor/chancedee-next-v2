@@ -55,7 +55,7 @@ export const addBookMark = async ({
   blogId: string;
 }) => {
   const existing = await getBookmarkedBlogs({ uid });
-  if (!existing || existing.length === 0 || !existing[0].id) {
+  if (!existing || existing.length === 0 || !existing[0]?.id) {
     return createCollectionItem("User_Bookmark", {
       status: "published",
       firebase_uid: uid,
@@ -97,7 +97,7 @@ export const removeBookmark = async ({
   blogId: string;
 }) => {
   const bookmarks = await getBookmarkedBlogs({ uid });
-  if (!bookmarks || bookmarks.length === 0 || !bookmarks[0].id) {
+  if (!bookmarks || bookmarks.length === 0 || !bookmarks[0]?.id) {
     return {
       error: "RECORD_NOT_UNIQUE",
       message: "ไม่สามารถยกเลิกบุคมาร์คได้เนื่องจากไม่มีบุคมาร์คนี้ในระบบ",
@@ -117,7 +117,7 @@ export const removeBookmark = async ({
     }),
   );
   console.warn("Deleting bookmark blog", existing[0]);
-  if (!existing || existing.length === 0 || !existing[0].id) {
+  if (!existing || existing.length === 0 || !existing[0]?.id) {
     return {
       error: "RECORD_NOT_UNIQUE",
       message: "ไม่สามารถยกเลิกบุคมาร์คได้เนื่องจากไม่มีบุคมาร์คนี้ในระบบ",

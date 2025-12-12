@@ -46,5 +46,5 @@ export async function getLegalBySlug(
   if (items.length === 0) {
     throw new Error("Legal not found");
   }
-  return items[0];
+  return items[0]!;
 }

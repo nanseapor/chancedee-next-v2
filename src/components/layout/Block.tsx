@@ -21,6 +21,7 @@ const Block = (props: Block) => {
       />
     );
   }
+  return null;
 };
 
 export default Block;

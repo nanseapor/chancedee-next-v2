@@ -109,7 +109,7 @@ export class MockResumeAgent {
       return this.createConfirmationResponse(progress);
     }
 
-    const currentSection = this.sections[currentSectionIndex];
+    const currentSection = this.sections[currentSectionIndex]!;
 
     // Validate form data (mock validation)
     const validation = this.validateFormData(currentSection, formData);

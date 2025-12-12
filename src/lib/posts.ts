@@ -71,7 +71,7 @@ export const getTotalPostCount = async () => {
       aggregate: { count: "*" },
     }),
   );
-  return totalCount[0].count;
+  return totalCount[0]!.count;
 };
 
 export async function getFeaturedPosts(
@@ -143,5 +143,5 @@ export async function getPostBySlug(
   if (items.length === 0) {
     throw new Error("Post not found");
   }
-  return items[0];
+  return items[0]!;
 }

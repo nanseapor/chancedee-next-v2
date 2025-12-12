@@ -10,7 +10,7 @@ import {
 
 export const subscribeNewsletter = async ({ email }: { email: string }) => {
   const existed = await getSubscriberByEmail(email);
-  if (existed.length > 0 && existed[0].id) {
+  if (existed.length > 0 && existed[0]?.id) {
     return updateCollectionItem("newsletter_subscribers", existed[0].id, {
       status: "subscribed",
       last_modified: new Date().toISOString(),

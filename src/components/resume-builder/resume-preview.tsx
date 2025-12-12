@@ -40,6 +40,7 @@ export function ResumePreview({
 
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [generatedResume, isOpen]);
 
   // Manage loading overlay visibility
@@ -47,6 +48,7 @@ export function ResumePreview({
     if (isGenerating) {
       setShowLoadingOverlay(true);
       setProgressComplete(false);
+      return undefined;
     } else {
       // Hide overlay when generation is complete
       const timer = setTimeout(() => {

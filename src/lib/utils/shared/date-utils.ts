@@ -13,7 +13,7 @@ export function convertLocalToUTC(date: Date, timeString: string): Date {
   const [hours, minutes] = timeString.split(":").map(Number);
 
   // Set the time in local timezone (UTC+7)
-  localDate.setHours(hours, minutes, 0, 0);
+  localDate.setHours(hours ?? 0, minutes ?? 0, 0, 0);
 
   // Convert from UTC+7 to UTC+0 by subtracting 7 hours
   const utcDate = new Date(localDate.getTime() - 7 * 60 * 60 * 1000);

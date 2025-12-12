@@ -20,7 +20,7 @@ export const webPocketsGetBatch = async (
   userIds.forEach(userId => {
     result[userId] = {} as Record<currency, pocketType | null>;
     currencies.forEach(currency => {
-      result[userId][currency] = null;
+      result[userId]![currency] = null;
     });
   });
 
@@ -70,7 +70,7 @@ export const webPocketsGetBatch = async (
 
       // Flatten results and assign to result object
       currencyResults.flat().forEach(({ userId, pocketData }) => {
-        result[userId][currency] = pocketData;
+        result[userId]![currency] = pocketData;
       });
     });
 

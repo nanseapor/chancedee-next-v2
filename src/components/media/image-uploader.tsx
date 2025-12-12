@@ -41,11 +41,13 @@ const ImageUploader = ({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSrc(reader.result as string);
-    };
-    reader.readAsDataURL(acceptedFiles[0]);
+    if (acceptedFiles[0]) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSrc(reader.result as string);
+      };
+      reader.readAsDataURL(acceptedFiles[0]);
+    }
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({

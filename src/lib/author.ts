@@ -46,7 +46,7 @@ export async function getAuthorBySlug(slug: string): Promise<Author | null> {
     }),
   );
   if (author.length > 0) {
-    return author[0];
+    return author[0]!;
   }
   return null;
 }

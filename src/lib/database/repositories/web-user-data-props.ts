@@ -99,7 +99,7 @@ export const getUserDataPropsByFilter = async (props?: {
   }
 
   // Find intersection: UIDs present in ALL sets
-  const userList = Array.from(uidSets[0]).filter(uid =>
+  const userList = Array.from(uidSets[0]!).filter(uid =>
     uidSets.every(set => set.has(uid))
   );
 
