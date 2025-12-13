@@ -31,18 +31,22 @@ describe("FCM Token Minimal Test", () => {
   it('should query fcm_tokens by fcm_token field (THE REAL TEST)', async () => {
     const existingTokenValue = "eyNQDmNcBzU5LLJbcKH64A:APA91bFEdqXP7UR5U3yl03uOMxQqd-RjZqIJdrB5ImjCszq4Sj0hDaJEFnrcuXlmvRz5dwrCQip1WDl7sItL3sE13-0VStSyt5fXGvH0t1Ifdsc9R4JZRfE";
 
-    // THIS IS THE ACTUAL FILTERED QUERY
-    const filteredQuery = getFirebaseAdminFirestore()
-      .collection("fcm_tokens")
-      .where("fcm_token", "==", existingTokenValue);
-
-    expect(filteredQuery, "Filtered query should be defined").toBeDefined();
-
-    // Execute the filtered query
-    const filteredResults = await filteredQuery.get();
-
-    expect(filteredResults, "Query results should be defined").toBeDefined();
-    expect(filteredResults.empty, "Should find at least one document").toBe(false);
-    console.log('✅ FILTERED query by fcm_token SUCCEEDED! Found:', filteredResults.docs.length, 'documents');
+    try {
+      // THIS IS THE ACTUAL FILTERED QUERY
+      const filteredQuery = getFirebaseAdminFirestore()
+        .collection("fcm_tokens")
+        .where("fcm_token", "==", existingTokenValue);
+        expect(filteredQuery, "Filtered query should be defined").toBeDefined();
+    
+        // Execute the filtered query
+        const filteredResults = await filteredQuery.get();
+    
+        expect(filteredResults, "Query results should be defined").toBeDefined();
+        expect(filteredResults.empty, "Should find at least one document").toBe(false);
+        console.log('✅ FILTERED query by fcm_token SUCCEEDED! Found:', filteredResults.docs.length, 'documents');
+    } catch (error) {
+      console.error("❌ ERROR constructing filtered query:", error);
+      throw error;
+    }
   }, 30000);
 });

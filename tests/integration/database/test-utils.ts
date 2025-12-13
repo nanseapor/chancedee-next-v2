@@ -5,7 +5,7 @@
  */
 
 import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
-import { Filter, QueryFilterConstraint } from "firebase-admin/firestore";
+import { Filter } from "firebase-admin/firestore";
 
 /**
  * Generate a unique test ID to avoid collisions
