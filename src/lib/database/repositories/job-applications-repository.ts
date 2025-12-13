@@ -211,9 +211,9 @@ export const jobApplicationsRepositoryCompat: IRepository<jobApplicationData> = 
     return result ? convertToLegacyJobApplicationData(result) : null;
   },
   
-  async getByFilter(filter?: Filter): Promise<jobApplicationData[] | null> {
+  async getByFilter(filter?: Filter): Promise<jobApplicationData[]> {
     const results = await jobApplicationsRepository.getByFilter(filter);
-    return results ? results.map(convertToLegacyJobApplicationData) : null;
+    return results ? results.map(convertToLegacyJobApplicationData) : [];
   },
   
   async create(model: jobApplicationData, actorId: string, id?: string): Promise<string> {

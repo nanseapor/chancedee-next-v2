@@ -118,28 +118,25 @@ export const consentRecordsRepositoryExtended = {
    * @returns Array of active consent records
    */
   async getActiveByUserId(userId: string): Promise<ConsentRecordAppType[]> {
-    const filter = {
-      where: [
-        ['user_id', '==', userId],
-        ['is_active', '==', true]
-      ]
-    };
+    const filter = Filter.and(
+      Filter.where('user_id', '==', userId),
+      Filter.where('is_active', '==', true)
+    );
     const result = await consentRecordsRepository.getByFilter(filter);
     return result || [];
   },
 
   /**
    * Get consent history for a user (all versions)
+   * Note: Firebase Admin SDK Filter doesn't support orderBy - ordering must be done in-memory
    * @param userId - User ID to get history for
-   * @returns Array of all consent records (active and inactive)
+   * @returns Array of all consent records (active and inactive), sorted by createdAt desc
    */
   async getHistoryByUserId(userId: string): Promise<ConsentRecordAppType[]> {
-    const filter = {
-      where: [['user_id', '==', userId]],
-      orderBy: [['created_at', 'desc']]
-    };
+    const filter = Filter.where('user_id', '==', userId);
     const result = await consentRecordsRepository.getByFilter(filter);
-    return result || [];
+    // Sort in memory by createdAt descending
+    return (result || []).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   },
 
   /**
@@ -148,18 +145,17 @@ export const consentRecordsRepositoryExtended = {
    * @returns Array of active consent records
    */
   async getActiveBySessionId(sessionId: string): Promise<ConsentRecordAppType[]> {
-    const filter = {
-      where: [
-        ['session_id', '==', sessionId],
-        ['is_active', '==', true]
-      ]
-    };
+    const filter = Filter.and(
+      Filter.where('session_id', '==', sessionId),
+      Filter.where('is_active', '==', true)
+    );
     const result = await consentRecordsRepository.getByFilter(filter);
     return result || [];
   },
 
   /**
    * Get latest active consent for user or session
+   * Note: Firebase Admin SDK Filter doesn't support orderBy or limit - done in-memory
    * @param userId - User ID (optional)
    * @param sessionId - Session ID (optional)
    * @returns Latest active consent record or null
@@ -169,22 +165,27 @@ export const consentRecordsRepositoryExtended = {
       throw new Error('Either userId or sessionId must be provided');
     }
 
-    const whereConditions: [string, '==' | '!=' | '<' | '<=' | '>' | '>=' | 'in' | 'not-in', any][] = [['is_active', '==', true]];
-    
+    let filter: Filter;
     if (userId) {
-      whereConditions.push(['user_id', '==', userId]);
-    } else if (sessionId) {
-      whereConditions.push(['session_id', '==', sessionId]);
+      filter = Filter.and(
+        Filter.where('user_id', '==', userId),
+        Filter.where('is_active', '==', true)
+      );
+    } else {
+      filter = Filter.and(
+        Filter.where('session_id', '==', sessionId!),
+        Filter.where('is_active', '==', true)
+      );
     }
 
-    const filter = {
-      where: whereConditions,
-      orderBy: [['created_at', 'desc']],
-      limit: 1
-    };
+    const results = await consentRecordsRepository.getByFilter(filter);
+    if (!results || results.length === 0) {
+      return null;
+    }
 
-    const results = await consentRecordsRepository.getByFilter(filter as Filter);
-    return (results && results.length > 0) ? results[0]! : null;
+    // Sort by createdAt descending and return first
+    const sorted = results.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    return sorted[0]!;
   },
 
   /**
@@ -195,17 +196,19 @@ export const consentRecordsRepositoryExtended = {
    * @param actorId - ID of the actor performing the action
    */
   async deactivateExisting(userId?: string, sessionId?: string, actorId: string = 'system'): Promise<void> {
-    const existing = userId 
+    const existing = userId
       ? await this.getActiveByUserId(userId)
-      : sessionId 
+      : sessionId
         ? await this.getActiveBySessionId(sessionId)
         : [];
 
-    const deactivatePromises = existing.map(record => 
+    const deactivatePromises = existing.map(record =>
       consentRecordsRepository.update(record.uid, {
+        ...record,
         isActive: false,
-        withdrawalDate: Date.now()
-      } as ConsentRecordAppType, actorId)
+        withdrawalDate: Date.now(),
+        updatedAt: Date.now()
+      }, actorId)
     );
 
     await Promise.all(deactivatePromises);

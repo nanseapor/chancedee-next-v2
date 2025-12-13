@@ -3,7 +3,7 @@ import "server-only";
 import { DocumentReference, Filter, Query, Timestamp } from "firebase-admin/firestore";
 
 import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
-import { wrapError, DocumentNotFoundError } from "../errors";
+import { wrapError } from "../errors";
 
 // Helper function to extract DocumentReference ID safely
 export function extractDocumentId(docRef: DocumentReference | string | undefined | null): string {
@@ -72,7 +72,7 @@ export async function getDocumentById<T>(collectionName: string, id: string): Pr
 export async function getDocumentsByFilter<T>(
   collectionName: string,
   filter?: Filter
-): Promise<T[]> {
+): Promise<T[] | null> {
   try {
     // Validate required parameters
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
@@ -82,21 +82,9 @@ export async function getDocumentsByFilter<T>(
     let query: Query = getFirebaseAdminFirestore().collection(collectionName);
 
     if (filter) {
-      console.log('\n=== FIREBASE QUERY DEBUG ===');
-      console.log('Collection:', collectionName);
-      console.log('Filter object:', filter);
-      console.log('Filter constructor:', filter.constructor.name);
-      console.log('Filter toString:', filter.toString ? filter.toString() : 'N/A');
 
-      // EXPERIMENT: Try extracting field/operator/value and using old-style where()
-      const filterObj = filter as any;
-      if (filterObj.field && filterObj.operator && 'value' in filterObj) {
-        console.log(`\n⚠️ EXPERIMENTAL: Using old-style where() instead of Filter API`);
-        console.log(`   Field: ${filterObj.field}, Operator: ${filterObj.operator}, Value:`, filterObj.value);
-        query = query.where(filterObj.field, filterObj.operator, filterObj.value);
-      } else {
-        query = query.where(filter);
-      }
+      // EXPERIMENT: Try extracting field/operator/value and using old-style where();
+      query = query.where(filter);
     }
 
     let snapshot;
@@ -117,7 +105,7 @@ export async function getDocumentsByFilter<T>(
     }
 
     if (snapshot.empty) {
-      return [];
+      return null;
     }
 
     return snapshot.docs.map(doc => ({

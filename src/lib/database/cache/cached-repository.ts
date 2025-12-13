@@ -52,7 +52,7 @@ export function createCachedRepository<T>(
       return result;
     },
 
-    async getByFilter(filter?: Filter): Promise<T[] | null> {
+    async getByFilter(filter?: Filter): Promise<T[]> {
       // Create a stable key from the filter
       const filterKey = filter ? JSON.stringify(filter) : 'all';
       const key = cacheKey(collectionName, 'getByFilter', filterKey);
@@ -66,9 +66,11 @@ export function createCachedRepository<T>(
 
       if (result !== null) {
         cache.set(key, result, getByFilterTtl);
+        return result;
       }
 
-      return result;
+      // Return empty array instead of null to match interface
+      return [];
     },
 
     async getByFilterPaginated(options?: QueryOptions): Promise<PaginatedResult<T>> {

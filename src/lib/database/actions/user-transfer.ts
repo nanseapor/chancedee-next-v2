@@ -1,67 +1,28 @@
 "use server";
-import { Filter, Query, Timestamp } from "firebase-admin/firestore";
 
-import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
+import { Filter } from "firebase-admin/firestore";
 import { userTransferProps } from "@/types/auth.types";
-
-import { FirebaseUserTransferType } from "../schemas/user-transfer.schema";
+import { userTransferRepository } from "../repositories/user-transfer-repository";
 
 const webUserTransferGetById = async (uid: string) => {
   try {
-    const UserTransferRef = getFirebaseAdminFirestore()
-      .collection("user_accounts")
-      .doc(uid);
-    const UserTransferSnap = await UserTransferRef.get();
-    if (UserTransferSnap.exists) {
-      const firebaseUserTransfer =
-        UserTransferSnap.data() as FirebaseUserTransferType;
-      const data: userTransferProps = {
-        uid: UserTransferRef.id,
-        targetCompany: firebaseUserTransfer.target_company || "",
-        requestTimestamp:
-          firebaseUserTransfer.request_timestamp?.toMillis() || Date.now(),
-        transferApproved: firebaseUserTransfer.transfer_approved || false
-};
-      return data;
-    } else {
-      return null;
-    }
+    return await userTransferRepository.getById(uid);
   } catch (e) {
     const error = e as Error;
-    console.error("Read user_accounts transfer error as", e)
+    console.error("Read user_accounts transfer error:", error);
     throw error;
   }
-}
+};
 
 const webUserTransferGetByFilter = async (filter?: Filter) => {
   try {
-    const UserTransferRef =
-      getFirebaseAdminFirestore().collection("user_accounts");
-    let UserTransferQuery = UserTransferRef as Query;
-    if (filter) UserTransferQuery = UserTransferRef.where(filter);
-    const UserTransferSnap = await UserTransferQuery.get();
-    if (!UserTransferSnap.empty) {
-      const lists = UserTransferSnap.docs.map((doc) => {
-        const firebaseUserTransfer = doc.data() as FirebaseUserTransferType;
-        const data: userTransferProps = {
-          uid: doc.id,
-          targetCompany: firebaseUserTransfer.target_company || "",
-          requestTimestamp:
-            firebaseUserTransfer.request_timestamp?.toMillis() || Date.now(),
-          transferApproved: firebaseUserTransfer.transfer_approved || false
-};
-        return data;
-      });
-      return lists;
-    } else {
-      return null;
-    }
+    return await userTransferRepository.getByFilter(filter);
   } catch (e) {
     const error = e as Error;
-    console.error("Read user_accounts transfer error as", e)
+    console.error("Read user_accounts transfer by filter error:", error);
     throw error;
   }
-}
+};
 
 const webUserTransferCreate = async (
   payload: userTransferProps,
@@ -69,27 +30,12 @@ const webUserTransferCreate = async (
   uid?: string
 ) => {
   try {
-    const UserTransferRef = uid
-      ? getFirebaseAdminFirestore().collection("user_accounts").doc(uid)
-      : getFirebaseAdminFirestore().collection("user_accounts").doc();
-
-    const dataToWrite: FirebaseUserTransferType = {
-      uid: payload.uid,
-      target_company: payload.targetCompany,
-      request_timestamp: Timestamp.fromMillis(payload.requestTimestamp),
-      transfer_approved: payload.transferApproved,
-      created_by: actorId,
-      created_at: Timestamp.now(),
-      updated_by: actorId,
-      updated_at: Timestamp.now()
-};
-    await UserTransferRef.set(dataToWrite, { merge: true });
-    return UserTransferRef.id;
+    return await userTransferRepository.create(payload, actorId, uid);
   } catch (e) {
     const error = e as Error;
     throw error;
   }
-}
+};
 
 const webUserTransferUpdate = async (
   payload: userTransferProps,
@@ -97,22 +43,7 @@ const webUserTransferUpdate = async (
   uid: string
 ) => {
   try {
-    const UserTransferRef = getFirebaseAdminFirestore()
-      .collection("user_accounts")
-      .doc(uid);
-    const prevDataSnap = await UserTransferRef.get();
-    const dataToWrite: FirebaseUserTransferType = {
-      uid: payload.uid,
-      target_company: payload.targetCompany,
-      request_timestamp: Timestamp.fromMillis(payload.requestTimestamp),
-      transfer_approved: payload.transferApproved,
-      created_by: prevDataSnap.data()?.created_by || actorId,
-      created_at: prevDataSnap.createTime || Timestamp.now(),
-      updated_by: actorId,
-      updated_at: Timestamp.now()
-};
-    await UserTransferRef.set(dataToWrite, { merge: true });
-    return UserTransferRef.id;
+    return await userTransferRepository.update(uid, payload, actorId);
   } catch (e) {
     const error = e as Error;
     throw error;

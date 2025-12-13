@@ -204,6 +204,12 @@ export const RATE_LIMIT_CONFIGS = {
     windowMs: 60 * 60 * 1000, // 1 hour
   },
 
+  // Email existence check: 10 attempts per 5 minutes
+  EMAIL_CHECK: {
+    maxAttempts: 10,
+    windowMs: 5 * 60 * 1000, // 5 minutes
+  },
+
   // Account creation: 3 attempts per hour per IP
   ACCOUNT_CREATION: {
     maxAttempts: 3,

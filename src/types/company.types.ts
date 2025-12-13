@@ -38,7 +38,7 @@ export interface FirebaseCompanyData extends IBaseDatabaseInterface {
   coverPhoto?: string;
   profilePhoto?: string;
   videoLink?: string;
-  companySize?: string;
+  companySize?: "S" | "M" | "L";
   travelMode?: string;
   travelStation?: string;
   benefitsDetails?: string;
@@ -85,7 +85,7 @@ export interface companyDataProps extends IBaseDatabaseInterface {
   coverPhoto?: string;
   profilePhoto?: string;
   videoLink?: string;
-  companySize?: string;
+  companySize?: "S" | "M" | "L";
   contact?: contact;
   benefitsDetails?: string;
   travelMode?: string;

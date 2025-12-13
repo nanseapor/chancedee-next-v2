@@ -51,10 +51,9 @@ const webJobApplicationGetById = async (uid: string) => {
 const webJobApplicationGetByFilter = async (filter?: Filter) => {
   try {
     const applications = await jobApplicationsRepository.getByFilter(filter);
-    if (!applications) {
-      // console.warn("webJobApplicationGetByFilter is empty");
+    if (!applications || applications.length === 0) {
       // If no applications found, return empty array instead of null
-      return null;
+      return [];
     }
     
     // Fetch job titles for all applications in parallel

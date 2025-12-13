@@ -100,3 +100,59 @@ export async function logout() {
     return { success: false, error: String(error) };
   }
 }
+
+/**
+ * Refresh session cookie
+ * Per AUTH-R00 Session Renewal System
+ *
+ * Called by useSessionRenewal hook when session is approaching expiry
+ * Extends session by creating a new session cookie from the current one
+ *
+ * @returns Success status
+ */
+export async function refreshSession(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+
+    if (!sessionCookie) {
+      return { success: false, error: "NO_SESSION" };
+    }
+
+    // Verify current session is valid
+    const auth = getFirebaseAdminAuth();
+    const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+
+    if (!decodedToken) {
+      return { success: false, error: "INVALID_SESSION" };
+    }
+
+    // Create new session cookie with fresh expiry
+    const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+    const newSessionCookie = await auth.createSessionCookie(sessionCookie, {
+      expiresIn,
+    });
+
+    const domain =
+      process.env.NODE_ENV === "production" ? ".chancedee.com" : undefined;
+
+    // Set new session cookie
+    cookieStore.set("session", newSessionCookie, {
+      maxAge: expiresIn,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      domain,
+      sameSite: "strict",
+    });
+
+    console.log("[Session] Session refreshed successfully for uid:", decodedToken.uid);
+    return { success: true };
+  } catch (error) {
+    console.error("[Session] Failed to refresh session:", error);
+    return { success: false, error: "REFRESH_FAILED" };
+  }
+}

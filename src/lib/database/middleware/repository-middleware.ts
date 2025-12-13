@@ -90,7 +90,7 @@ export function withMiddleware<T>(
       }
     },
 
-    async getByFilter(filter?: Filter): Promise<T[] | null> {
+    async getByFilter(filter?: Filter): Promise<T[]> {
       const context = createContext('read', { filter });
 
       try {
@@ -104,7 +104,7 @@ export function withMiddleware<T>(
           await hooks.afterRead(context, result);
         }
 
-        return result;
+        return result || [];
       } catch (error) {
         if (hooks.onError) {
           await hooks.onError(context, error as Error);

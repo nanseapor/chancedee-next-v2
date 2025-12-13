@@ -43,3 +43,20 @@ export const sessionStateAtom = atom<SessionState>("loading");
  * Populated after successful authentication
  */
 export const authenticatedUserIdAtom = atom<string | null>(null);
+
+/**
+ * Global authentication error
+ * Per AUTH-R00 §4
+ *
+ * Used for:
+ * - Session expiry modals (can happen on any page)
+ * - OTP errors during registration
+ * - API call failures across routes
+ */
+export interface AuthError {
+  code: string;
+  message: string; // Thai error message
+  recoveryAction?: "retry" | "wait" | "login" | "contact";
+}
+
+export const authErrorAtom = atom<AuthError | null>(null);

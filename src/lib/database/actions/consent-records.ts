@@ -72,7 +72,21 @@ const webConsentRecordUpdate = async (
   actorId: string
 ): Promise<string> => {
   try {
-    return await consentRecordsRepository.update(uid, payload as ConsentRecordAppType, actorId);
+    // Fetch existing record to merge with partial update
+    const existing = await consentRecordsRepository.getById(uid);
+    if (!existing) {
+      throw new Error(`Consent record with ID ${uid} not found`);
+    }
+
+    // Merge existing record with partial update
+    const updated: ConsentRecordAppType = {
+      ...existing,
+      ...payload,
+      uid, // Ensure uid is preserved
+      updatedAt: Date.now(), // Update timestamp
+    };
+
+    return await consentRecordsRepository.update(uid, updated, actorId);
   } catch (e) {
     const error = e as Error;
     console.error('Failed to update consent record:', error.message);
