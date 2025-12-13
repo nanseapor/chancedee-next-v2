@@ -17,6 +17,15 @@ if (fs.existsSync(envLocalPath)) {
   console.warn("⚠️  .env.local file not found at:", envLocalPath);
 }
 
+// Load test credentials from .env.playwright
+const envPlaywrightPath = path.resolve(process.cwd(), ".env.playwright");
+if (fs.existsSync(envPlaywrightPath)) {
+  dotenv.config({ path: envPlaywrightPath });
+  console.log("🎭 Loaded test credentials from .env.playwright");
+} else {
+  console.warn("⚠️  .env.playwright file not found - some tests may be skipped");
+}
+
 beforeAll(() => {
   const requiredEnvVars = [
     "FIREBASE_ADMIN_PROJECT_ID",

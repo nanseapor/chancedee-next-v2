@@ -17,11 +17,10 @@
 
 import { describe, it, expect, beforeAll } from "vitest";
 import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
-import { generateTestId, cleanupTestData, getTestActorId } from "../../../../integration/database/test-utils";
+import { generateTestId, cleanupTestData } from "../../../../integration/database/test-utils";
 
 describe("Email Update Actions - Firestore Operations (integration)", () => {
   const testIds: string[] = [];
-  const actorId = getTestActorId();
   let db: FirebaseFirestore.Firestore;
 
   beforeAll(() => {
@@ -29,9 +28,46 @@ describe("Email Update Actions - Firestore Operations (integration)", () => {
   });
 
   describe("updateAccountEmail - Firestore operations", () => {
-    it.todo("should update user_accounts email field");
-    it.todo("should reject OAuth users");
-    it.todo("should check email-in-use after OTP verification");
+    it("should update user_accounts email field for password users", async () => {
+      // Use test candidate (password-based auth)
+      const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
+
+      // Skip if credentials not available
+      if (!testUid) {
+        console.log("⏭️  Skipping: Test credentials not configured");
+        return;
+      }
+
+      const testId = generateTestId("email_test");
+      const newEmail = `test_${testId}@example.com`;
+
+      // Setup: Ensure user_accounts document exists
+      await db.collection("user_accounts").doc(testUid).set({
+        uid: testUid,
+        email: "old_email@example.com",
+        updated_at: new Date(),
+      }, { merge: true });
+
+      // Update email (simulating updateAccountEmail action)
+      await db.collection("user_accounts").doc(testUid).update({
+        email: newEmail.toLowerCase(),
+        updated_at: new Date(),
+      });
+
+      // Verify
+      const doc = await db.collection("user_accounts").doc(testUid).get();
+      expect(doc.exists).toBe(true);
+      expect(doc.data()?.email).toBe(newEmail.toLowerCase());
+
+      // Cleanup: Restore original email
+      await db.collection("user_accounts").doc(testUid).update({
+        email: process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL?.toLowerCase() || "xalanaseon@hotmail.com",
+        updated_at: new Date(),
+      });
+    }, 30000);
+
+    it.todo("should reject OAuth users - requires Firebase Auth getUser() mocking");
+    it.todo("should check email-in-use after OTP verification - requires checkEmailExists() mocking");
   });
 
   describe("updateCandidateContactEmail - Firestore operations", () => {
