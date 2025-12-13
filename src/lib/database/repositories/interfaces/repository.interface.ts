@@ -49,7 +49,7 @@ export interface IRepository<T> {
   /**
    * Get documents by filter (legacy, returns all matches)
    */
-  getByFilter(filter?: Filter): Promise<T[] | null>;
+  getByFilter(filter?: Filter): Promise<T[]>;
 
   /**
    * Get documents with pagination support

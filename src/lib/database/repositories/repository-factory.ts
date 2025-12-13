@@ -45,11 +45,11 @@ export function createRepository<T, F>(
     },
 
     // Get by filter
-    async getByFilter(filter?: Filter): Promise<T[] | null> {
+    async getByFilter(filter?: Filter): Promise<T[]> {
       const firebaseModels = await getDocumentsByFilter<F>(collectionName, filter);
 
-      if (!firebaseModels) {
-        return null;
+      if (!firebaseModels || firebaseModels.length === 0) {
+        return [];
       }
 
       return firebaseModels.map(model =>

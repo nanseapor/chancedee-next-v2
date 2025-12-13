@@ -4,6 +4,15 @@ import { Filter } from "firebase-admin/firestore";
 
 import { fcmTokenRepository, FCMToken } from "../repositories/fcm-token-repository";
 
+const webFCMTokenGetById = async (uid: string) => {
+  try {
+    return await fcmTokenRepository.getById(uid);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 const webFCMTokenGetByFilter = async (filter?: Filter) => {
   try {
     return await fcmTokenRepository.getByFilter(filter);
@@ -69,6 +78,7 @@ const webFCMTokenDeleteByToken = async (fcmToken: string) => {
 export {
   webFCMTokenCreate,
   webFCMTokenDeleteByToken,
+  webFCMTokenGetById,
   webFCMTokenGetByFilter,
   webFCMTokenUpdate
 };

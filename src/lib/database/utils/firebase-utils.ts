@@ -72,7 +72,7 @@ export async function getDocumentById<T>(collectionName: string, id: string): Pr
 export async function getDocumentsByFilter<T>(
   collectionName: string,
   filter?: Filter
-): Promise<T[] | null> {
+): Promise<T[]> {
   try {
     // Validate required parameters
     if (!collectionName || typeof collectionName !== 'string' || collectionName.trim() === '') {
@@ -82,13 +82,42 @@ export async function getDocumentsByFilter<T>(
     let query: Query = getFirebaseAdminFirestore().collection(collectionName);
 
     if (filter) {
-      query = query.where(filter);
+      console.log('\n=== FIREBASE QUERY DEBUG ===');
+      console.log('Collection:', collectionName);
+      console.log('Filter object:', filter);
+      console.log('Filter constructor:', filter.constructor.name);
+      console.log('Filter toString:', filter.toString ? filter.toString() : 'N/A');
+
+      // EXPERIMENT: Try extracting field/operator/value and using old-style where()
+      const filterObj = filter as any;
+      if (filterObj.field && filterObj.operator && 'value' in filterObj) {
+        console.log(`\n⚠️ EXPERIMENTAL: Using old-style where() instead of Filter API`);
+        console.log(`   Field: ${filterObj.field}, Operator: ${filterObj.operator}, Value:`, filterObj.value);
+        query = query.where(filterObj.field, filterObj.operator, filterObj.value);
+      } else {
+        query = query.where(filter);
+      }
     }
 
-    const snapshot = await query.get();
+    let snapshot;
+    try {
+      snapshot = await query.get();
+    } catch (queryError: any) {
+      // Log the raw Firestore error without modification
+      console.error('\n=== FIRESTORE QUERY ERROR ===');
+      console.error('Collection:', collectionName);
+      console.error('Error message:', queryError.message);
+      console.error('Error code:', queryError.code);
+      console.error('Error details:', queryError.details);
+      console.error('Has metadata?', !!queryError.metadata);
+      if (queryError.metadata) {
+        console.error('Metadata internalRepr:', queryError.metadata.internalRepr);
+      }
+      throw queryError;
+    }
 
     if (snapshot.empty) {
-      return null;
+      return [];
     }
 
     return snapshot.docs.map(doc => ({
@@ -226,6 +255,12 @@ export async function deleteDocument(
 }
 
 // Generic delete by filter function
+// IMPORTANT: This function handles two types of fields:
+// 1. DocumentReference fields (e.g., created_by, updated_by) - value is converted to user_accounts DocumentReference
+// 2. String fields (e.g., fcm_token, email) - value is used directly as a string
+//
+// By convention, fields ending with '_by' are assumed to be DocumentReference fields.
+// All other fields are treated as string fields.
 export async function deleteDocumentsByFilter(
   collectionName: string,
   field: string,
@@ -245,8 +280,20 @@ export async function deleteDocumentsByFilter(
       throw new Error(`Invalid value: ${value}. Value must be a non-empty string.`);
     }
 
-    const actorRef = getFirebaseAdminFirestore().collection("user_accounts").doc(value);
-    const query = getFirebaseAdminFirestore().collection(collectionName).where(field, "==", actorRef);
+    // Determine if this is a DocumentReference field or a string field
+    // Convention: fields ending with '_by' are DocumentReference fields pointing to user_accounts
+    const isDocumentRefField = field.endsWith('_by');
+
+    let query;
+    if (isDocumentRefField) {
+      // For DocumentReference fields (created_by, updated_by), convert value to DocumentReference
+      const actorRef = getFirebaseAdminFirestore().collection("user_accounts").doc(value);
+      query = getFirebaseAdminFirestore().collection(collectionName).where(field, "==", actorRef);
+    } else {
+      // For string fields (fcm_token, email, etc.), use value directly
+      query = getFirebaseAdminFirestore().collection(collectionName).where(field, "==", value);
+    }
+
     const snapshot = await query.get();
 
     const deletePromises = snapshot.docs.map(doc => doc.ref.delete());

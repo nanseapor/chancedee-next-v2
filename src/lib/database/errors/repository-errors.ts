@@ -216,5 +216,12 @@ export function wrapError(
   }
 
   const cause = error instanceof Error ? error : new Error(String(error));
+
+  // For FAILED_PRECONDITION errors, just re-throw the original error without wrapping
+  // This allows the full Firestore error (with index URL if available) to propagate
+  if (cause.message.includes('FAILED_PRECONDITION')) {
+    throw cause;
+  }
+
   return new RepositoryError(cause.message, collection, operation, documentId, cause);
 }
