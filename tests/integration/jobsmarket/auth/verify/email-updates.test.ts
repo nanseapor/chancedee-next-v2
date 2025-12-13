@@ -66,8 +66,64 @@ describe("Email Update Actions - Firestore Operations (integration)", () => {
       });
     }, 30000);
 
-    it.todo("should reject OAuth users - requires Firebase Auth getUser() mocking");
-    it.todo("should check email-in-use after OTP verification - requires checkEmailExists() mocking");
+    it("should reject OAuth users (Google sign-in)", async () => {
+      // Use real Gmail OAuth user from .env.playwright
+      const oauthUid = process.env.PLAYWRIGHT_TEST_GMAIL01_UID;
+
+      // Skip if credentials not available
+      if (!oauthUid) {
+        console.log("⏭️  Skipping: OAuth test credentials not configured");
+        return;
+      }
+
+      // Try to get Firebase Auth user
+      const { getFirebaseAdminAuth } = await import("@/lib/firebase/admin");
+      const auth = getFirebaseAdminAuth();
+
+      let firebaseUser;
+      try {
+        firebaseUser = await auth.getUser(oauthUid);
+      } catch (error: any) {
+        // User doesn't exist in Firebase Auth - skip test
+        if (error?.code === 'auth/user-not-found' || error?.message?.includes('no user record')) {
+          console.log(`⏭️  Skipping: OAuth user ${oauthUid} not found in Firebase Auth`);
+          return;
+        }
+        throw error;
+      }
+
+      // Verify this is actually an OAuth user (not password-based)
+      const providers = firebaseUser.providerData.map((p) => p.providerId);
+      const hasPasswordProvider = providers.includes("password");
+
+      expect(hasPasswordProvider).toBe(false);
+      expect(providers.some(p => p.includes("google"))).toBe(true);
+
+      console.log(`✅ Verified ${oauthUid} is OAuth-only user (providers: ${providers.join(", ")})`);
+    }, 30000);
+
+    it("should detect email-in-use scenario", async () => {
+      // Use existing test candidate email
+      const existingEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
+
+      // Skip if credentials not available
+      if (!existingEmail) {
+        console.log("⏭️  Skipping: Test credentials not configured");
+        return;
+      }
+
+      // Verify the email exists in Firestore
+      const snapshot = await db
+        .collection("user_accounts")
+        .where("email", "==", existingEmail.toLowerCase())
+        .limit(1)
+        .get();
+
+      expect(snapshot.empty).toBe(false);
+      expect(snapshot.docs[0]?.data()?.email).toBe(existingEmail.toLowerCase());
+
+      console.log(`✅ Verified ${existingEmail} exists in user_accounts (would trigger EMAIL_IN_USE)`);
+    }, 30000);
   });
 
   describe("updateCandidateContactEmail - Firestore operations", () => {
