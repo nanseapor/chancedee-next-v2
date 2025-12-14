@@ -11,7 +11,7 @@ import path from "path";
  */
 export default defineConfig({
   test: {
-    environment: "node", // Node environment for Firebase Admin SDK
+    environment: "jsdom", // jsdom environment for React component tests
     globals: true,
     setupFiles: ["./vitest.setup.ts", "./tests/integration/setup.ts"],
     include: ["tests/integration/**/*.test.{ts,tsx}"],
