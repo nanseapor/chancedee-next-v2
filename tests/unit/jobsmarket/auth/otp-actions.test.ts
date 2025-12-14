@@ -417,4 +417,83 @@ describe("OTP Actions", () => {
       expect(result.refCode).toMatch(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{10}$/);
     });
   });
+
+  describe("Security - Constant Time Comparison", () => {
+    it("should reject OTP codes with different lengths (timing attack prevention)", async () => {
+      const mockRefCode = "ABC123XYZ9";
+      const correctOTP = "123456";
+      const wrongLengthOTP = "12345"; // 5 digits instead of 6
+
+      const mockOTPRecord: FirebaseOTPData = {
+        uid: mockRefCode,
+        email: "test@example.com",
+        otpCode: correctOTP,
+        createdAt: Date.now() - 60000, // 1 minute ago
+        expiresAt: Date.now() + 240000, // 4 minutes remaining
+        used: false,
+        usedAt: null,
+        createdBy: "system",
+      };
+
+      vi.mocked(webOTPCodesGetById).mockResolvedValue(mockOTPRecord);
+      vi.mocked(webOTPCodesUpdate).mockResolvedValue(undefined);
+
+      const result = await verifyOTPCode({
+        refCode: mockRefCode,
+        otpCode: wrongLengthOTP, // Different length
+      });
+
+      // Should fail due to length mismatch
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("รหัส OTP ไม่ถูกต้อง");
+
+      // Should NOT mark OTP as used (failed verification)
+      expect(vi.mocked(webOTPCodesUpdate)).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("Error Recovery - Invalidation Failures", () => {
+    it("should continue sending OTP even if invalidating old OTPs fails", async () => {
+      const mockEmail = "test@example.com";
+
+      // Mock existing OTP that will fail to invalidate
+      const existingOTP: FirebaseOTPData = {
+        uid: "OLD123",
+        email: mockEmail,
+        otpCode: "999999",
+        createdAt: Date.now() - 120000,
+        expiresAt: Date.now() + 180000,
+        used: false,
+        usedAt: null,
+        createdBy: "system",
+      };
+
+      vi.mocked(webOTPCodesGetByFilter).mockResolvedValue([existingOTP]);
+
+      // Make updateOTPRecord throw during invalidation
+      vi.mocked(webOTPCodesUpdate).mockRejectedValueOnce(
+        new Error("Firestore update failed")
+      );
+
+      // But allow create to succeed
+      vi.mocked(webOTPCodesCreate).mockResolvedValue(undefined);
+      vi.mocked(client.send).mockResolvedValue([
+        { statusCode: 202, body: {}, headers: {} },
+        {},
+      ]);
+
+      // Should still succeed despite invalidation failure
+      const result = await sendVerificationOTPEmail({ email: mockEmail });
+
+      expect(result.success).toBe(true);
+      expect(result.refCode).toBeTruthy();
+
+      // Should have tried to invalidate (and failed)
+      expect(vi.mocked(webOTPCodesUpdate)).toHaveBeenCalledTimes(1);
+
+      // Should have created new OTP anyway
+      expect(vi.mocked(webOTPCodesCreate)).toHaveBeenCalled();
+      expect(vi.mocked(client.send)).toHaveBeenCalled();
+    });
+  });
 });

@@ -238,14 +238,8 @@ export function getThaiErrorMessage(code: string): ThaiErrorMessage {
     return AUTH_ERROR_MESSAGES[appCode];
   }
 
-  // Default unknown error
-  return (
-    AUTH_ERROR_MESSAGES.UNKNOWN_ERROR || {
-      code: "UNKNOWN_ERROR",
-      message: "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ",
-      recoveryAction: "retry" as const,
-    }
-  );
+  // Default unknown error (always defined in AUTH_ERROR_MESSAGES)
+  return AUTH_ERROR_MESSAGES.UNKNOWN_ERROR!;
 }
 
 /**
