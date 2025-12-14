@@ -26,12 +26,11 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      // Find tabs by their text content (tabs have both Thai and English)
-      expect(screen.getByText("บัญชี")).toBeInTheDocument();
-      expect(screen.getByText("รหัสผ่าน")).toBeInTheDocument();
-      expect(screen.getByText("การแจ้งเตือน")).toBeInTheDocument();
-      expect(screen.getByText("ความเป็นส่วนตัว")).toBeInTheDocument();
-      expect(screen.getByText("ลบบัญชี")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /บัญชี/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /รหัสผ่าน/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /การแจ้งเตือน/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /ความเป็นส่วนตัว/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /ลบบัญชี/i })).toBeInTheDocument();
     });
 
     it("should render English labels for all tabs", () => {
@@ -61,11 +60,11 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      expect(screen.getByText("บัญชี")).toBeInTheDocument();
-      expect(screen.getByText("รหัสผ่าน")).toBeInTheDocument();
-      expect(screen.queryByText("การแจ้งเตือน")).not.toBeInTheDocument();
-      expect(screen.getByText("ความเป็นส่วนตัว")).toBeInTheDocument();
-      expect(screen.getByText("ลบบัญชี")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /บัญชี/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /รหัสผ่าน/i })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /การแจ้งเตือน/i })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /ความเป็นส่วนตัว/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /ลบบัญชี/i })).toBeInTheDocument();
     });
 
     it("should render only 4 tabs when isPending is true", () => {
@@ -92,7 +91,7 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      const accountTab = screen.getByText("บัญชี").closest("button");
+      const accountTab = screen.getByRole("button", { name: /บัญชี/i });
       expect(accountTab).toHaveClass("border-primary", "text-primary");
     });
 
@@ -105,7 +104,7 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      const passwordTab = screen.getByText("รหัสผ่าน").closest("button");
+      const passwordTab = screen.getByRole("button", { name: /รหัสผ่าน/i });
       expect(passwordTab).toHaveClass("border-primary", "text-primary");
     });
 
@@ -118,7 +117,7 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      const passwordTab = screen.getByText("รหัสผ่าน").closest("button");
+      const passwordTab = screen.getByRole("button", { name: /รหัสผ่าน/i });
       expect(passwordTab).toHaveClass("border-transparent", "text-muted-foreground");
     });
   });
@@ -135,7 +134,7 @@ describe("SettingsTabs Component", () => {
         />
       );
 
-      const accountTab = screen.getByText("บัญชี").closest("button")!;
+      const accountTab = screen.getByRole("button", { name: /บัญชี/i });
       await user.click(accountTab);
 
       expect(mockOnTabChange).toHaveBeenCalledWith("account");

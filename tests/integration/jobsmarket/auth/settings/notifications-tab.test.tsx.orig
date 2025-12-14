@@ -99,9 +99,8 @@ describe("NotificationsTab Component", () => {
       render(<NotificationsTab />);
 
       expect(screen.getByText("งานที่แนะนำ")).toBeInTheDocument();
-      // These appear in both email and push sections, so use getAllByText
-      expect(screen.getAllByText("อัปเดตใบสมัคร").length).toBeGreaterThanOrEqual(2);
-      expect(screen.getAllByText("การนัดสัมภาษณ์").length).toBeGreaterThanOrEqual(2);
+      expect(screen.getByText("อัปเดตใบสมัคร")).toBeInTheDocument();
+      expect(screen.getByText("การนัดสัมภาษณ์")).toBeInTheDocument();
       expect(screen.getByText("สรุปรายสัปดาห์")).toBeInTheDocument();
       expect(screen.getByText("ข่าวสารและโปรโมชั่น")).toBeInTheDocument();
     });

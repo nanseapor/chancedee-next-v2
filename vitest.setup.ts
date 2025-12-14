@@ -9,3 +9,10 @@ afterEach(() => {
 
 // Extend Vitest matchers with jest-dom
 expect.extend({});
+
+// Add ResizeObserver polyfill for jsdom
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};

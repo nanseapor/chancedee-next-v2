@@ -123,9 +123,7 @@ describe("AccountTab Component", () => {
 
       render(<AccountTab />);
 
-      // Should have อีเมล in both heading and badge
-      const emailTexts = screen.getAllByText("อีเมล");
-      expect(emailTexts.length).toBeGreaterThan(0);
+      expect(screen.getByText("อีเมล")).toBeInTheDocument();
     });
 
     it("should display Google badge for Google provider", () => {
@@ -149,9 +147,7 @@ describe("AccountTab Component", () => {
 
       render(<AccountTab />);
 
-      // Should have Google in provider section
-      const googleTexts = screen.getAllByText("Google");
-      expect(googleTexts.length).toBeGreaterThan(0);
+      expect(screen.getByText("Google")).toBeInTheDocument();
     });
 
     it("should display Facebook badge for Facebook provider", () => {
@@ -175,9 +171,7 @@ describe("AccountTab Component", () => {
 
       render(<AccountTab />);
 
-      // Should have Facebook in provider section
-      const facebookTexts = screen.getAllByText("Facebook");
-      expect(facebookTexts.length).toBeGreaterThan(0);
+      expect(screen.getByText("Facebook")).toBeInTheDocument();
     });
   });
 
@@ -233,10 +227,8 @@ describe("AccountTab Component", () => {
 
       render(<AccountTab />);
 
-      // Password provider is connected, so badge should say "เชื่อมต่อแล้ว"
-      expect(screen.getByText("อีเมล/รหัสผ่าน")).toBeInTheDocument();
-      // Check that at least one badge says connected
-      expect(screen.getAllByText("เชื่อมต่อแล้ว").length).toBeGreaterThan(0);
+      const passwordRow = screen.getByText("อีเมล/รหัสผ่าน").closest("div");
+      expect(within(passwordRow!).getByText("เชื่อมต่อแล้ว")).toBeInTheDocument();
     });
 
     it("should show ไม่ได้เชื่อมต่อ badge for disconnected providers", () => {
@@ -260,10 +252,11 @@ describe("AccountTab Component", () => {
 
       render(<AccountTab />);
 
-      // Google and Facebook are not connected
-      expect(screen.getByText("Google")).toBeInTheDocument();
-      expect(screen.getByText("Facebook")).toBeInTheDocument();
-      expect(screen.getAllByText("ไม่ได้เชื่อมต่อ").length).toBeGreaterThanOrEqual(2);
+      const googleRow = screen.getByText("Google").closest("div");
+      const facebookRow = screen.getByText("Facebook").closest("div");
+
+      expect(within(googleRow!).getByText("ไม่ได้เชื่อมต่อ")).toBeInTheDocument();
+      expect(within(facebookRow!).getByText("ไม่ได้เชื่อมต่อ")).toBeInTheDocument();
     });
   });
 
