@@ -4,7 +4,7 @@
  */
 
 import type { ClientConversationManager } from "@/lib/client-conversation-manager";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 
 interface ResumeGenerationResult {
@@ -114,7 +114,9 @@ export function useResumeGeneration(
   const optionsRef = useRef(options);
 
   // Update options ref when options change
-  optionsRef.current = options;
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   // Generate SWR key based on conversation state
   const messageCount =
