@@ -57,6 +57,7 @@ export type userInfoProps = {
   currentStep?: number;
   currentStepName?: string;
   remark?: string;
+  isOnboarded?: boolean;
 };
 
 export type userTransferProps = {

@@ -115,11 +115,43 @@ const removeRoleFromUser = async (uid: string, roleId: string) => {
   }
 };
 
+/**
+ * CAND-R02: Set isOnboarded flag in user_info
+ * Sets is_onboarded to true in user_accounts collection
+ */
+const webUserInfoSetIsOnboarded = async (
+  uid: string,
+  value: boolean,
+  actorId: string
+) => {
+  try {
+    // Get existing user info
+    const existing = await userInfoRepository.getById(uid);
+
+    if (!existing) {
+      throw new Error("User info not found");
+    }
+
+    // Merge with existing data
+    const payload: userInfoProps = {
+      ...existing,
+      isOnboarded: value,
+    };
+
+    return await userInfoRepository.update(uid, payload, actorId);
+  } catch (e) {
+    const error = e as Error;
+    console.error("Error setting isOnboarded:", error);
+    throw error;
+  }
+};
+
 export {
   addRoleToUser,
   removeRoleFromUser,
   webUserInfoCreate,
   webUserInfoGetByFilter,
   webUserInfoGetById,
-  webUserInfoUpdate
+  webUserInfoUpdate,
+  webUserInfoSetIsOnboarded,
 };

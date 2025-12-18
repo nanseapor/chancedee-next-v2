@@ -24,6 +24,7 @@ function transformToAppModel(
     currentStep: firebaseModel.current_step,
     currentStepName: firebaseModel.current_step_name,
     remark: firebaseModel.remark,
+    isOnboarded: firebaseModel.is_onboarded,
   };
 }
 
@@ -48,6 +49,7 @@ function transformToFirebaseModel(
     current_step: appModel.currentStep,
     current_step_name: appModel.currentStepName,
     remark: appModel.remark,
+    is_onboarded: appModel.isOnboarded,
   };
 }
 

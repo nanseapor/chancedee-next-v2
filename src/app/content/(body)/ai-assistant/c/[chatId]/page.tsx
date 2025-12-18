@@ -111,16 +111,6 @@ export default function ChatPage({ params }: ChatPageProps) {
     "idle" | "uploading" | "success" | "error"
   >("idle");
 
-  useEffect(() => {
-    const urlPrompt = searchParams.get("prompt");
-    if (urlPrompt) {
-      initializeChat(urlPrompt);
-    } else {
-      // Load mock chat history if no prompt
-      initializeMockChatHistory();
-    }
-  }, [searchParams]);
-
   const initializeMockChatHistory = () => {
     const mockHistory: ChatMessage[] = [
       // 1. User message - completed (normal state)
@@ -702,6 +692,16 @@ export default function ChatPage({ params }: ChatPageProps) {
       ),
     );
   };
+
+  useEffect(() => {
+    const urlPrompt = searchParams.get("prompt");
+    if (urlPrompt) {
+      initializeChat(urlPrompt);
+    } else {
+      // Load mock chat history if no prompt
+      initializeMockChatHistory();
+    }
+  }, [searchParams]);
 
   const statusColors = {
     pending: "bg-gray-100 text-gray-600",

@@ -1,0 +1,1027 @@
+
+> chancedee-next-v2@0.1.0 lint
+> eslint
+
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/auth/register/_components/RegisterClient.tsx
+  166:39  warning  'password' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  197:44  warning  'data' is defined but never used. Allowed unused args must match /^_/u      @typescript-eslint/no-unused-vars
+  197:50  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  216:44  warning  'data' is defined but never used. Allowed unused args must match /^_/u      @typescript-eslint/no-unused-vars
+  216:50  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/auth/settings/_components/AccountTab.tsx
+  50:5  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/auth/verify/_components/VerifyClient.tsx
+  189:3  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  192:6  warning  React Hook useEffect has a missing dependency: 'sendInitialOTP'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/candidates/[id]/_components/RecommendedJobsCarousel.tsx
+  153:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/candidates/profile/create/_components/Step1PersonalInfo.tsx
+  110:20  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/home/konton-otome/chancedee-next-v2/src/app/jobsmarket/candidates/profile/create/_components/Step1PersonalInfo.tsx:110:20
+  108 |
+  109 |   // Watch province and district for controlled components
+> 110 |   const province = watch("province");
+      |                    ^^^^^ React Hook Form's `useForm()` API returns a `watch()` function which cannot be memoized safely.
+  111 |   const district = watch("district");
+  112 |
+  113 |   return (  react-hooks/incompatible-library
+
+/home/konton-otome/chancedee-next-v2/src/components/ai-assistant/chat-area.tsx
+  30:35  warning  'index' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/ai-assistant/input-area.tsx
+  20:3  warning  'allowFileUpload' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/auth-component.tsx
+  27:17  warning  'loading' is assigned a value but never used. Allowed unused vars must match /^_/u                                            @typescript-eslint/no-unused-vars
+  59:6   warning  React Hook useEffect has a missing dependency: 'initializeBookmarkedBlogs'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/change-password.tsx
+   34:10  warning  'isLoading' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   36:10  warning  'error' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   59:9   warning  'userType' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   63:9   warning  'signUpForm' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   72:9   warning  'handleEmailAuth' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   92:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/change-password.tsx:92:7
+  90 |     const storedRedirectPath = localStorage.getItem("redirect");
+  91 |     if (storedRedirectPath) {
+> 92 |       setRedirectPath(storedRedirectPath);
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  93 |     }
+  94 |   }, []);
+  95 |  react-hooks/set-state-in-effect
+  136:5   warning  React Hook useCallback has an unnecessary dependency: 'form'. Either exclude it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+  144:5   warning  Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-expressions
+  162:56  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/create-password.tsx
+  32:10  warning  'error' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  36:9   warning  'form' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  78:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/create-password.tsx:78:7
+  76 |     const storedRedirectPath = localStorage.getItem("redirect");
+  77 |     if (storedRedirectPath) {
+> 78 |       setRedirectPath(storedRedirectPath);
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  79 |     }
+  80 |   }, []);
+  81 |  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/password-settings.tsx
+  17:11  warning  'addToast' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  31:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/auth/password-settings.tsx:31:7
+  29 |       subscription.find((sub) => sub.email === userContext?.email)
+  30 |     ) {
+> 31 |       setSubscriptionToggle(true);
+     |       ^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     } else {
+  33 |       setSubscriptionToggle(false);
+  34 |     }  react-hooks/set-state-in-effect
+  35:6   warning  React Hook useEffect has a missing dependency: 'userContext?.email'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+  37:25  warning  'checked' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/blog-card-horizontal.tsx
+  19:3  warning  'size' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/blog-card.tsx
+  19:28  warning  'size' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/blog-extender.tsx
+  11:22  warning  'setPagination' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  13:56  warning  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/blog-paginated.tsx
+  12:22  warning  'setPagination' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  14:56  warning  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+  29:9   warning  'loadMore' is assigned a value but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/blog-section.tsx
+  13:9  warning  'notShowId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/blog/related-blog.tsx
+  15:3  warning  'size' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/common/popup-banner.tsx
+  14:3  warning  'title' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/content/author-blog-extender.tsx
+  18:22  warning  'setPagination' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  20:56  warning  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/content/bookmark-tabs.tsx
+  57:17  warning  'loading' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  58:56  warning  Unexpected any. Specify a different type                                            @typescript-eslint/no-explicit-any
+  66:43  warning  'error' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/content/newsletter-subscription.tsx
+   81:29  warning  'isPending' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   86:25  warning  'isLoading' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   98:6   warning  React Hook useEffect has missing dependencies: 'addToast', 'state.errors', 'state.message', and 'state.success'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  101:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/content/newsletter-subscription.tsx:101:5
+   99 |
+  100 |   useEffect(() => {
+> 101 |     setEmail(user?.email || "");
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  102 |   }, [user]);
+  103 |
+  104 |   const isNotSubscribed = !(  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat-panel.tsx
+  50:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat-panel.tsx:50:5
+  48 |   // Set mounted state after initial render to prevent flash
+  49 |   useEffect(() => {
+> 50 |     setIsMounted(true);
+     |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  51 |   }, []);
+  52 |
+  53 |   // Escape key to close panel                                                                          react-hooks/set-state-in-effect
+  68:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat-panel.tsx:68:7
+  66 |   useEffect(() => {
+  67 |     if (isOpen && user) {
+> 68 |       setIsCheckingPersona(true);
+     |       ^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  69 |       user.getIdToken().then((token) => {
+  70 |         checkUserPersona(token).then((result) => {
+  71 |           setPersonaCheck(result);  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat-persona-stepper.tsx
+  27:3  warning  'missingFields' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat.tsx
+  17:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/fab-chat/fab-chat.tsx:17:5
+  15 |   useEffect(() => {
+  16 |     // Reset and check if document is already loaded
+> 17 |     setIsPageLoaded(false);
+     |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |
+  19 |     if (document.readyState === "complete") {
+  20 |       setIsPageLoaded(true);  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/features/footer-2.tsx
+  40:29  warning  'index' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/forms/contact-us.tsx
+   85:29  warning  'isPending' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   96:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/forms/contact-us.tsx:96:9
+  94 |       if (state.success) {
+  95 |         addToast(state.message, "success");
+> 96 |         setIsSuccess(true);
+     |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  97 |       } else {
+  98 |         console.log("Contact us state error", state.errors);
+  99 |         addToast(state.errors?.email?.join() || "", "error");  react-hooks/set-state-in-effect
+  102:6   warning  React Hook useEffect has missing dependencies: 'addToast', 'state.errors', 'state.message', and 'state.success'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/jobsmarket/auth/CompanyDetailsFormModeB.tsx
+  187:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  222:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/konton-otome/chancedee-next-v2/src/components/media/image-uploader.tsx
+   21:3   warning  'image' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   69:40  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setLoading`, but the source dependencies were [croppedAreaPixels, src]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/media/image-uploader.tsx:69:40
+   67 |   );
+   68 |
+>  69 |   const showCroppedImage = useCallback(async () => {
+      |                                        ^^^^^^^^^^^^^
+>  70 |     setLoading(true);
+      | ^^^^^^^^^^^^^^^^^^^^^
+>  71 |     if (croppedAreaPixels && src) {
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 123 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 124 |   }, [croppedAreaPixels, src]);
+      | ^^^^ Could not preserve existing manual memoization
+  125 |
+  126 |   return (
+  127 |     <Dialog  react-hooks/preserve-manual-memoization
+   69:40  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setImage`, but the source dependencies were [croppedAreaPixels, src]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/media/image-uploader.tsx:69:40
+   67 |   );
+   68 |
+>  69 |   const showCroppedImage = useCallback(async () => {
+      |                                        ^^^^^^^^^^^^^
+>  70 |     setLoading(true);
+      | ^^^^^^^^^^^^^^^^^^^^^
+>  71 |     if (croppedAreaPixels && src) {
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 123 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 124 |   }, [croppedAreaPixels, src]);
+      | ^^^^ Could not preserve existing manual memoization
+  125 |
+  126 |   return (
+  127 |     <Dialog    react-hooks/preserve-manual-memoization
+  124:6   warning  React Hook useCallback has missing dependencies: 'setImage' and 'setLoading'. Either include them or remove the dependency array. If 'setLoading' changes too often, find the parent component that defines it and wrap that definition in useCallback                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/messages/text-message.tsx
+  6:10  warning  'UserAvatar' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/messages/typing-indicator-message.tsx
+  14:3  warning  'message' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/messages/work-experience-form-message.tsx
+  126:23  warning  'value' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/navigation/navbar.tsx
+  34:33  warning  'index' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  67:35  warning  'index' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/navigation/search-bar.tsx
+  24:7  warning  Expected an assignment or function call and instead saw an expression                                              @typescript-eslint/no-unused-expressions
+  31:6  warning  React Hook useEffect has a missing dependency: 'setSearchQuery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/api-status-monitor.tsx
+  38:46  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  39:52  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  40:52  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  44:6   warning  React Hook useEffect has a missing dependency: 'checkAllStatus'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/chat-area.tsx
+  25:35  warning  'index' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/connection-monitor.tsx
+  222:14  warning  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  229:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/connection-monitor.tsx:229:5
+  227 |
+  228 |   useEffect(() => {
+> 229 |     checkConnection();
+      |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  230 |   }, [checkConnection]);
+  231 |
+  232 |   return {  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/error-boundary.tsx
+  176:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/header.tsx
+  13:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/input-area.tsx
+  14:3  warning  'allowFileUpload' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/pdf-debug-panel.tsx
+   60:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  319:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/resume-preview.tsx
+   31:10  warning  'progressComplete' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   49:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/resume-preview.tsx:49:7
+  47 |   useEffect(() => {
+  48 |     if (isGenerating) {
+> 49 |       setShowLoadingOverlay(true);
+     |       ^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  50 |       setProgressComplete(false);
+  51 |       return undefined;
+  52 |     } else {  react-hooks/set-state-in-effect
+  151:9   warning  'handlePrintResume' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/resume-builder/template-selector.tsx
+  18:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/bookmark-button.tsx
+  33:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/bookmark-button.tsx:33:7
+  31 |       console.log("Bookmark is loaded");
+  32 |       const status = !!bookmark.find((item) => item.id === blog.id);
+> 33 |       setIsBookmarked(status);
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  34 |     } else {
+  35 |       setIsBookmarked(undefined);
+  36 |     }                                                                      react-hooks/set-state-in-effect
+  39:38  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `user`, but the source dependencies were [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]. Inferred less specific property than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/bookmark-button.tsx:39:38
+  37 |   }, [bookmark, blog.id, isLoading]);
+  38 |
+> 39 |   const toggleBookmark = useCallback(() => {
+     |                                      ^^^^^^^
+> 40 |     const newState = !isBookmarked;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |     if (isLoading) {
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |     }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 68 |   }, [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]);
+     | ^^^^ Could not preserve existing manual memoization
+  69 |
+  70 |   return (
+  71 |     <button    react-hooks/preserve-manual-memoization
+  39:38  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `pathname`, but the source dependencies were [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/bookmark-button.tsx:39:38
+  37 |   }, [bookmark, blog.id, isLoading]);
+  38 |
+> 39 |   const toggleBookmark = useCallback(() => {
+     |                                      ^^^^^^^
+> 40 |     const newState = !isBookmarked;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |     if (isLoading) {
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |     }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 68 |   }, [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]);
+     | ^^^^ Could not preserve existing manual memoization
+  69 |
+  70 |   return (
+  71 |     <button  react-hooks/preserve-manual-memoization
+  39:38  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `router`, but the source dependencies were [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/bookmark-button.tsx:39:38
+  37 |   }, [bookmark, blog.id, isLoading]);
+  38 |
+> 39 |   const toggleBookmark = useCallback(() => {
+     |                                      ^^^^^^^
+> 40 |     const newState = !isBookmarked;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |     if (isLoading) {
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |     }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 68 |   }, [isBookmarked, setIsBookmarked, user?.uid, blog.id, isLoading]);
+     | ^^^^ Could not preserve existing manual memoization
+  69 |
+  70 |   return (
+  71 |     <button    react-hooks/preserve-manual-memoization
+  47:9   warning  Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-expressions
+  68:6   warning  React Hook useCallback has missing dependencies: 'pathname' and 'router'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/custom-select.tsx
+  21:58  warning  'ref' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/loading-overlay.tsx
+  42:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/loading-overlay.tsx:42:7
+  40 |   useEffect(() => {
+  41 |     if (!isVisible) {
+> 42 |       setCurrentStep(0);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  43 |       setProgressText("กำลังประมวลผล...");
+  44 |       return;
+  45 |     }  react-hooks/set-state-in-effect
+  48:9  warning  'currentTime' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  69:6  warning  React Hook useEffect has a missing dependency: 'steps'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/progress-bar.tsx
+  30:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/progress-bar.tsx:30:7
+  28 |   useEffect(() => {
+  29 |     if (animate && !isAnimating) {
+> 30 |       setIsAnimating(true);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |       setProgress(0);
+  32 |
+  33 |       const startTime = Date.now();  react-hooks/set-state-in-effect
+  39:15  warning  'progressPercent' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  65:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/ui/progress-bar.tsx:65:7
+  63 |   useEffect(() => {
+  64 |     if (!animate) {
+> 65 |       setProgress(value);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  66 |       setIsAnimating(false);
+  67 |     }
+  68 |   }, [animate, value]);                     react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/components/user/profile-editor.tsx
+  192:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/components/user/profile-editor.tsx:192:7
+  190 |   useEffect(() => {
+  191 |     if (userContext?.avatarURL) {
+> 192 |       setUserImage(userContext?.avatarURL);
+      |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  193 |     }
+  194 |   }, [userContext?.avatarURL]);
+  195 |                                                                                                                                                                       react-hooks/set-state-in-effect
+  215:5   error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setUser`, but the source dependencies were [userContext, auth.currentUser, userImage]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/user/profile-editor.tsx:215:5
+  213 |
+  214 |   const onSubmit = useCallback(
+> 215 |     async (_data: z.infer<typeof ProfileEditorFormSchema>) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 216 |       console.log("ดำเนินการบันทึกข้อมูล");
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 217 |       setIsLoading(true);
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 290 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 291 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  292 |     [userContext, auth.currentUser, userImage],
+  293 |   );
+  294 |           react-hooks/preserve-manual-memoization
+  215:5   error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `candidateContext`, but the source dependencies were [userContext, auth.currentUser, userImage]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/user/profile-editor.tsx:215:5
+  213 |
+  214 |   const onSubmit = useCallback(
+> 215 |     async (_data: z.infer<typeof ProfileEditorFormSchema>) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 216 |       console.log("ดำเนินการบันทึกข้อมูล");
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 217 |       setIsLoading(true);
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 290 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 291 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  292 |     [userContext, auth.currentUser, userImage],
+  293 |   );
+  294 |  react-hooks/preserve-manual-memoization
+  215:5   error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `addToast`, but the source dependencies were [userContext, auth.currentUser, userImage]. Inferred different dependency than source.
+
+/home/konton-otome/chancedee-next-v2/src/components/user/profile-editor.tsx:215:5
+  213 |
+  214 |   const onSubmit = useCallback(
+> 215 |     async (_data: z.infer<typeof ProfileEditorFormSchema>) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 216 |       console.log("ดำเนินการบันทึกข้อมูล");
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 217 |       setIsLoading(true);
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 290 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 291 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  292 |     [userContext, auth.currentUser, userImage],
+  293 |   );
+  294 |          react-hooks/preserve-manual-memoization
+  270:13  warning  Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-expressions
+  292:5   warning  React Hook useCallback has missing dependencies: 'addToast', 'candidateContext', and 'setUser'. Either include them or remove the dependency array. Outer scope values like 'auth.currentUser' aren't valid dependencies because mutating them doesn't re-render the component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
+  300:5   warning  Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-expressions
+
+/home/konton-otome/chancedee-next-v2/src/domains/authentication/services/server/actions/auth-engine-actions.ts
+  75:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/authentication/services/server/actions/jobsmarket/notification-preferences.ts
+  43:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/authentication/services/server/core/auth-engine.ts
+  21:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/authentication/services/server/middleware/auth-middleware.ts
+  18:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  65:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/authentication/utils/auth-errors.ts
+   11:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   16:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   26:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  125:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/fab-chat/services/server/actions/persona.ts
+  142:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/company-recommend.tsx
+  22:35  warning  'homeData' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/embla-carousel-arrow-buttons.tsx
+  45:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/embla-carousel-arrow-buttons.tsx:45:5
+  43 |     if (!emblaApi) return;
+  44 |
+> 45 |     onSelect(emblaApi);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  46 |     emblaApi.on("reInit", onSelect);
+  47 |     emblaApi.on("select", onSelect);
+  48 |   }, [emblaApi, onSelect]);  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/embla-carousel-dot-buttons.tsx
+  44:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/embla-carousel-dot-buttons.tsx:44:5
+  42 |     if (!emblaApi) return;
+  43 |
+> 44 |     onInit(emblaApi);
+     |     ^^^^^^ Avoid calling setState() directly within an effect
+  45 |     onSelect(emblaApi);
+  46 |     emblaApi.on("reInit", onInit);
+  47 |     emblaApi.on("reInit", onSelect);  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/components/job-recommend.tsx
+  25:31  warning  'homeData' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/ui/job-category-sections.tsx
+  34:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/ui/job-category-sections.tsx:34:5
+  32 |     }
+  33 |
+> 34 |     setCount(api.scrollSnapList().length);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |     setCurrent(api.selectedScrollSnap());
+  36 |     console.log("current", api.selectedScrollSnap());
+  37 |  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/ui/optimized-hero-image.tsx
+  42:5  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/ui/testimonial-section.tsx
+  16:6   warning  'featuredSectionType' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  22:7   warning  'fetcher' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  27:10  warning  'count' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  34:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/domains/marketing/components/ui/testimonial-section.tsx:34:5
+  32 |     }
+  33 |
+> 34 |     setCount(api.scrollSnapList().length);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |     setCurrent(api.selectedScrollSnap());
+  36 |
+  37 |     api.on("select", () => {  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/hooks/jobsmarket/use-session-renewal.ts
+  201:6  warning  React Hook useCallback has a missing dependency: 'needsRefresh'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-ai-chat.tsx
+   62:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  208:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-auth.tsx
+  174:6  warning  React Hook useEffect has missing dependencies: 'auth', 'initAuth', 'setAuthenticatedUserId', 'setSessionState', 'setUser', and 'user?.uid'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-bookmarked-blogs.tsx
+  34:6  warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-chancedee-chat-enhanced.tsx
+   17:45  warning  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+   56:61  warning  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+   59:44  warning  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+  150:29  warning  'attachments' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  246:41  warning  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-chancedee-chat.tsx
+   20:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   45:61  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  319:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-resume-generation.tsx
+  117:3  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-resume-generation.tsx:117:3
+  115 |
+  116 |   // Update options ref when options change
+> 117 |   optionsRef.current = options;
+      |   ^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  118 |
+  119 |   // Generate SWR key based on conversation state
+  120 |   const messageCount =  react-hooks/refs
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-subscription.tsx
+  30:6  warning  React Hook useEffect has a missing dependency: 'checkUserSubscription'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-toast-notification.tsx
+  68:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/home/konton-otome/chancedee-next-v2/src/hooks/use-toast-notification.tsx:68:5
+  66 |
+  67 |   useEffect(() => {
+> 68 |     setIsVisible(true);
+     |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  69 |     const timer = setTimeout(() => {
+  70 |       setIsVisible(false);
+  71 |       setTimeout(() => removeToast(toast.id), 300); // Match this with transition duration  react-hooks/set-state-in-effect
+
+/home/konton-otome/chancedee-next-v2/src/tests/pdf-converter.test.tsx
+    9:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   57:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/tests/resume-preview-integration.test.tsx
+   88:22  warning  'setResumeData' is assigned a value but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+  102:58  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+  125:14  warning  'err' is defined but never used                                                                @typescript-eslint/no-unused-vars
+  136:9   warning  'handleClosePreview' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  392:26  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/tests/resume-preview.test.tsx
+  484:31  warning  Unexpected any. Specify a different type                                                        @typescript-eslint/no-explicit-any
+  497:30  warning  Unexpected any. Specify a different type                                                        @typescript-eslint/no-explicit-any
+  498:36  warning  Unexpected any. Specify a different type                                                        @typescript-eslint/no-explicit-any
+  590:13  warning  'TestComponent' is assigned a value but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  632:13  warning  'TestComponent' is assigned a value but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  654:13  warning  'TestOpenComponent' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  665:13  warning  'TestClosedComponent' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/src/types/html2pdf.d.ts
+  34:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  37:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  38:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  38:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/types/resume.ts
+  135:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  136:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  137:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  138:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  179:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  255:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/src/utils/auth.ts
+  34:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/e2e/jobsmarket/candidates/dashboard-redirect-timing.spec.ts
+   17:7   warning  'MIN_REDIRECT_TIME' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   25:11  warning  'startTime' is assigned a value but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  117:16  warning  'e' is defined but never used                                                                 @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/actions/candidate-information.test.ts
+   92:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  162:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  190:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  222:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  252:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  289:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  406:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/actions/consent-records.test.ts
+  19:3  warning  'webConsentRecordGetExpiredByPolicy' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/actions/fcm-token-minimal.test.ts
+  10:9  warning  'actorId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/actions/jobs-and-applications.test.ts
+  23:26  warning  'cleanupTestData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/actions/messages.test.ts
+  15:67  warning  'createWhereFilter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/database/test-utils.ts
+  74:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/reset/firebase-reset.test.ts
+   99:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/settings/account-tab.test.tsx
+    2:26  warning  'within' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   38:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   48:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   62:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   72:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   86:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   96:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  112:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  122:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  138:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  148:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  164:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  174:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  192:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  202:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  222:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  232:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  249:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  259:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  278:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  288:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  302:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  312:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  326:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  336:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  351:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  361:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  380:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  390:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  407:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  417:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  433:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  443:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  463:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  473:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/settings/delete-tab.test.tsx
+   55:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   60:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   66:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   83:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  139:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  141:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  232:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  234:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  265:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  275:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  281:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  283:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  315:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  325:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  331:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  333:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  344:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  354:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  360:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  362:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  382:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  389:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  391:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/settings/notifications-tab.test.tsx
+   58:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  246:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  250:85  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  275:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/settings/password-tab.test.tsx
+   33:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   50:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   67:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  106:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  142:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  174:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/settings/settings-tabs.test.tsx
+  5:15  warning  'TabId' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/auth/verify/email-updates.test.ts
+  86:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/candidates/dashboard/dashboard-rendering.test.tsx
+    2:26  warning  'within' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   95:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  103:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  111:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  119:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  126:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  177:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  185:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  210:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  218:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  245:14  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  252:12  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/candidates/dashboard/error-handling.test.tsx
+    2:26  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+    3:8   warning  'userEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   55:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+   64:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+   72:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  102:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  110:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  130:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  137:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  159:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  166:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  195:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  203:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  210:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  233:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  240:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  265:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  273:16  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  280:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/integration/jobsmarket/candidates/dashboard/section-composition.test.tsx
+   59:96   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   62:101  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   64:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  111:16   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  113:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:16   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  157:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  177:96   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  181:87   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  183:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  211:96   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  214:99   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  216:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:96   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  239:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  257:96   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  260:87   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  262:92   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/unit/domains/authentication/utils/error-messages.test.ts
+  9:8  warning  'ThaiErrorMessage' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/unit/jobsmarket/auth/settings/sole-admin-check.test.ts
+    4:10  warning  'Filter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   51:78  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   76:78  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   90:78  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  116:72  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  124:77  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+
+/home/konton-otome/chancedee-next-v2/tests/unit/jobsmarket/auth/settings/tab-visibility.test.ts
+  11:13  warning  'roles' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  35:13  warning  'roles' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  52:13  warning  'roles' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  76:13  warning  'roles' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/unit/jobsmarket/candidates/dashboard/use-candidate-auth.test.ts
+  203:15  warning  'result' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  265:15  warning  'result' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  385:23  warning  'state' is defined but never used. Allowed unused args must match /^_/u            @typescript-eslint/no-unused-vars
+  429:15  warning  'result' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/unit/lib/rate-limiter.test.ts
+  280:17  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  287:17  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  294:17  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/konton-otome/chancedee-next-v2/tests/unit/lib/validations/auth.test.ts
+  621:15  warning  'companyName' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+✖ 341 problems (29 errors, 312 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

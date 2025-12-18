@@ -1,0 +1,651 @@
+/**
+ * Unit Tests for Step3Education Form Component
+ * CAND-R02: Profile Creation Wizard - Step 3 Education
+ *
+ * Tests education level selection, GPA validation, and form submission
+ */
+
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { Step3Education } from "@/app/jobsmarket/candidates/profile/create/_components/Step3Education";
+
+describe("Step3Education", () => {
+  const mockOnSubmit = vi.fn();
+  const mockOnBack = vi.fn();
+
+  beforeEach(() => {
+    mockOnSubmit.mockClear();
+    mockOnBack.mockClear();
+  });
+
+  describe("Rendering", () => {
+    it("should render form with all required fields", () => {
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      expect(screen.getByText("ประวัติการศึกษา")).toBeInTheDocument();
+      expect(
+        screen.getByText(/กรอกข้อมูลการศึกษาสูงสุดของคุณ/)
+      ).toBeInTheDocument();
+
+      // Required fields
+      expect(screen.getByLabelText(/ระดับการศึกษา/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/สถาบันการศึกษา/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/คณะ \/ สาขา/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/ปีที่จบการศึกษา/)).toBeInTheDocument();
+
+      // Optional field
+      expect(screen.getByLabelText("เกรดเฉลี่ย (GPA)")).toBeInTheDocument();
+    });
+
+    it("should render submit button with default text", () => {
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      expect(screen.getByRole("button", { name: "ถัดไป" })).toBeInTheDocument();
+    });
+
+    it("should render custom submit button text", () => {
+      render(
+        <Step3Education onSubmit={mockOnSubmit} submitText="บันทึกข้อมูล" />
+      );
+
+      expect(
+        screen.getByRole("button", { name: "บันทึกข้อมูล" })
+      ).toBeInTheDocument();
+    });
+
+    it("should render back button when showBackButton is true", () => {
+      render(
+        <Step3Education
+          onSubmit={mockOnSubmit}
+          onBack={mockOnBack}
+          showBackButton={true}
+        />
+      );
+
+      expect(
+        screen.getByRole("button", { name: "ย้อนกลับ" })
+      ).toBeInTheDocument();
+    });
+
+    it("should not render back button by default", () => {
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      expect(
+        screen.queryByRole("button", { name: "ย้อนกลับ" })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Initial Data", () => {
+    it("should populate form with initial education data", () => {
+      const initialData = {
+        education: {
+          level: "bachelor",
+          institution: "มหาวิทยาลัยธรรมศาสตร์",
+          faculty: "วิศวกรรมศาสตร์",
+          graduation_year: 2020,
+          gpa: 3.5,
+        },
+      };
+
+      render(
+        <Step3Education onSubmit={mockOnSubmit} initialData={initialData} />
+      );
+
+      expect(
+        screen.getByDisplayValue("มหาวิทยาลัยธรรมศาสตร์")
+      ).toBeInTheDocument();
+      expect(screen.getByDisplayValue("วิศวกรรมศาสตร์")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("3.5")).toBeInTheDocument();
+    });
+
+    it("should populate form without GPA when not provided", () => {
+      const initialData = {
+        education: {
+          level: "bachelor",
+          institution: "มหาวิทยาลัยธรรมศาสตร์",
+          faculty: "วิศวกรรมศาสตร์",
+          graduation_year: 2020,
+        },
+      };
+
+      render(
+        <Step3Education onSubmit={mockOnSubmit} initialData={initialData} />
+      );
+
+      expect(
+        screen.getByDisplayValue("มหาวิทยาลัยธรรมศาสตร์")
+      ).toBeInTheDocument();
+
+      // GPA field should be empty
+      const gpaInput = screen.getByLabelText("เกรดเฉลี่ย (GPA)");
+      expect(gpaInput).toHaveValue(null);
+    });
+  });
+
+  describe("Education Level Selection", () => {
+    it("should allow selecting below bachelor degree", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ต่ำกว่าปริญญาตรี" }));
+
+      // Fill other required fields
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "โรงเรียนมัธยม"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "สายวิทย์-คณิต");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2015" }));
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+              level: "below_bachelor",
+              institution: "โรงเรียนมัธยม",
+              faculty: "สายวิทย์-คณิต",
+              graduation_year: 2015,
+            }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should allow selecting bachelor degree", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "จุฬาลงกรณ์มหาวิทยาลัย"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิทยาศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            level: "bachelor",
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should allow selecting master degree", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาโท" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "บริหารธุรกิจ");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2022" }));
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            level: "master",
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should allow selecting doctorate degree", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาเอก" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยมหิดล"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "แพทยศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2023" }));
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            level: "doctorate",
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+  });
+
+  describe("Validation - Required Fields", () => {
+    it("should show error when education level is not selected", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("กรุณาเลือกระดับการศึกษา")
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("should show error when institution is empty", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("กรุณากรอกชื่อสถาบัน")).toBeInTheDocument();
+      });
+    });
+
+    it("should show error when faculty is empty", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("กรุณากรอกคณะ/สาขา")).toBeInTheDocument();
+      });
+    });
+
+    it("should submit with default graduation year when not explicitly changed", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      // Fill required fields
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      // Don't explicitly select year - it has default value of current year
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      // Form should submit with default year
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+              level: "bachelor",
+              institution: "มหาวิทยาลัยธรรมศาสตร์",
+              faculty: "วิศวกรรมศาสตร์",
+              graduation_year: new Date().getFullYear(), // Default value
+            }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+  });
+
+  describe("Validation - Field Length", () => {
+    it("should prevent submission when institution name is too long", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const longInstitution = "ก".repeat(201); // 201 characters
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        longInstitution
+      );
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      // Form should NOT submit with invalid data
+      await waitFor(() => {
+        expect(mockOnSubmit).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should show error when faculty name is too long", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const longFaculty = "ก".repeat(101); // 101 characters
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), longFaculty);
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("คณะ/สาขายาวเกินไป")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("GPA Validation", () => {
+    it("should allow submitting without GPA (optional field)", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      // Don't fill GPA
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            institution: "มหาวิทยาลัยธรรมศาสตร์",
+            faculty: "วิศวกรรมศาสตร์",
+            // GPA should not be in the object or be undefined
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should prevent submission with GPA below 0", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      // Fill required fields first
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      // Now test invalid GPA
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "-0.5");
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      // Form should NOT submit with invalid data
+      await waitFor(() => {
+        expect(mockOnSubmit).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should prevent submission with GPA above 4.00", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      // Fill required fields first
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      // Now test invalid GPA
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "4.5");
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      // Form should NOT submit with invalid data
+      await waitFor(() => {
+        expect(mockOnSubmit).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should accept valid GPA (0.00)", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "0");
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            gpa: 0,
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should accept valid GPA (4.00)", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "4.00");
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            gpa: 4.0,
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+
+    it("should accept valid GPA (2.75)", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "2.75");
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: expect.objectContaining({
+            gpa: 2.75,
+          }),
+          }),
+          expect.anything()
+        );
+      });
+    });
+  });
+
+  describe("Form Submission", () => {
+    it("should submit valid form data", async () => {
+      const user = userEvent.setup();
+      render(<Step3Education onSubmit={mockOnSubmit} />);
+
+      const levelSelect = screen.getByLabelText(/ระดับการศึกษา/);
+      await user.click(levelSelect);
+      await user.click(screen.getByRole("option", { name: "ปริญญาตรี" }));
+
+      await user.type(
+        screen.getByLabelText(/สถาบันการศึกษา/),
+        "มหาวิทยาลัยธรรมศาสตร์"
+      );
+      await user.type(screen.getByLabelText(/คณะ \/ สาขา/), "วิศวกรรมศาสตร์");
+
+      const yearSelect = screen.getByLabelText(/ปีที่จบการศึกษา/);
+      await user.click(yearSelect);
+      await user.click(screen.getByRole("option", { name: "2020" }));
+
+      await user.type(screen.getByLabelText("เกรดเฉลี่ย (GPA)"), "3.50");
+
+      await user.click(screen.getByRole("button", { name: "ถัดไป" }));
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            education: {
+              level: "bachelor",
+              institution: "มหาวิทยาลัยธรรมศาสตร์",
+              faculty: "วิศวกรรมศาสตร์",
+              graduation_year: 2020,
+              gpa: 3.5,
+            },
+          }),
+          expect.anything()
+        );
+      });
+    });
+  });
+
+  describe("Loading State", () => {
+    it("should disable submit button when loading", () => {
+      render(<Step3Education onSubmit={mockOnSubmit} isLoading={true} />);
+
+      const submitButton = screen.getByRole("button", { name: /กำลังบันทึก/ });
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("should disable back button when loading", () => {
+      render(
+        <Step3Education
+          onSubmit={mockOnSubmit}
+          onBack={mockOnBack}
+          showBackButton={true}
+          isLoading={true}
+        />
+      );
+
+      const backButton = screen.getByRole("button", { name: "ย้อนกลับ" });
+      expect(backButton).toBeDisabled();
+    });
+
+    it("should show loading text when isLoading is true", () => {
+      render(<Step3Education onSubmit={mockOnSubmit} isLoading={true} />);
+
+      expect(screen.getByText("กำลังบันทึก...")).toBeInTheDocument();
+    });
+  });
+
+  describe("Back Button", () => {
+    it("should call onBack when back button is clicked", async () => {
+      const user = userEvent.setup();
+      mockOnBack.mockClear();
+
+      render(
+        <Step3Education
+          onSubmit={mockOnSubmit}
+          onBack={mockOnBack}
+          showBackButton={true}
+        />
+      );
+
+      await user.click(screen.getByRole("button", { name: "ย้อนกลับ" }));
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1);
+    });
+  });
+});

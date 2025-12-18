@@ -258,7 +258,7 @@ describe("StatusClient - Routing Integration", () => {
   });
 
   describe("Loading states", () => {
-    it("should show loading spinner while auth is loading", () => {
+    it("should show loading spinner while auth is loading", async () => {
       vi.mocked(useFirebaseAuth).mockReturnValue({
         user: null,
         loading: true,
@@ -277,7 +277,7 @@ describe("StatusClient - Routing Integration", () => {
       expect(screen.getByText("กำลังโหลด...")).toBeInTheDocument();
     });
 
-    it("should show loading spinner while user data is loading", () => {
+    it("should show loading spinner while user data is loading", async () => {
       vi.mocked(useFirebaseAuth).mockReturnValue({
         user: { uid: "test-uid" },
         loading: false,

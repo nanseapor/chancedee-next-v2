@@ -2,12 +2,15 @@
 import { authenticateSession, login } from "@/domains/authentication/services/server/actions/session";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { userAtom } from "@/store/atom-store";
+import { sessionStateAtom, authenticatedUserIdAtom } from "@/store/jobsmarket/global-atoms";
 import { signInWithCustomToken } from "firebase/auth";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useFirebaseAuth() {
   const [user, setUser] = useAtom(userAtom);
+  const setSessionState = useSetAtom(sessionStateAtom);
+  const setAuthenticatedUserId = useSetAtom(authenticatedUserIdAtom);
   const [loading, setLoading] = useState(true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const auth = getFirebaseAuth();
@@ -49,6 +52,8 @@ export function useFirebaseAuth() {
             "🔐 [AUTH DEBUG] ✅ Current user session is valid, using existing session",
           );
           setUser(currentUser);
+          setSessionState("authenticated");
+          setAuthenticatedUserId(currentUser.uid);
           // We'll let the SWR hook handle fetching the user data
           setLoading(false);
           setIsAuthenticating(false);
@@ -86,6 +91,8 @@ export function useFirebaseAuth() {
           );
           const userCreds = await signInWithCustomToken(auth, customToken);
           setUser(userCreds.user);
+          setSessionState("authenticated");
+          setAuthenticatedUserId(userCreds.user.uid);
           console.log(
             "🔐 [AUTH DEBUG] ✅ Successfully authenticated with session cookie",
             {
@@ -115,11 +122,15 @@ export function useFirebaseAuth() {
           }
           // Set user to null without alarming error messages
           setUser(null);
+          setSessionState("unauthenticated");
+          setAuthenticatedUserId(null);
         } else {
           console.log(
             "🔐 [AUTH DEBUG] ❌ Unexpected response from authenticateSession - no success and no error",
           );
           setUser(null);
+          setSessionState("unauthenticated");
+          setAuthenticatedUserId(null);
         }
       } catch (sessionError) {
         console.log(
@@ -127,6 +138,8 @@ export function useFirebaseAuth() {
           sessionError,
         );
         setUser(null);
+        setSessionState("unauthenticated");
+        setAuthenticatedUserId(null);
       }
     } catch (error) {
       console.error("🔐 [AUTH DEBUG] ❌ Firebase authentication error:", error);
@@ -141,13 +154,15 @@ export function useFirebaseAuth() {
         "🔐 [AUTH DEBUG] Final state set: isAuthenticating=false, loading=false",
       );
     }
-  }, [auth, isAuthenticating, setIsAuthenticating, setLoading, setUser]);
+  }, [auth, isAuthenticating, setIsAuthenticating, setLoading, setUser, setSessionState, setAuthenticatedUserId]);
 
   useEffect(() => {
     initAuth();
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser?.uid && firebaseUser?.uid !== user?.uid) {
         setUser(firebaseUser);
+        setSessionState("authenticated");
+        setAuthenticatedUserId(firebaseUser.uid);
         firebaseUser?.getIdToken().then((token) => {
           console.log("User token:", token);
           login(token);

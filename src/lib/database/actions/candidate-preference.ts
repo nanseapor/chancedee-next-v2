@@ -48,9 +48,72 @@ const webCandidatePreferenceUpdate = async (
   }
 };
 
+/**
+ * CAND-R02: Save job preferences (Step 5 / Preferences section)
+ * Saves or updates candidate job preferences
+ */
+const webCandidateSavePreferences = async (
+  uid: string,
+  data: {
+    job_types: string[];
+    positions: string[];
+    job_functions?: string[];
+    job_industries?: string[];
+    salary_min: number;
+    salary_max: number;
+    is_negotiable: boolean;
+    locations: string[];
+    work_mode?: 'onsite' | 'hybrid' | 'remote' | 'any';
+    availability: 'immediately' | '2_weeks' | '1_month' | '2_months_plus';
+    expected_start_date?: number;
+    i_am?: string;
+    i_am_looking_for?: string[];
+    i_values?: string[];
+    headlines?: string;
+  },
+  actorId: string
+) => {
+  try {
+    // Get existing preference
+    const existing = await candidatePreferenceRepository.getById(uid);
+
+    // Build payload
+    const payload: candidatePreferences = {
+      uid,
+      myPreferredJobs: data.job_types,
+      preferredPosition: data.positions.join(', '), // Legacy field
+      jobFunction: data.job_functions,
+      jobIndustry: data.job_industries,
+      expectedSalary: data.salary_min, // Using min as expected
+      isNegotiable: data.is_negotiable,
+      jobLocation: data.locations.join(', '), // Legacy field
+      employment: data.work_mode,
+      overheadDays: data.availability,
+      expectedStartDate: data.expected_start_date,
+      iAm: data.i_am,
+      iAmLookingFor: data.i_am_looking_for,
+      iValues: data.i_values,
+      headlines: data.headlines,
+      createdAt: existing?.createdAt || 0,
+      updatedAt: 0,
+    };
+
+    // Update or create
+    if (existing) {
+      return await candidatePreferenceRepository.update(uid, payload, actorId);
+    } else {
+      return await candidatePreferenceRepository.create(payload, actorId, uid);
+    }
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webCandidatePreferenceCreate,
   webCandidatePreferenceGetByFilter,
   webCandidatePreferenceGetById,
-  webCandidatePreferenceUpdate
+  webCandidatePreferenceUpdate,
+  webCandidateSavePreferences,
 };

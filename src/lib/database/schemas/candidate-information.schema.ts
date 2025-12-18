@@ -15,15 +15,21 @@ export const CandidateStatusSchema = z.string().optional();
 export const FirebaseCandidateInformationSchema = BaseFirebaseSchema.extend({
   /** Profile photo */
   resume_photo_url: z.string().optional(),
-  
+
+  /** Title prefix (CAND-R02) */
+  title_prefix: z.string().optional(),
+
   /** Thai name fields */
   first_name_th: z.string().optional(),
   last_name_th: z.string().optional(),
   nick_name_th: z.string().optional(),
-  
+
   /** Contact information */
   email: z.string().optional(),
   phone_number: z.string().optional(),
+
+  /** Gender (CAND-R02) */
+  gender: z.string().optional(),
   
   /** Address fields */
   address_line_1: z.string().optional(),

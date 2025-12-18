@@ -327,6 +327,169 @@ src/app/
 
 ---
 
+## 🎨 Design System
+
+### Design Guidelines Reference
+
+**Full specification:** `docs/jobsmarket/design-systems/chancedee-design-guidelines.md`
+
+### Brand Identity
+
+ChanceDee is a Thai recruitment platform with these design principles:
+
+| Principle | Description |
+|-----------|-------------|
+| **Professional** | Clean, trustworthy, corporate-appropriate |
+| **Modern** | Contemporary UI patterns, minimal visual noise |
+| **Warm** | Approachable through color, not overly cold/sterile |
+| **Thai-First** | Optimized for Thai language (Kanit font) readability |
+
+### Brand Assets
+
+**Icons & Logos:**
+```
+public/icons/brand/          # Brand icons (favicons, app icons)
+public/images/               # Brand images, illustrations
+```
+
+Use these paths when referencing brand assets in components:
+```typescript
+// ✅ CORRECT
+<Image src="/icons/brand/logo.svg" alt="ChanceDee" />
+<Image src="/images/hero-illustration.png" alt="..." />
+```
+
+---
+
+### Color System (Tailwind Config)
+
+Colors are pre-configured in `tailwind.config.ts`. Use Tailwind classes directly.
+
+#### Primary (Orange) — Use Sparingly (20%)
+CTAs, brand moments, key actions only.
+
+| Token | Hex | Usage | Tailwind Class |
+|-------|-----|-------|----------------|
+| `primary-50` | `#FDF7EF` | Hover tints, subtle backgrounds | `bg-primary-50` |
+| `primary-100` | `#FBEDD9` | Selected states | `bg-primary-100` |
+| `primary-600` | `#DB6726` | **DEFAULT — Primary buttons** | `bg-primary` |
+| `primary-900` | `#71331D` | Hover state | `hover:bg-primary-900` |
+| `primary-foreground` | `#FDF7EF` | Text on primary | `text-primary-foreground` |
+
+#### Secondary (Teal) — Use Generously (80%)
+Navigation, links, icons, supporting UI.
+
+| Token | Hex | Usage | Tailwind Class |
+|-------|-----|-------|----------------|
+| `secondary-50` | `#F1FAFA` | Page/card backgrounds | `bg-secondary-50` |
+| `secondary-500` | `#3790A3` | Text links | `text-secondary-500` |
+| `secondary-600` | `#30768A` | Link hover, nav active | `hover:text-secondary-600` |
+| `secondary-700` | `#2D6071` | Icons, outline button text | `text-secondary-700` |
+| `secondary-900` | `#284450` | **DEFAULT — Secondary buttons** | `bg-secondary` |
+| `secondary-foreground` | `#F1FAFA` | Text on secondary | `text-secondary-foreground` |
+
+#### Semantic Colors
+
+| Purpose | Background | Text | Icon |
+|---------|------------|------|------|
+| **Success** | `bg-green-100` | `text-green-700` | ✓ |
+| **Warning** | `bg-amber-100` | `text-amber-700` | ⚠ |
+| **Error** | `bg-red-50` | `text-red-600` | ✕ |
+| **Info** | `bg-blue-50` | `text-blue-700` | ℹ |
+
+> ⚠️ Use `red-600` (#DC2626) for errors to distinguish from primary orange.
+
+---
+
+### Typography
+
+**Font:** Kanit (Thai-optimized)
+
+| Element | Tailwind Classes |
+|---------|------------------|
+| H1 | `text-3xl font-semibold tracking-wide leading-tight` |
+| H2 | `text-2xl font-semibold tracking-wide leading-snug` |
+| H3 | `text-xl font-medium tracking-wide leading-normal` |
+| Body | `text-base font-normal tracking-wider leading-relaxed` |
+| Small | `text-sm font-normal tracking-wider` |
+| Caption | `text-xs font-normal tracking-widest` |
+| Button/Label | `font-medium tracking-widest` |
+
+**Font Weight Reference (Custom):**
+| Weight | Value | Usage |
+|--------|-------|-------|
+| `font-light` | 200 | Decorative, large display |
+| `font-normal` | 300 | Body text |
+| `font-medium` | 400 | UI elements, buttons |
+| `font-semibold` | 500 | Headings |
+| `font-bold` | 600 | Strong emphasis (sparingly) |
+
+---
+
+### Button Hierarchy
+
+| Level | Name | Style | Usage |
+|-------|------|-------|-------|
+| 1 | **Primary** | `bg-primary text-primary-foreground hover:bg-primary-900` | Main action (one per section) |
+| 2 | **Secondary** | `bg-secondary-900 text-secondary-foreground hover:bg-secondary-800` | Supporting actions |
+| 3 | **Outline** | `border border-secondary-500 text-secondary-700 hover:bg-secondary-50` | Dismissive/back actions |
+| 4 | **Ghost** | `text-secondary-600 hover:text-secondary-800 hover:bg-secondary-50` | Lowest priority |
+| 5 | **Destructive** | `bg-red-600 text-white hover:bg-red-700` | Dangerous actions (+ icon + confirm) |
+
+**Button Properties:**
+- Border radius: `rounded-[0.625rem]` (10px)
+- Font: `font-medium tracking-widest`
+- Padding: `px-4 py-2` (sm), `px-6 py-3` (default), `px-8 py-4` (lg)
+
+---
+
+### Status Badges
+
+Map all statuses to 4 variants for simplicity:
+
+| Variant | Classes | Use For |
+|---------|---------|---------|
+| `waiting` | `bg-amber-100 text-amber-700 border-amber-700` | Pending, In Review |
+| `success` | `bg-green-100 text-green-700 border-green-700` | Confirmed, Approved |
+| `problem` | `bg-rose-100 text-rose-700 border-rose-700` | Declined, Rejected, No-show |
+| `neutral` | `bg-gray-100 text-gray-600 border-gray-600` | Completed, Cancelled |
+
+**"Needs Action" (urgent):** Add `border-2` and 🔔 icon.
+
+---
+
+### Form Elements
+
+**Input Default:**
+```
+border border-gray-300 rounded-lg bg-white text-gray-900
+focus:border-secondary-500 focus:ring-2 focus:ring-secondary-200
+```
+
+**Input Error:**
+```
+border-2 border-red-500 bg-red-50 text-gray-900
+```
+
+**Labels:**
+- Default: `text-sm text-gray-700 font-medium`
+- Required: Add `text-red-500` asterisk
+- Optional: Add `text-gray-400 text-xs` "(ไม่บังคับ)"
+
+---
+
+### Design Rules Summary
+
+| ✅ DO | ❌ DON'T |
+|-------|----------|
+| Use orange for ONE primary CTA per section | Multiple orange buttons side-by-side |
+| Use teal for navigation, links, icons | Orange for navigation items |
+| Pair color with icons/text for meaning | Color alone to convey meaning |
+| Use `rounded-[0.625rem]` for corners | Mix corner radius styles |
+| Follow 80/20 teal/orange ratio | Overuse orange throughout UI |
+
+---
+
 ## File Access Tiers
 
 ### 🔴 Tier 1: Rarely Modify (Push Back First)
@@ -348,12 +511,13 @@ Shared resources. Check if existing code can be reused first.
 | Path | Reason |
 |------|--------|
 | `src/lib/*` | Database layer, shared across subdomains |
+| `src/domains/*/services/*` | Domain services, shared across subdomains |
 | `src/components/ui/*` | shadcn base components |
 | `src/app/` (root layouts) | Affects all subdomains |
-| `src/domains/*/services/*` (existing files) | May be used by content subdomain |
 | `src/hooks/*` (existing files) | May be shared |
 | `src/store/*` (existing files) | May be shared |
 | `package.json` | Dependencies and scripts |
+| `tailwind.config.ts` | Design tokens, affects entire app |
 
 **Behavior:** "I need to modify [file] to [reason]. This is a shared resource. Should I proceed?"
 
@@ -366,10 +530,11 @@ Create and modify freely in these namespaced areas per RIS/BLS specs.
 | `src/app/jobsmarket/*` (except legal, privacy) | Route pages |
 | `src/app/jobsmarket/{route}/_components/` | Co-located page components |
 | `src/components/jobsmarket/*` | Shared jobsmarket components |
-| `src/domains/*/services/server/actions/jobsmarket/*` | New domain services |
 | `src/hooks/jobsmarket/*` | New hooks |
 | `src/store/jobsmarket/*` | New atoms |
 | `tests/*/jobsmarket/*` | All test files |
+
+> **Note on Domain Services:** Domain services (`src/domains/*/services/`) are **shared resources** (Tier 2). Reuse existing services rather than creating jobsmarket-specific duplicates. If a new service is needed, add it to the shared domain and check with human first.
 
 ### Decision Flow
 
@@ -394,14 +559,15 @@ Before implementing any route:
 1. **Read** the RIS document (`docs/jobsmarket/RIS/{DOMAIN}-R{NN}_*.md`)
 2. **Read** the cross-cutting RIS (`*-R00_cross-cutting.md`)
 3. **Read** relevant BLS sections (`docs/jobsmarket/BLS/BLS-{NN}_*.md`)
-4. **Check** for reusable code in `src/lib/database/actions/` and `src/domains/`
-5. **Create** an implementation plan (template in PROJECT_INSTRUCTIONS §5.3)
-6. **Wait** for human approval before coding
-7. **Write tests first** (TDD)
-8. **Implement** to pass tests
-9. **Run ALL quality gates** (Gates 1-4)
-10. **Fill completion checklist** with evidence
-11. **Create PR** with conventional commit message
+4. **Read** design guidelines (`docs/jobsmarket/design-systems/chancedee-design-guidelines.md`)
+5. **Check** for reusable code in `src/lib/database/actions/` and `src/domains/`
+6. **Create** an implementation plan (template in PROJECT_INSTRUCTIONS §5.3)
+7. **Wait** for human approval before coding
+8. **Write tests first** (TDD)
+9. **Implement** to pass tests
+10. **Run ALL quality gates** (Gates 1-4)
+11. **Fill completion checklist** with evidence
+12. **Create PR** with conventional commit message
 
 ---
 
@@ -412,7 +578,7 @@ Before implementing any route:
 | Route pages | `src/app/jobsmarket/{path}/page.tsx` |
 | Page components | `src/app/jobsmarket/{path}/_components/` |
 | Shared components | `src/components/jobsmarket/{feature}/` |
-| Domain services | `src/domains/{domain}/services/server/actions/jobsmarket/` |
+| Domain services | `src/domains/{domain}/services/` (shared, ask before creating new) |
 | Hooks | `src/hooks/jobsmarket/` |
 | Atoms | `src/store/jobsmarket/` |
 | Unit tests | `tests/unit/jobsmarket/` |
@@ -433,8 +599,7 @@ src/
 │   ├── ui/                 # shadcn/ui base components
 │   └── jobsmarket/         # Jobs subdomain components ← CREATE HERE
 ├── domains/                # Domain-driven modules
-│   └── {domain}/services/server/actions/
-│       └── jobsmarket/     # New jobsmarket actions ← CREATE HERE
+│   └── {domain}/services/  # Shared services (REUSE, ask before creating)
 ├── hooks/
 │   └── jobsmarket/         # Jobs subdomain hooks ← CREATE HERE
 ├── lib/
@@ -443,6 +608,11 @@ src/
 │   └── jobsmarket/         # Jobs subdomain atoms ← CREATE HERE
 └── types/                  # TypeScript type definitions
 
+public/
+├── icons/
+│   └── brand/              # Brand icons (favicons, app icons)
+└── images/                 # Brand images, illustrations
+
 docs/
 └── jobsmarket/
     ├── PROJECT_INSTRUCTIONS_v3.1.md  # ← READ THIS FIRST
@@ -450,6 +620,7 @@ docs/
     ├── RIS/                # Route Implementation Specs
     ├── BLS/                # Business Logic Specs
     └── design-systems/     # UI Component Specs
+        └── chancedee-design-guidelines.md  # ← DESIGN REFERENCE
 
 tests/
 └── {unit|integration|e2e}/
@@ -469,6 +640,7 @@ tests/
 | **Implement a route** | `docs/jobsmarket/RIS/{DOMAIN}-R{NN}_*.md` |
 | **Server action logic** | `docs/jobsmarket/BLS/BLS-{NN}_*.md` |
 | **UI components** | `docs/jobsmarket/design-systems/` |
+| **Design guidelines** | `docs/jobsmarket/design-systems/chancedee-design-guidelines.md` |
 | **Cross-cutting patterns** | `*-R00_cross-cutting.md` or `BLS-00_*.md` |
 
 ### Document Precedence

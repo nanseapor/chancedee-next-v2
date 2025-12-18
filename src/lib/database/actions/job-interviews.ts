@@ -195,9 +195,76 @@ const webJobInterviewUpdate = async (
   }
 };
 
+/**
+ * Get upcoming interviews for a candidate
+ * Per CAND-R01 Implementation Plan
+ *
+ * @param candidateId - Candidate UID
+ * @returns List of upcoming, non-cancelled interviews sorted by appointment time
+ */
+const webJobInterviewGetUpcoming = async (candidateId: string) => {
+  try {
+    const now = Timestamp.now();
+    const candidateRef = getFirebaseAdminFirestore()
+      .collection("candidate_information")
+      .doc(candidateId);
+
+    // Query for upcoming interviews (appointment > now, not cancelled)
+    const interviewsQuery = getFirebaseAdminFirestore()
+      .collection("job_interviews")
+      .where("candidate_id", "==", candidateRef)
+      .where("is_cancel", "==", false)
+      .where("appointment", ">", now)
+      .orderBy("appointment", "asc")
+      .limit(5); // Only get next 5 upcoming
+
+    const snapshot = await interviewsQuery.get();
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    const interviews = snapshot.docs.map((doc) => {
+      const firebaseJobInterview = doc.data() as FirebaseJobInterviewType;
+      const data: FirebaseJobInterviewData = {
+        appointment: firebaseJobInterview.appointment.toMillis(),
+        createdAt: doc.createTime?.toMillis() || 0,
+        updatedAt: doc.updateTime?.toMillis() || 0,
+        uid: firebaseJobInterview.uid,
+        jobId: firebaseJobInterview.job_id?.id,
+        applicationId: firebaseJobInterview.application_id?.id,
+        candidateId: firebaseJobInterview.candidate_id?.id,
+        companyId: firebaseJobInterview.company_id?.id,
+        candidateName: firebaseJobInterview.candidate_name,
+        companyName: firebaseJobInterview.company_name,
+        channel: firebaseJobInterview.channel,
+        status: firebaseJobInterview.status as any,
+        from: firebaseJobInterview.from,
+        to: firebaseJobInterview.to,
+        location: firebaseJobInterview.location,
+        isCancel: firebaseJobInterview.is_cancel,
+        cancelReason: firebaseJobInterview.cancel_reason,
+        isAccepted: firebaseJobInterview.is_accepted || false,
+        createdBy: firebaseJobInterview.created_by?.id,
+        updatedBy: firebaseJobInterview.updated_by?.id,
+        note: firebaseJobInterview.note,
+        rejectFeedback: firebaseJobInterview.reject_feedback,
+        room: firebaseJobInterview.room,
+      };
+      return data;
+    });
+
+    return interviews;
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webJobInterviewCreate,
   webJobInterviewGetByFilter,
   webJobInterviewGetById,
-  webJobInterviewUpdate
+  webJobInterviewGetUpcoming,
+  webJobInterviewUpdate,
 };

@@ -212,11 +212,13 @@ export interface candidatePreferences extends IBaseDatabaseInterface {
 export interface FirebaseCandidateData extends IBaseDatabaseInterface {
   uid: string;
   resumePhotoURL?: string;
+  titlePrefix?: string; // CAND-R02: Title prefix (mr, mrs, miss, etc.)
   firstnameTH?: string;
   lastnameTH?: string;
   nicknameTH?: string;
   email?: string;
   phone?: string;
+  gender?: string; // CAND-R02: Gender (male, female, etc.)
   addressLine1?: string;
   addressLine2?: string;
   subDistrict?: string;

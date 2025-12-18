@@ -22,7 +22,7 @@ const JobCard = ({ job, listJobFunctions, bordered }: jobCardProps) => {
   return (
     <Link href={`/jobs/${job.uid}`}>
       <div
-        className={`flex size-full flex-col items-start rounded-xl md:flex-row ${bordered && "border border-secondary-500"} bg-card p-5 text-left text-sm shadow-sm transition-all hover:shadow-lg`}
+        className={`flex size-full flex-col items-start rounded-xl md:flex-row ${bordered && "border border-neutral-100 hover:border-neutral-500"} bg-card p-5 text-left text-sm shadow-sm transition-all hover:shadow-lg`}
       >
         <div className="mb-3 size-[76px] shrink-0 overflow-hidden rounded-md md:mb-0">
           {job?.companyLogo ? (

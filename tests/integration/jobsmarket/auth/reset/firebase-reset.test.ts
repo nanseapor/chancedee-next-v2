@@ -2,15 +2,24 @@
  * Integration Tests for Password Reset - Real Firebase (AUTH-R04)
  * Per AUTH-R04 Implementation Plan
  *
- * Uses real Firebase Auth against dev environment
- * Requires .env.playwright credentials
+ * ⚠️ SKIPPED: These tests send real emails to Firebase.
+ *
+ * Reasons for skipping:
+ * - Cannot verify email received (no email access in automated tests)
+ * - Causes rate limiting after multiple runs (Firebase enforces ~5 requests/hour)
+ * - Domain whitelisting requires Firebase Console configuration
+ *
+ * Replaced by:
+ * - Unit tests with mocked Firebase (tests/unit/jobsmarket/auth/reset/password-reset.test.ts)
+ * - E2E UI tests with mocked requests (tests/e2e/jobsmarket/auth/reset.spec.ts)
+ * - Manual checklist for email delivery (docs/jobsmarket/MANUAL-TEST-CHECKLIST.md)
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, sendPasswordResetEmail, type Auth } from "firebase/auth";
 
-describe("Password Reset - Real Firebase Integration", () => {
+describe.skip("Password Reset - Real Firebase Integration (Manual Verification Only)", () => {
   let auth: Auth;
   let app: FirebaseApp;
 

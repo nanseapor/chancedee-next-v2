@@ -27,11 +27,13 @@ function transformToAppModel(
   const appModel: FirebaseCandidateData = {
     uid: firebaseModel.uid || "", // Placeholder, should always have value from Firestore
     resumePhotoURL: firebaseModel.resume_photo_url,
+    titlePrefix: firebaseModel.title_prefix,
     firstnameTH: firebaseModel.first_name_th,
     lastnameTH: firebaseModel.last_name_th,
     nicknameTH: firebaseModel.nick_name_th,
     email: firebaseModel.email,
     phone: firebaseModel.phone_number,
+    gender: firebaseModel.gender,
     addressLine1: firebaseModel.address_line_1,
     addressLine2: firebaseModel.address_line_2,
     district: firebaseModel.district,
@@ -153,11 +155,13 @@ function transformToFirebaseModel(
   return {
     uid: appModel.uid || "", // Will be overwritten by createDocument() with actual Firestore ID
     resume_photo_url: appModel.resumePhotoURL,
+    title_prefix: appModel.titlePrefix,
     first_name_th: appModel.firstnameTH,
     last_name_th: appModel.lastnameTH,
     nick_name_th: appModel.nicknameTH,
     email: appModel.email,
     phone_number: appModel.phone,
+    gender: appModel.gender,
     address_line_1: appModel.addressLine1,
     address_line_2: appModel.addressLine2,
     district: appModel.district,
@@ -169,7 +173,7 @@ function transformToFirebaseModel(
     area_of_expertise: appModel.areaOfExpertise,
     bloodgroup: appModel.bloodgroup,
     birthplace: appModel.birthplace,
-    birthdate: appModel.birthdate !== undefined ? Timestamp.fromMillis(appModel.birthdate) : undefined,
+    birthdate: (appModel.birthdate !== undefined && appModel.birthdate !== null && !isNaN(appModel.birthdate)) ? Timestamp.fromMillis(appModel.birthdate) : undefined,
     religion: appModel.religion,
     nationality: appModel.nationality,
     race: appModel.race,
