@@ -258,6 +258,10 @@ export interface FirebaseCandidateData extends IBaseDatabaseInterface {
   isPreferenceSet?: boolean;
   isFirstApplicantionRewarded?: boolean;
   isFirstInterviewerRewarded?: boolean;
+  // CAND-R03: Settings fields
+  autoAttachCoverLetter?: boolean;
+  defaultCoverLetter?: string;
+  emailJobRecommendations?: boolean;
 }
 
 /**

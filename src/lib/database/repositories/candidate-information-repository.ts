@@ -119,6 +119,10 @@ function transformToAppModel(
     isFirstInterviewerRewarded: firebaseModel.is_first_interviewer_rewarded || false,
     isNewUserRewarded: firebaseModel.is_new_user_rewarded || false,
     isResumeCompleted: firebaseModel.is_resume_completed || false,
+    // CAND-R03: Settings fields
+    autoAttachCoverLetter: firebaseModel.auto_attach_cover_letter,
+    defaultCoverLetter: firebaseModel.default_cover_letter,
+    emailJobRecommendations: firebaseModel.email_job_recommendations,
   };
 
   // Validate critical fields to ensure they are serializable
@@ -247,6 +251,10 @@ function transformToFirebaseModel(
     is_first_interviewer_rewarded: appModel.isFirstInterviewerRewarded || false,
     is_new_user_rewarded: appModel.isNewUserRewarded || false,
     is_resume_completed: appModel.isResumeCompleted || false,
+    // CAND-R03: Settings fields
+    auto_attach_cover_letter: appModel.autoAttachCoverLetter,
+    default_cover_letter: appModel.defaultCoverLetter,
+    email_job_recommendations: appModel.emailJobRecommendations,
   };
 }
 

@@ -116,7 +116,7 @@ export const FirebaseCandidateInformationSchema = BaseFirebaseSchema.extend({
   is_active: z.boolean(),
   is_searchable: z.boolean(),
   status: CandidateStatusSchema,
-  
+
   /** Verification and onboarding flags */
   is_verified: z.boolean().optional(),
   is_preference_set: z.boolean().optional(),
@@ -125,6 +125,11 @@ export const FirebaseCandidateInformationSchema = BaseFirebaseSchema.extend({
   is_new_user_rewarded: z.boolean().optional(),
   is_onboarded: z.boolean().optional(),
   is_resume_completed: z.boolean().optional(),
+
+  /** Settings fields (CAND-R03) */
+  auto_attach_cover_letter: z.boolean().optional(),
+  default_cover_letter: z.string().optional(),
+  email_job_recommendations: z.boolean().optional(),
 });
 
 /**
@@ -228,7 +233,7 @@ export const CandidateInformationDataSchema = BaseAppSchema.extend({
   isActive: z.boolean(),
   isSearchable: z.boolean(),
   status: CandidateStatusSchema,
-  
+
   /** Verification and onboarding flags */
   isOnboarded: z.boolean().optional(),
   isVerified: z.boolean().optional(),
@@ -237,6 +242,11 @@ export const CandidateInformationDataSchema = BaseAppSchema.extend({
   isFirstInterviewerRewarded: z.boolean().optional(),
   isNewUserRewarded: z.boolean().optional(),
   isResumeCompleted: z.boolean().optional(),
+
+  /** Settings fields (CAND-R03) */
+  autoAttachCoverLetter: z.boolean().optional(),
+  defaultCoverLetter: z.string().optional(),
+  emailJobRecommendations: z.boolean().optional(),
 });
 
 /**

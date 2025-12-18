@@ -489,6 +489,45 @@ const webCandidateSaveProfilePhoto = async (
   }
 };
 
+/**
+ * CAND-R03: Update candidate settings
+ * Partial update for settings page - supports multiple fields at once
+ */
+const webCandidateUpdateSettings = async (
+  uid: string,
+  settings: {
+    isSearchable?: boolean;
+    autoAttachCoverLetter?: boolean;
+    defaultCoverLetter?: string;
+    emailJobRecommendations?: boolean;
+  },
+  actorId: string
+) => {
+  try {
+    // Get existing record
+    const existing = await candidateInformationRepository.getById(uid);
+
+    if (!existing) {
+      throw new Error("Candidate information not found");
+    }
+
+    // Merge with existing data
+    const payload: FirebaseCandidateData = {
+      ...existing,
+      ...(settings.isSearchable !== undefined && { isSearchable: settings.isSearchable }),
+      ...(settings.autoAttachCoverLetter !== undefined && { autoAttachCoverLetter: settings.autoAttachCoverLetter }),
+      ...(settings.defaultCoverLetter !== undefined && { defaultCoverLetter: settings.defaultCoverLetter }),
+      ...(settings.emailJobRecommendations !== undefined && { emailJobRecommendations: settings.emailJobRecommendations }),
+      updatedAt: 0,
+    };
+
+    return await candidateInformationRepository.update(uid, payload, actorId);
+  } catch (e) {
+    const error = e as Error;
+    throw error;
+  }
+};
+
 export {
   webCandidateInformationCreate,
   webCandidateInformationDelete,
@@ -504,4 +543,5 @@ export {
   webCandidateSetIsOnboarded,
   webCandidateSetIsSearchable,
   webCandidateSaveProfilePhoto,
+  webCandidateUpdateSettings,
 };
