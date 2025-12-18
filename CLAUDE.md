@@ -80,67 +80,247 @@ Then visit the route you implemented in browser.
 
 ---
 
-### Gate 4: TESTS MUST RUN ⛔ STOP
+### Gate 4: TESTS MUST BE WRITTEN AND PASS ⛔ STOP
 
-Run the appropriate test command:
+> **⚠️ CRITICAL: NO DEFERRING TESTS**
+> 
+> You may NOT say "tests can be added later" or "I'll write tests in a follow-up."
+> Tests are part of the implementation, not a separate task.
+> **Implementation without tests = incomplete implementation.**
+
+#### Gate 4a: UNIT TESTS - 90%+ Coverage Required ⛔ STOP
+
+**What needs unit tests:**
+- All new functions and hooks you write
+- All server actions
+- All utility functions
+- All business logic
+
+**Coverage requirement:** 90%+ of YOUR new code (not imported libraries)
 
 ```bash
-# Unit tests
-npm run test:unit
+# Run unit tests with coverage
+npm run test:unit:coverage
 
-# E2E tests for specific route
-npx playwright test tests/e2e/jobsmarket/auth/login.spec.ts --project=chromium
+# View coverage report
+open coverage/index.html  # macOS
+xdg-open coverage/index.html  # Linux
 ```
 
 | Result | Action |
 |--------|--------|
-| ✅ All tests pass | Proceed to completion |
-| ⚠️ Some tests skipped (documented) | Proceed (note in checklist) |
-| ❌ Tests fail | **STOP. Either fix code OR document why test is wrong** |
-| ❌ Tests won't run | **STOP. FIX IT. DO NOT PROCEED.** |
+| ✅ All tests pass AND coverage ≥ 90% | Proceed to Gate 4b |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Coverage < 90% | **STOP. ADD MORE TESTS. DO NOT PROCEED.** |
 
----
+**Coverage checklist - ensure you test:**
+- [ ] Happy path (normal inputs)
+- [ ] All logic branches (if/else, switch cases)
+- [ ] Edge cases (empty arrays, null values, boundary conditions)
+- [ ] Error conditions (invalid inputs, thrown exceptions)
+- [ ] All exported functions
 
-### Gate 4a: E2E TEST CREDENTIALS
+**Unit test location:** `tests/unit/jobsmarket/{domain}/{feature}/`
 
-**Test credentials are available in `.env.playwright`**
-
-Before writing E2E tests that require authentication:
-
-```bash
-# Check available test credentials
-cat .env.playwright | grep -E "^(TEST_|E2E_)" 
-```
-
-**Usage in Playwright tests:**
-
+**Example unit test structure:**
 ```typescript
-test.describe("Tests requiring auth", () => {
-  const TEST_EMAIL = process.env.TEST_USER_EMAIL;
-  const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
-  
-  // Skip if credentials not available (CI environment)
-  test.skip(!TEST_EMAIL || !TEST_PASSWORD, 'Test credentials not configured');
+// tests/unit/jobsmarket/candidates/profile/use-profile-wizard.test.ts
+import { describe, it, expect, vi } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useProfileWizard } from "@/hooks/jobsmarket/use-profile-wizard";
 
-  test("should login successfully", async ({ page }) => {
-    await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-    // ...
+describe("useProfileWizard", () => {
+  describe("Initialization", () => {
+    it("should initialize with default values", () => {
+      const { result } = renderHook(() => useProfileWizard());
+      expect(result.current.currentStep).toBe(1);
+    });
+  });
+
+  describe("Navigation", () => {
+    it("should move to next step", () => { /* ... */ });
+    it("should not go beyond last step", () => { /* ... */ });
+    it("should handle invalid step number", () => { /* ... */ });
+  });
+
+  describe("Error Handling", () => {
+    it("should handle null input gracefully", () => { /* ... */ });
   });
 });
 ```
 
-**Rules:**
-- ✅ DO use `.env.playwright` credentials for auth flow tests
-- ✅ DO add `test.skip()` guard for missing credentials
-- ❌ DO NOT hardcode credentials in test files
-- ❌ DO NOT commit `.env.playwright` to git
-- ❌ DO NOT skip auth tests without trying credentials first
+---
 
-**If tests are skipped due to "missing credentials":**
-1. First verify `.env.playwright` exists
-2. Verify Playwright config loads it: `dotenv.config({ path: '.env.playwright' })`
-3. Only then mark as "skipped - credentials not in CI"
+#### Gate 4b: INTEGRATION TESTS Required ⛔ STOP
+
+**What needs integration tests:**
+- Server actions that interact with database
+- Services that combine multiple operations
+- API route handlers
+
+**Environment:** Uses real dev database (NOT Firebase emulator)
+
+```bash
+# Run integration tests
+npx vitest run --config vitest.integration.config.ts
+
+# With coverage
+npx vitest run --config vitest.integration.config.ts --coverage
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ All integration tests pass | Proceed to Gate 4c |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ⚠️ No DB actions implemented | Skip to Gate 4c (document reason) |
+
+**Integration test location:** `tests/integration/jobsmarket/{domain}/`
+
+**Example integration test structure:**
+```typescript
+// tests/integration/jobsmarket/candidates/profile/profile-actions.test.ts
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { webCandidateSaveAboutMe } from "@/lib/database/actions/candidate-information";
+
+describe("Profile Actions Integration", () => {
+  const testUserId = "test-integration-user";
+
+  beforeEach(async () => {
+    // Setup test data in real dev database
+  });
+
+  afterEach(async () => {
+    // Clean up test data
+  });
+
+  it("should save about me to database", async () => {
+    const result = await webCandidateSaveAboutMe(testUserId, "Test about me");
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+---
+
+#### Gate 4c: E2E TESTS Required ⛔ STOP
+
+**What needs E2E tests:**
+- Every route/page you implement
+- All user flows defined in the RIS specification
+- Invalid input handling (form validation, error states)
+- Edge cases that can be tested via UI
+
+**E2E test requirements per RIS:**
+1. **All user flows** - Every flow described in the RIS must have a corresponding E2E test
+2. **Invalid inputs** - Test form validation, error messages, boundary conditions
+3. **Error states** - Test network errors, permission denied, not found states
+4. **Cross-browser** - Must pass on Chromium (other browsers optional)
+
+```bash
+# Run E2E tests for specific route
+npx playwright test tests/e2e/jobsmarket/auth/login.spec.ts --project=chromium
+
+# Run all E2E tests for a domain
+npx playwright test tests/e2e/jobsmarket/candidates/ --project=chromium
+
+# Run with UI for debugging
+npx playwright test --ui
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ All E2E tests pass | Proceed to completion |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Missing RIS flow coverage | **STOP. ADD TESTS. DO NOT PROCEED.** |
+
+**E2E test location:** `tests/e2e/jobsmarket/{domain}/`
+
+**E2E Test Credential Handling:**
+
+Test credentials are in `.env.playwright`. Check before writing auth tests:
+
+```bash
+cat .env.playwright | grep -E "^(TEST_|E2E_)"
+```
+
+**Example E2E test structure:**
+```typescript
+// tests/e2e/jobsmarket/auth/login.spec.ts
+import { test, expect } from "@playwright/test";
+
+test.describe("Login Page - AUTH-R01", () => {
+  const TEST_EMAIL = process.env.TEST_USER_EMAIL;
+  const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
+
+  test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
+
+  test.describe("Happy Path - User Flows from RIS", () => {
+    test("should login with valid credentials", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
+      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page).toHaveURL(/dashboard/);
+    });
+  });
+
+  test.describe("Invalid Inputs - Validation", () => {
+    test("should show error for invalid email format", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill("invalid-email");
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/รูปแบบอีเมลไม่ถูกต้อง/)).toBeVisible();
+    });
+
+    test("should show error for empty password", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/กรุณากรอกรหัสผ่าน/)).toBeVisible();
+    });
+  });
+
+  test.describe("Error States", () => {
+    test("should show error for wrong credentials", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill("wrong@example.com");
+      await page.getByPlaceholder("กรอกรหัสผ่าน").fill("wrongpassword");
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/อีเมลหรือรหัสผ่านไม่ถูกต้อง/)).toBeVisible();
+    });
+  });
+});
+```
+
+---
+
+### 🚫 ANTI-PATTERNS: What You Must NEVER Do
+
+#### ❌ NEVER Defer Tests
+
+| ❌ WRONG - Immediate rejection | ✅ CORRECT |
+|-------------------------------|------------|
+| "I'll add tests later" | Write tests NOW as part of implementation |
+| "Tests can be added in a follow-up PR" | Tests are in THIS PR |
+| "The code works, tests are optional" | Tests are MANDATORY, not optional |
+| "I've implemented the feature, just need tests" | Feature is NOT implemented without tests |
+| "Due to time constraints, skipping tests" | There are no time constraints for tests |
+
+#### ❌ NEVER Skip Test Types
+
+| Implementation Type | Required Tests | You May NOT Skip |
+|--------------------|----------------|------------------|
+| Hook/Utility function | Unit tests (90%+ coverage) | ❌ Cannot skip |
+| Server action | Unit tests + Integration tests | ❌ Cannot skip |
+| Page/Route | Unit tests + E2E tests | ❌ Cannot skip |
+| Full feature | Unit + Integration + E2E | ❌ Cannot skip |
+
+#### ❌ NEVER Declare Complete Without Evidence
+
+You must provide **actual test output** showing:
+- Unit test pass count and coverage percentage
+- Integration test pass count (if applicable)
+- E2E test pass count
 
 ---
 
@@ -155,18 +335,46 @@ You may ONLY say implementation is complete when ALL of these are true:
 - [ ] Gate 1: `npm run build` → exits with code 0
 - [ ] Gate 2: `npm run lint` → no errors (warnings OK)
 - [ ] Gate 3: `npm run dev` → route loads in browser without errors
-- [ ] Gate 4: Tests run → X passed, Y skipped, 0 failed
+- [ ] Gate 4a: Unit tests → X passed, 0 failed, **coverage ≥ 90%**
+- [ ] Gate 4b: Integration tests → X passed, 0 failed (or N/A with reason)
+- [ ] Gate 4c: E2E tests → X passed, 0 failed, **all RIS flows covered**
 
-### Evidence (paste actual output)
-**Build output:**
+### Test Evidence (REQUIRED - paste actual output)
+
+**Unit Test Coverage:**
 ```
-[paste last few lines showing success]
+[paste coverage summary showing ≥ 90%]
+File                  | % Stmts | % Branch | % Funcs | % Lines |
+----------------------|---------|----------|---------|---------|
+your-new-file.ts      |   95.2  |   92.3   |  100    |   95.2  |
 ```
 
-**Test output:**
+**Unit Test Results:**
 ```
-[paste summary showing pass/fail counts]
+✓ tests/unit/jobsmarket/.../your-test.test.ts (X tests)
+Test Files  X passed
+Tests       X passed
 ```
+
+**Integration Test Results:**
+```
+✓ tests/integration/jobsmarket/.../your-test.test.ts (X tests)
+Test Files  X passed
+Tests       X passed
+```
+
+**E2E Test Results:**
+```
+Running X tests using Y workers
+  ✓ tests/e2e/jobsmarket/.../your-test.spec.ts:XX:X › Test name (Xs)
+  X passed
+```
+
+### RIS Flow Coverage (REQUIRED for routes)
+- [ ] Flow 1: [flow name from RIS] → tested in `test-file.spec.ts`
+- [ ] Flow 2: [flow name from RIS] → tested in `test-file.spec.ts`
+- [ ] Invalid inputs tested: [list what you tested]
+- [ ] Error states tested: [list what you tested]
 
 ### Manual Verification
 - [ ] Visited route in browser: [URL]
@@ -189,9 +397,65 @@ These errors are YOUR responsibility. Human reviews logic and specs, not compila
 | Import/export errors | Gate 1 | ❌ Never |
 | Lint errors | Gate 2 | ❌ Never |
 | Page crash on load | Gate 3 | ❌ Never |
-| Test won't run | Gate 4 | ❌ Never |
+| Missing unit tests | Gate 4a | ❌ Never |
+| Coverage < 90% | Gate 4a | ❌ Never |
+| Missing integration tests | Gate 4b | ❌ Never |
+| Missing E2E tests | Gate 4c | ❌ Never |
 | Test assertion failures | Gate 4 | ⚠️ Only if spec unclear |
 | Logic/spec questions | N/A | ✅ Yes, ask |
+
+---
+
+## Test Writing Guidelines
+
+### Unit Test Best Practices
+
+1. **Test file naming:** `{component-or-function-name}.test.ts(x)`
+2. **Organize with describe blocks:** Group by functionality
+3. **Test all branches:** Every if/else, every switch case
+4. **Test edge cases:** null, undefined, empty arrays, boundary values
+5. **Mock external dependencies:** Don't test imported libraries
+
+```typescript
+// ✅ Good: Tests all branches
+describe("calculateDiscount", () => {
+  it("returns 0 for amounts below threshold", () => { /* ... */ });
+  it("returns 10% for amounts between 100-500", () => { /* ... */ });
+  it("returns 20% for amounts above 500", () => { /* ... */ });
+  it("handles null amount gracefully", () => { /* ... */ });
+  it("handles negative amounts", () => { /* ... */ });
+});
+
+// ❌ Bad: Only tests happy path
+describe("calculateDiscount", () => {
+  it("calculates discount", () => { /* only tests one case */ });
+});
+```
+
+### Integration Test Best Practices
+
+1. **Use real dev database** - NOT Firebase emulator
+2. **Clean up after tests** - Remove test data in afterEach
+3. **Use unique test identifiers** - Prevent collision with real data
+4. **Test complete operations** - Create → Read → Update → Delete
+
+### E2E Test Best Practices
+
+1. **One test file per RIS route**
+2. **Use descriptive test names** - Reference RIS flow
+3. **Test user perspective** - Not implementation details
+4. **Use accessible selectors** - getByRole, getByLabel, getByText
+5. **Handle async properly** - Use waitFor, expect with retry
+
+```typescript
+// ✅ Good: Accessible selectors, clear intent
+await page.getByRole("button", { name: /บันทึก/ }).click();
+await expect(page.getByText(/บันทึกสำเร็จ/)).toBeVisible();
+
+// ❌ Bad: Implementation-dependent selectors
+await page.click(".btn-primary");
+await page.waitForSelector(".toast-success");
+```
 
 ---
 
@@ -256,158 +520,29 @@ export default function LoginPage() {
 // src/app/jobsmarket/auth/login/_components/LoginClient.tsx
 "use client"
 export function LoginClient() {
-  const [email, setEmail] = useState('')  // OK - client component
-  // ...
+  const [email, setEmail] = useState('')
+  // ... interactive logic
 }
 ```
 
 ---
 
-## Commands Reference
+## Design System Quick Reference
 
-```bash
-# Gate 1 - Build
-npm run build         # MUST pass before completion
+### Color Usage
 
-# Gate 2 - Lint
-npm run lint          # MUST have no errors
+| Color | Token | Usage |
+|-------|-------|-------|
+| **Teal** (Primary brand) | `secondary-*` | Navigation, headers, icons, links |
+| **Orange** (Action) | `primary-*` | ONE primary CTA per section only |
+| **Gray** | `gray-*` | Text, borders, backgrounds |
+| **Semantic** | `red/green/amber` | Error/Success/Warning states |
 
-# Gate 3 - Dev server
-npm run dev           # Then visit route in browser
+### Typography Scale
 
-# Gate 4 - Tests
-npm run test:unit                    # Unit tests (Vitest)
-npm run test:integration             # Integration tests
-npm run test:e2e                     # All E2E tests (Playwright)
-
-# Quick E2E for specific file
-npx playwright test tests/e2e/jobsmarket/auth/login.spec.ts --project=chromium
-```
-
----
-
-## Architecture Overview
-
-This is a Thai-language career/lifestyle content platform built with Next.js 16 (App Router) and React 19.
-
-### Multi-Subdomain Structure
-
-```
-src/app/
-├── api/                    # Shared API routes
-├── content/(body)/         # Content subdomain (chancedee.com)
-└── jobsmarket/             # Jobs subdomain (jobs.chancedee.com) ← OUR FOCUS
-```
-
-### Data Layer
-
-**Two Backend Systems:**
-1. **Directus CMS** (`src/lib/directus.ts`) - Blog/content management via REST API
-2. **Firebase Admin** (`src/lib/firebase-admin.ts`) - User/business data
-
-**Repository Pattern for Firebase:**
-- `src/lib/database/repositories/` - Type-safe data access with generic factory
-- `src/lib/database/schemas/` - Zod schemas for validation
-- `src/lib/database/actions/` - Server actions for each domain
-
-### State Management
-
-- **Jotai** for global client state (`src/store/`)
-- **SWR** for server data fetching
-
-### UI Components
-
-- **shadcn/ui** components in `src/components/ui/`
-- **Tailwind CSS v4** with CSS variables
-- Utility: `cn()` from `src/lib/utils.ts`
-
-### Path Alias
-
-`@/*` maps to `./src/*`
-
----
-
-## 🎨 Design System
-
-### Design Guidelines Reference
-
-**Full specification:** `docs/jobsmarket/design-systems/chancedee-design-guidelines.md`
-
-### Brand Identity
-
-ChanceDee is a Thai recruitment platform with these design principles:
-
-| Principle | Description |
-|-----------|-------------|
-| **Professional** | Clean, trustworthy, corporate-appropriate |
-| **Modern** | Contemporary UI patterns, minimal visual noise |
-| **Warm** | Approachable through color, not overly cold/sterile |
-| **Thai-First** | Optimized for Thai language (Kanit font) readability |
-
-### Brand Assets
-
-**Icons & Logos:**
-```
-public/icons/brand/          # Brand icons (favicons, app icons)
-public/images/               # Brand images, illustrations
-```
-
-Use these paths when referencing brand assets in components:
-```typescript
-// ✅ CORRECT
-<Image src="/icons/brand/logo.svg" alt="ChanceDee" />
-<Image src="/images/hero-illustration.png" alt="..." />
-```
-
----
-
-### Color System (Tailwind Config)
-
-Colors are pre-configured in `tailwind.config.ts`. Use Tailwind classes directly.
-
-#### Primary (Orange) — Use Sparingly (20%)
-CTAs, brand moments, key actions only.
-
-| Token | Hex | Usage | Tailwind Class |
-|-------|-----|-------|----------------|
-| `primary-50` | `#FDF7EF` | Hover tints, subtle backgrounds | `bg-primary-50` |
-| `primary-100` | `#FBEDD9` | Selected states | `bg-primary-100` |
-| `primary-600` | `#DB6726` | **DEFAULT — Primary buttons** | `bg-primary` |
-| `primary-900` | `#71331D` | Hover state | `hover:bg-primary-900` |
-| `primary-foreground` | `#FDF7EF` | Text on primary | `text-primary-foreground` |
-
-#### Secondary (Teal) — Use Generously (80%)
-Navigation, links, icons, supporting UI.
-
-| Token | Hex | Usage | Tailwind Class |
-|-------|-----|-------|----------------|
-| `secondary-50` | `#F1FAFA` | Page/card backgrounds | `bg-secondary-50` |
-| `secondary-500` | `#3790A3` | Text links | `text-secondary-500` |
-| `secondary-600` | `#30768A` | Link hover, nav active | `hover:text-secondary-600` |
-| `secondary-700` | `#2D6071` | Icons, outline button text | `text-secondary-700` |
-| `secondary-900` | `#284450` | **DEFAULT — Secondary buttons** | `bg-secondary` |
-| `secondary-foreground` | `#F1FAFA` | Text on secondary | `text-secondary-foreground` |
-
-#### Semantic Colors
-
-| Purpose | Background | Text | Icon |
-|---------|------------|------|------|
-| **Success** | `bg-green-100` | `text-green-700` | ✓ |
-| **Warning** | `bg-amber-100` | `text-amber-700` | ⚠ |
-| **Error** | `bg-red-50` | `text-red-600` | ✕ |
-| **Info** | `bg-blue-50` | `text-blue-700` | ℹ |
-
-> ⚠️ Use `red-600` (#DC2626) for errors to distinguish from primary orange.
-
----
-
-### Typography
-
-**Font:** Kanit (Thai-optimized)
-
-| Element | Tailwind Classes |
-|---------|------------------|
-| H1 | `text-3xl font-semibold tracking-wide leading-tight` |
+| Element | Classes |
+|---------|---------|
+| H1 | `text-3xl font-semibold tracking-wide leading-snug` |
 | H2 | `text-2xl font-semibold tracking-wide leading-snug` |
 | H3 | `text-xl font-medium tracking-wide leading-normal` |
 | Body | `text-base font-normal tracking-wider leading-relaxed` |
@@ -563,11 +698,15 @@ Before implementing any route:
 5. **Check** for reusable code in `src/lib/database/actions/` and `src/domains/`
 6. **Create** an implementation plan (template in PROJECT_INSTRUCTIONS §5.3)
 7. **Wait** for human approval before coding
-8. **Write tests first** (TDD)
+8. **Write tests first** (TDD approach):
+   - Write unit tests for functions/hooks
+   - Write integration tests for server actions
+   - Write E2E tests for user flows
 9. **Implement** to pass tests
-10. **Run ALL quality gates** (Gates 1-4)
-11. **Fill completion checklist** with evidence
-12. **Create PR** with conventional commit message
+10. **Verify coverage** ≥ 90% for unit tests
+11. **Run ALL quality gates** (Gates 1-4)
+12. **Fill completion checklist** with evidence
+13. **Create PR** with conventional commit message
 
 ---
 
@@ -581,9 +720,9 @@ Before implementing any route:
 | Domain services | `src/domains/{domain}/services/` (shared, ask before creating new) |
 | Hooks | `src/hooks/jobsmarket/` |
 | Atoms | `src/store/jobsmarket/` |
-| Unit tests | `tests/unit/jobsmarket/` |
-| Integration tests | `tests/integration/jobsmarket/` |
-| E2E tests | `tests/e2e/jobsmarket/` |
+| Unit tests | `tests/unit/jobsmarket/{domain}/{feature}/` |
+| Integration tests | `tests/integration/jobsmarket/{domain}/` |
+| E2E tests | `tests/e2e/jobsmarket/{domain}/` |
 
 ---
 
@@ -623,8 +762,12 @@ docs/
         └── chancedee-design-guidelines.md  # ← DESIGN REFERENCE
 
 tests/
-└── {unit|integration|e2e}/
-    └── jobsmarket/         # All tests ← CREATE HERE
+├── unit/
+│   └── jobsmarket/         # Unit tests ← CREATE HERE
+├── integration/
+│   └── jobsmarket/         # Integration tests ← CREATE HERE
+└── e2e/
+    └── jobsmarket/         # E2E tests ← CREATE HERE
 ```
 
 ---
