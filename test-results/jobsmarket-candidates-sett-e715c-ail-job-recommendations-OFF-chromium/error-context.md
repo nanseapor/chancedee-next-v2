@@ -66,7 +66,7 @@
                     - text: อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน
                     - paragraph [ref=e84]: เมื่อเปิด บริษัทจะสามารถค้นหาและดูโปรไฟล์ของคุณได้
                     - paragraph [ref=e85]: Allow companies to find my profile
-                  - switch "อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน" [ref=e87] [cursor=pointer]
+                  - switch "อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน" [checked] [ref=e87] [cursor=pointer]
               - generic [ref=e89]:
                 - generic [ref=e90]:
                   - heading "การตั้งค่าการสมัคร" [level=2] [ref=e91]
@@ -76,31 +76,25 @@
                     - text: แนบจดหมายสมัครงานอัตโนมัติ
                     - paragraph [ref=e95]: ใช้จดหมายสมัครงานเริ่มต้นเมื่อสมัครงาน
                     - paragraph [ref=e96]: Auto-attach cover letter
-                  - switch "แนบจดหมายสมัครงานอัตโนมัติ" [checked] [ref=e98] [cursor=pointer]
-                - generic [ref=e99]:
-                  - generic [ref=e101]: "จดหมายสมัครงานเริ่มต้น:"
-                  - textbox "จดหมายสมัครงานเริ่มต้น:" [ref=e102]:
-                    - /placeholder: เขียนจดหมายสมัครงานเริ่มต้นของคุณ...
-                    - text: E2E Test Cover Letter - 1766048067504
-                  - paragraph [ref=e103]: 37/2000 ตัวอักษร
-              - generic [ref=e105]:
-                - generic [ref=e106]:
-                  - heading "การแจ้งเตือนงาน" [level=2] [ref=e107]
-                  - paragraph [ref=e108]: Job Notifications
-                - generic [ref=e109]:
-                  - generic [ref=e110]:
+                  - switch "แนบจดหมายสมัครงานอัตโนมัติ" [ref=e98] [cursor=pointer]
+              - generic [ref=e100]:
+                - generic [ref=e101]:
+                  - heading "การแจ้งเตือนงาน" [level=2] [ref=e102]
+                  - paragraph [ref=e103]: Job Notifications
+                - generic [ref=e104]:
+                  - generic [ref=e105]:
                     - text: รับงานแนะนำทางอีเมล
-                    - paragraph [ref=e111]: รับอีเมลแนะนำงานที่ตรงกับโปรไฟล์ของคุณ
-                    - paragraph [ref=e112]: Receive job recommendations via email
-                  - switch "รับงานแนะนำทางอีเมล" [checked] [ref=e114] [cursor=pointer]
-                - generic [ref=e116]:
-                  - generic [ref=e117]:
+                    - paragraph [ref=e106]: รับอีเมลแนะนำงานที่ตรงกับโปรไฟล์ของคุณ
+                    - paragraph [ref=e107]: Receive job recommendations via email
+                  - switch "รับงานแนะนำทางอีเมล" [checked] [ref=e109] [cursor=pointer]
+                - generic [ref=e111]:
+                  - generic [ref=e112]:
                     - text: รับการแจ้งเตือนแบบ Push
-                    - paragraph [ref=e118]: เปิดการแจ้งเตือนแบบ push บนอุปกรณ์ของคุณ
-                    - paragraph [ref=e119]: Receive push notifications
-                    - paragraph [ref=e120]: เร็วๆ นี้ (Coming soon)
-                  - switch [disabled] [ref=e121]
-  - button "Open Next.js Dev Tools" [ref=e127] [cursor=pointer]:
-    - img [ref=e128]
-  - alert [ref=e131]
+                    - paragraph [ref=e113]: เปิดการแจ้งเตือนแบบ push บนอุปกรณ์ของคุณ
+                    - paragraph [ref=e114]: Receive push notifications
+                    - paragraph [ref=e115]: เร็วๆ นี้ (Coming soon)
+                  - switch [disabled] [ref=e116]
+  - button "Open Next.js Dev Tools" [ref=e122] [cursor=pointer]:
+    - img [ref=e123]
+  - alert [ref=e126]
 ```

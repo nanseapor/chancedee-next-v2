@@ -13,14 +13,6 @@ import { test, expect, Page } from "@playwright/test";
  *
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/settings.spec.ts --project=chromium
  *
- * NOTE: 9 tests skipped due to Firebase async timing issues.
- * The functionality works correctly (verified by 74 unit tests + 20 integration tests + manual testing).
- *
- * Tech Debt: TD-CAND-004 - Improve E2E waits for Firebase operations
- * - Need longer waits after toggle clicks before refresh
- * - Need explicit wait for SWR revalidation complete
- * - Need network idle waits for Firestore writes
- *
  * @see tests/unit/jobsmarket/candidates/settings/ - 74 tests, 100% component coverage
  * @see tests/integration/jobsmarket/candidates/settings.test.ts - 20 tests, 100% DB coverage
  */
@@ -141,9 +133,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
   });
 
   test.describe("Profile Visibility Toggle", () => {
-    test.skip("should toggle profile visibility ON", async ({ page }) => {
-      // SKIP: Firebase timing - state doesn't persist before refresh
-      // Verified by integration tests
+    test("should toggle profile visibility ON", async ({ page }) => {
       const toggle = page.getByRole("switch", {
         name: /อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน/i,
       });
@@ -190,8 +180,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await expect(toggleAfterRefresh).toBeChecked();
     });
 
-    test.skip("should toggle profile visibility OFF", async ({ page }) => {
-      // SKIP: Firebase timing - state doesn't persist before refresh
+    test("should toggle profile visibility OFF", async ({ page }) => {
       const toggle = page.getByRole("switch", {
         name: /อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน/i,
       });
@@ -257,8 +246,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
   });
 
   test.describe("Application Preferences - Cover Letter", () => {
-    test.skip("should show textarea when cover letter toggle is enabled", async ({
-      // SKIP: Textarea doesn't appear immediately (SWR revalidation delay)
+    test("should show textarea when cover letter toggle is enabled", async ({
       page,
     }) => {
       const toggle = page.getByRole("switch", {
@@ -296,8 +284,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await expect(textarea).toBeVisible();
     });
 
-    test.skip("should hide textarea when cover letter toggle is disabled", async ({
-      // SKIP: Same SWR timing issue
+    test("should hide textarea when cover letter toggle is disabled", async ({
       page,
     }) => {
       const toggle = page.getByRole("switch", {
@@ -326,8 +313,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await expect(textarea).not.toBeVisible();
     });
 
-    test.skip("should update character count when typing in cover letter", async ({
-      // SKIP: Textarea not visible due to timing
+    test("should update character count when typing in cover letter", async ({
       page,
     }) => {
       const toggle = page.getByRole("switch", {
@@ -357,8 +343,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       ).toBeVisible();
     });
 
-    test.skip("should auto-save cover letter after debounce delay", async ({
-      // SKIP: Textarea not visible + persistence timing
+    test("should auto-save cover letter after debounce delay", async ({
       page,
     }) => {
       const toggle = page.getByRole("switch", {
@@ -405,8 +390,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await expect(textareaAfterRefresh).toHaveValue(testText);
     });
 
-    test.skip("should enforce 2000 character limit", async ({ page }) => {
-      // SKIP: Textarea not visible
+    test("should enforce 2000 character limit", async ({ page }) => {
       const toggle = page.getByRole("switch", {
         name: /แนบจดหมายสมัครงานอัตโนมัติ/i,
       });
@@ -435,8 +419,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
   });
 
   test.describe("Notification Preferences", () => {
-    test.skip("should toggle email job recommendations ON", async ({ page }) => {
-      // SKIP: Firebase persistence timing
+    test("should toggle email job recommendations ON", async ({ page }) => {
       const toggle = page.getByRole("switch", {
         name: /รับงานแนะนำทางอีเมล/i,
       });
@@ -469,8 +452,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await expect(toggleAfterRefresh).toBeChecked();
     });
 
-    test.skip("should toggle email job recommendations OFF", async ({ page }) => {
-      // SKIP: Firebase persistence timing
+    test("should toggle email job recommendations OFF", async ({ page }) => {
       const toggle = page.getByRole("switch", {
         name: /รับงานแนะนำทางอีเมล/i,
       });
