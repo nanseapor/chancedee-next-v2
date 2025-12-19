@@ -188,13 +188,17 @@ test.describe("CAND-R03: Candidate Settings", () => {
       // Get current state
       const initialState = await toggle.isChecked();
 
-      // If already OFF, turn ON first
-      if (!initialState) {
+      // If already ON, turn OFF first to get to known state
+      if (initialState) {
         await toggle.click();
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(2000);
       }
 
-      // Now toggle OFF
+      // Now toggle it ON (so we can toggle OFF in the actual test)
+      await toggle.click();
+      await page.waitForTimeout(2000);
+
+      // Now toggle OFF (the actual test)
       await toggle.click();
 
       // Wait for loading state to appear and disappear
