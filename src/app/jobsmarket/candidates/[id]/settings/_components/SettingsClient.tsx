@@ -33,7 +33,7 @@ export function SettingsClient({ candidateId }: SettingsClientProps) {
   const { user: firebaseUser, loading: authLoading } = useFirebaseAuth();
 
   // Fetch candidate data using SWR
-  const { data: candidate, isLoading: candidateLoading } = useSWR(
+  const { data: candidate, isLoading: candidateLoading, mutate } = useSWR(
     candidateId ? ["candidate", candidateId] : null,
     ([, id]) => webCandidateInformationGetById(id),
     {
@@ -99,8 +99,9 @@ export function SettingsClient({ candidateId }: SettingsClientProps) {
         );
       }
 
+      // Update SWR cache to reflect new value immediately
+      mutate();
       addToast("บันทึกแล้ว", "success");
-      // No router.refresh() needed - SWR will update automatically on next revalidation
     } catch (error) {
       console.error(`Error toggling ${field}:`, error);
       addToast("บันทึกไม่สำเร็จ กรุณาลองใหม่", "error");
@@ -125,6 +126,8 @@ export function SettingsClient({ candidateId }: SettingsClientProps) {
           { defaultCoverLetter: text },
           candidate.uid
         );
+        // Update SWR cache
+        mutate();
         addToast("บันทึกจดหมายสมัครงานแล้ว", "success");
       } catch (error) {
         console.error("Error saving cover letter:", error);
@@ -133,7 +136,7 @@ export function SettingsClient({ candidateId }: SettingsClientProps) {
         setSavingStates((prev) => ({ ...prev, coverLetter: false }));
       }
     },
-    [candidate, addToast]
+    [candidate, addToast, mutate]
   );
 
   /**

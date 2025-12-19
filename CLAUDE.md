@@ -69,7 +69,7 @@ npm run lint
 npm run dev
 ```
 
-Then visit the route you implemented in browser.
+Then visit the route you implemented in browser using playwright MCP.
 
 | Result | Action |
 |--------|--------|
