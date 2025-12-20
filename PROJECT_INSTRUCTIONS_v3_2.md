@@ -1,7 +1,7 @@
 # ChanceDee Project Instructions
 
-**Version:** 3.1  
-**Last Updated:** 2025-12-12  
+**Version:** 3.2  
+**Last Updated:** 2025-12-20  
 **Project:** ChanceDee Platform - Jobs Subdomain (Next.js 16 + React 19)  
 **Phase:** Implementation
 
@@ -31,7 +31,7 @@ A **CVSS 10.0 CVE in React 19** forced an emergency upgrade to Next.js 16. The u
 
 ### 1.3 Implementation Goal
 
-Implement all routes in `src/app/jobsmarket/` according to RIS and BLS specifications using TDD approach.
+Implement all routes in `src/app/jobsmarket/` according to RIS and BLS specifications using TDD approach with mandatory quality gates.
 
 ---
 
@@ -215,8 +215,8 @@ Design Systems (appearance)
 1. PLAN      → Claude Code reads RIS + BLS, creates implementation plan
 2. DISCUSS   → Human brings plan to Claude Chat for SA review
 3. APPROVE   → Human approves plan (or requests changes)
-4. IMPLEMENT → Claude Code writes tests first, then implementation
-5. VERIFY    → Claude Code runs tests, ensures all pass
+4. IMPLEMENT → Claude Code writes tests first (TDD), then implementation
+5. VERIFY    → Claude Code runs ALL quality gates (Section 7)
 6. PR        → Claude Code creates PR with conventional commit
 7. REVIEW    → Human + Claude Chat review PR
 8. MERGE     → Human merges after approval
@@ -247,7 +247,7 @@ When starting a new route, Claude Code must create a plan in this format:
 
 | Action | Source | Signature | New/Reuse |
 |--------|--------|-----------|-----------|
-| `{actionName}` | BLS-{NN} §{N} | `(input) => Promise<Result>` | New / Reuse from {path} |
+| `{actionName}` | BLS-{NN} §{N} | `(input) => Promise<R>` | New / Reuse from {path} |
 
 ### 3. State Management
 
@@ -257,11 +257,11 @@ When starting a new route, Claude Code must create a plan in this format:
 
 ### 4. Test Coverage Plan
 
-| Type | Test Case | Covers |
-|------|-----------|--------|
-| Unit | {description} | {state/action} |
-| Integration | {description} | {workflow} |
-| E2E | {description} | {user journey} |
+| Type | Test File | Test Cases | Count |
+|------|-----------|------------|-------|
+| Unit | `{component}.test.tsx` | {description} | {N} |
+| Integration | `{feature}.test.ts` | {description} | {N} |
+| E2E | `{route}.spec.ts` | {description} | {N} |
 
 ### 5. State Machine Verification
 
@@ -292,6 +292,15 @@ When starting a new route, Claude Code must create a plan in this format:
 | Server Actions | {N} new, {M} reuse |
 | Test Cases | {N} unit, {M} integration, {K} e2e |
 | Effort | {Low/Medium/High} |
+
+### 10. Quality Gate Checklist
+
+- [ ] Gate 1: Build passes
+- [ ] Gate 2: Lint passes
+- [ ] Gate 3: Dev server + browser test passes
+- [ ] Gate 4a: Unit tests 90%+ coverage
+- [ ] Gate 4b: Integration tests pass
+- [ ] Gate 4c: E2E tests cover all RIS flows
 ```
 
 ---
@@ -337,16 +346,16 @@ Follow the Wave-based order from RIS documents:
 | Order | RIS | Route | Filesystem Path | Priority |
 |-------|-----|-------|-----------------|----------|
 | 18 | COMP-R04 | `/companies/[id]/dashboard` | `src/app/jobsmarket/companies/[id]/dashboard/` | P0 |
-| 19 | COMP-R05 | `/companies/[id]/dashboard/jobs` | `src/app/jobsmarket/companies/[id]/dashboard/jobs/` | P0 |
-| 20 | COMP-R06 | `/companies/[id]/dashboard/jobs/new` | `src/app/jobsmarket/companies/[id]/dashboard/jobs/new/` | P0 |
-| 21 | COMP-R07 | `/companies/[id]/dashboard/jobs/[jobId]` | `src/app/jobsmarket/companies/[id]/dashboard/jobs/[jobId]/` | P0 |
+| 19 | COMP-R05 | `/companies/[id]/jobs` | `src/app/jobsmarket/companies/[id]/jobs/` | P0 |
+| 20 | COMP-R06 | `/companies/[id]/jobs/new` | `src/app/jobsmarket/companies/[id]/jobs/new/` | P0 |
+| 21 | COMP-R07 | `/companies/[id]/jobs/[jobId]` | `src/app/jobsmarket/companies/[id]/jobs/[jobId]/` | P0 |
 
 ### Wave 4: Applications
 
 | Order | RIS | Route | Filesystem Path | Priority |
 |-------|-----|-------|-----------------|----------|
 | 22 | CAND-R04 | `/candidates/[id]/applications` | `src/app/jobsmarket/candidates/[id]/applications/` | P0 |
-| 23 | COMP-R08 | `/companies/[id]/dashboard/applications` | `src/app/jobsmarket/companies/[id]/dashboard/applications/` | P0 |
+| 23 | COMP-R08 | `/companies/[id]/applications` | `src/app/jobsmarket/companies/[id]/applications/` | P0 |
 
 ### Wave 5: Communication
 
@@ -361,22 +370,19 @@ Follow the Wave-based order from RIS documents:
 |-------|-----|-------|-----------------|----------|
 | 26 | NOTIF-R01 | `/notifications` | `src/app/jobsmarket/notifications/` | P1 |
 
-### Wave 7: Supporting
+### Wave 7: Wallet
 
 | Order | RIS | Route | Filesystem Path | Priority |
 |-------|-----|-------|-----------------|----------|
-| 27 | CAND-R05 | `/candidates/[id]/saved` | `src/app/jobsmarket/candidates/[id]/saved/` | P1 |
-| 28 | WALLET-R01 | `/wallet` | `src/app/jobsmarket/wallet/` | P1 |
+| 27 | WALLET-R01 | `/candidates/[id]/wallet` | `src/app/jobsmarket/candidates/[id]/wallet/` | P1 |
 
-### Wave 8: Admin (Lower Priority)
+### Wave 8: Admin
 
 | Order | RIS | Route | Filesystem Path | Priority |
 |-------|-----|-------|-----------------|----------|
-| 29+ | ADM-R01-R10 | `/platform/*` | `src/app/jobsmarket/platform/` | P2 |
+| 28-37 | ADM-R01 to ADM-R10 | `/platform/*` | `src/app/jobsmarket/platform/` | P1 |
 
----
-
-### 6.1 Critical Gaps (from Gap Analysis)
+### 6.1 Critical Gaps (P0)
 
 The gap analysis identified features missing from the old system migration. These should be prioritized within their respective waves:
 
@@ -394,9 +400,394 @@ The gap analysis identified features missing from the old system migration. Thes
 
 ---
 
-## 7. Testing Strategy
+## 7. Quality Gates (MANDATORY)
 
-### 7.1 Test Structure
+### ⛔ READ THIS FIRST - NON-NEGOTIABLE
+
+These gates are **BLOCKING**. You may NOT proceed past any gate until it passes.
+You may NOT report "implementation complete" until ALL gates pass.
+**Violations will require re-work.**
+
+---
+
+### Gate 1: BUILD MUST PASS ⛔ STOP
+
+```bash
+npm run build
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ Build succeeds | Proceed to Gate 2 |
+| ❌ Build fails | **STOP. FIX IT. DO NOT PROCEED.** |
+
+**Common build errors YOU must catch:**
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `"use server"` with sync function | Missing `async` keyword | Add `async` to ALL exports |
+| Type errors | TypeScript violations | Fix types |
+| Missing imports | Incomplete imports | Add missing imports |
+| Server/Client component misuse | Hooks in server component | Add `"use client"` directive |
+
+**Example - WRONG vs RIGHT:**
+```typescript
+// ❌ WRONG - will fail build
+"use server"
+export function myAction() { ... }  // Missing async!
+
+// ✅ CORRECT
+"use server"
+export async function myAction() { ... }
+```
+
+---
+
+### Gate 2: LINT MUST PASS ⛔ STOP
+
+```bash
+npm run lint
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ No errors | Proceed to Gate 3 |
+| ⚠️ Warnings only | Proceed (document warnings) |
+| ❌ Errors | **STOP. FIX IT. DO NOT PROCEED.** |
+
+---
+
+### Gate 3: DEV SERVER MUST START ⛔ STOP
+
+```bash
+npm run dev
+```
+
+Then visit the route you implemented in browser (use Playwright MCP if available).
+
+| Result | Action |
+|--------|--------|
+| ✅ Route loads without error | Proceed to Gate 4 |
+| ❌ Server crash | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Route shows error page | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Console errors (red) | **STOP. FIX IT. DO NOT PROCEED.** |
+
+---
+
+### Gate 4: TESTS MUST BE WRITTEN AND PASS ⛔ STOP
+
+> **⚠️ CRITICAL: NO DEFERRING TESTS**
+> 
+> You may NOT say "tests can be added later" or "I'll write tests in a follow-up."
+> Tests are part of the implementation, not a separate task.
+> **Implementation without tests = incomplete implementation.**
+
+---
+
+#### Gate 4a: UNIT TESTS - 90%+ Coverage Required ⛔ STOP
+
+**What needs unit tests:**
+- All new functions and hooks you write
+- All server actions
+- All utility functions
+- All business logic
+
+**Coverage requirement:** 90%+ of YOUR new code (not imported libraries)
+
+```bash
+# Run unit tests with coverage
+npm run test:unit -- --coverage
+
+# Or with specific config
+npx vitest run --coverage
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ All tests pass AND coverage ≥ 90% | Proceed to Gate 4b |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Coverage < 90% | **STOP. ADD MORE TESTS. DO NOT PROCEED.** |
+
+**Coverage checklist - ensure you test:**
+- [ ] Happy path (normal inputs)
+- [ ] All logic branches (if/else, switch cases)
+- [ ] Edge cases (empty arrays, null values, boundary conditions)
+- [ ] Error conditions (invalid inputs, thrown exceptions)
+- [ ] All exported functions
+
+**Unit test location:** `tests/unit/jobsmarket/{domain}/{feature}/`
+
+**Example unit test structure:**
+```typescript
+// tests/unit/jobsmarket/candidates/profile/use-profile-wizard.test.ts
+import { describe, it, expect, vi } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useProfileWizard } from "@/hooks/jobsmarket/use-profile-wizard";
+
+describe("useProfileWizard", () => {
+  describe("Initialization", () => {
+    it("should initialize with default values", () => {
+      const { result } = renderHook(() => useProfileWizard());
+      expect(result.current.currentStep).toBe(1);
+    });
+  });
+
+  describe("Navigation", () => {
+    it("should move to next step", () => { /* ... */ });
+    it("should not go beyond last step", () => { /* ... */ });
+    it("should handle invalid step number", () => { /* ... */ });
+  });
+
+  describe("Error Handling", () => {
+    it("should handle null input gracefully", () => { /* ... */ });
+  });
+});
+```
+
+---
+
+#### Gate 4b: INTEGRATION TESTS Required ⛔ STOP
+
+**What needs integration tests:**
+- Server actions that interact with database
+- Services that combine multiple operations
+- API route handlers
+
+**Environment:** Uses real dev database (NOT Firebase emulator)
+
+```bash
+# Run integration tests
+npx vitest run --config vitest.integration.config.ts
+
+# With coverage
+npx vitest run --config vitest.integration.config.ts --coverage
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ All integration tests pass | Proceed to Gate 4c |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ⚠️ No DB actions implemented | Skip to Gate 4c (document reason) |
+
+**Integration test location:** `tests/integration/jobsmarket/{domain}/`
+
+**Example integration test structure:**
+```typescript
+// tests/integration/jobsmarket/candidates/profile/profile-actions.test.ts
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { webCandidateSaveAboutMe } from "@/lib/database/actions/candidate-information";
+
+describe("Profile Actions Integration", () => {
+  const testUserId = "test-integration-user";
+
+  beforeEach(async () => {
+    // Setup test data in real dev database
+  });
+
+  afterEach(async () => {
+    // Clean up test data
+  });
+
+  it("should save about me to database", async () => {
+    const result = await webCandidateSaveAboutMe(testUserId, "Test about me");
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+---
+
+#### Gate 4c: E2E TESTS Required ⛔ STOP
+
+**What needs E2E tests:**
+- Every route/page you implement
+- All user flows defined in the RIS specification
+- Invalid input handling (form validation, error states)
+- Edge cases that can be tested via UI
+
+**E2E test requirements per RIS:**
+1. **All user flows** - Every flow described in the RIS must have a corresponding E2E test
+2. **Invalid inputs** - Test form validation, error messages, boundary conditions
+3. **Error states** - Test network errors, permission denied, not found states
+4. **Cross-browser** - Must pass on Chromium (other browsers optional)
+
+```bash
+# Run E2E tests for specific route
+npx playwright test tests/e2e/jobsmarket/auth/login.spec.ts --project=chromium
+
+# Run all E2E tests for a domain
+npx playwright test tests/e2e/jobsmarket/candidates/ --project=chromium
+
+# Run with UI for debugging
+npx playwright test --ui
+```
+
+| Result | Action |
+|--------|--------|
+| ✅ All E2E tests pass | ✅ IMPLEMENTATION COMPLETE |
+| ❌ Tests fail | **STOP. FIX IT. DO NOT PROCEED.** |
+| ❌ Missing RIS flow coverage | **STOP. ADD TESTS. DO NOT PROCEED.** |
+
+**E2E test location:** `tests/e2e/jobsmarket/{domain}/`
+
+**E2E Test Credential Handling:**
+
+Test credentials are in `.env.playwright`. Check before writing auth tests:
+
+```bash
+cat .env.playwright | grep -E "^(TEST_|E2E_)"
+```
+
+**Example E2E test structure:**
+```typescript
+// tests/e2e/jobsmarket/auth/login.spec.ts
+import { test, expect } from "@playwright/test";
+
+test.describe("Login Page - AUTH-R01", () => {
+  const TEST_EMAIL = process.env.TEST_USER_EMAIL;
+  const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
+
+  test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
+
+  test.describe("Happy Path - User Flows from RIS", () => {
+    test("should login with valid credentials", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
+      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page).toHaveURL(/dashboard/);
+    });
+  });
+
+  test.describe("Invalid Inputs - Validation", () => {
+    test("should show error for invalid email format", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill("invalid-email");
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/รูปแบบอีเมลไม่ถูกต้อง/)).toBeVisible();
+    });
+
+    test("should show error for empty password", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/กรุณากรอกรหัสผ่าน/)).toBeVisible();
+    });
+  });
+
+  test.describe("Error States", () => {
+    test("should show error for wrong credentials", async ({ page }) => {
+      await page.goto("/jobsmarket/auth/login");
+      await page.getByLabel("อีเมล").fill("wrong@example.com");
+      await page.getByPlaceholder("กรอกรหัสผ่าน").fill("wrongpassword");
+      await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+      await expect(page.getByText(/อีเมลหรือรหัสผ่านไม่ถูกต้อง/)).toBeVisible();
+    });
+  });
+});
+```
+
+---
+
+### Quality Gate Summary
+
+| Gate | Command | Requirement | Blocking |
+|------|---------|-------------|----------|
+| **1** | `npm run build` | 0 errors | ⛔ STOP |
+| **2** | `npm run lint` | 0 errors | ⛔ STOP |
+| **3** | `npm run dev` + browser | Route loads, no console errors | ⛔ STOP |
+| **4a** | `npm run test:unit -- --coverage` | All pass, 90%+ coverage | ⛔ STOP |
+| **4b** | Integration tests | All pass | ⛔ STOP |
+| **4c** | `npx playwright test` | All RIS flows covered | ⛔ STOP |
+
+---
+
+## 8. TDD Workflow
+
+### 8.1 TDD Phases with Quality Gates
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 1: ASSESSMENT                                          │
+├─────────────────────────────────────────────────────────────┤
+│ • Read RIS document                                          │
+│ • Read BLS sections                                          │
+│ • Create implementation plan                                 │
+│ • Identify test cases                                        │
+│ • Get SA approval                                            │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 2: WRITE TESTS FIRST (RED)                             │
+├─────────────────────────────────────────────────────────────┤
+│ • Write unit tests → All should FAIL                         │
+│ • Write integration tests → All should FAIL                  │
+│ • Write E2E test outlines → All should FAIL                  │
+│ • Verify: Gate 1 (Build) + Gate 2 (Lint) must pass           │
+│ • Verify: All tests FAIL (components don't exist yet)        │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 3: IMPLEMENTATION (GREEN)                              │
+├─────────────────────────────────────────────────────────────┤
+│ • Implement ONE component at a time                          │
+│ • Run tests after each component                             │
+│ • Watch tests turn GREEN                                     │
+│ • Continue until all unit tests pass                         │
+│ • Verify: Gate 1 + Gate 2 + Gate 4a must pass                │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 4: VERIFY ALL GATES                                    │
+├─────────────────────────────────────────────────────────────┤
+│ • Gate 1: Build ✅                                           │
+│ • Gate 2: Lint ✅                                            │
+│ • Gate 3: Dev Server + Browser ✅                            │
+│ • Gate 4a: Unit Tests 90%+ ✅                                │
+│ • Gate 4b: Integration Tests ✅                              │
+│ • Gate 4c: E2E Tests ✅                                      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ ✅ IMPLEMENTATION COMPLETE                                   │
+├─────────────────────────────────────────────────────────────┤
+│ • Create completion report                                   │
+│ • Create PR                                                  │
+│ • Request review                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 8.2 TDD Rules
+
+1. **Write test first** - Based on BLS action spec and RIS state machine
+2. **Run test** - Should fail (red)
+3. **Implement minimum code** - To make test pass
+4. **Run test** - Should pass (green)
+5. **Refactor** - Clean up while tests stay green
+6. **Repeat** - For next test case
+
+### 8.3 Test-First Checklist
+
+Before writing ANY implementation code:
+
+- [ ] Unit tests written for all components
+- [ ] Unit tests written for all hooks
+- [ ] Unit tests written for all utility functions
+- [ ] Integration tests written for server actions
+- [ ] E2E tests outlined for all RIS user flows
+- [ ] All tests verified to FAIL (RED phase)
+
+Only AFTER all tests are written and failing:
+
+- [ ] Begin implementation
+- [ ] Run tests after each component
+- [ ] Continue until all tests pass (GREEN phase)
+
+---
+
+## 9. Testing Infrastructure
+
+### 9.1 Test Structure
 
 ```
 tests/
@@ -419,9 +810,7 @@ tests/
 └── __mocks__/                      # Shared mocks
 ```
 
-### 7.2 Test Commands
-
-Add these scripts to `package.json` if they don't exist:
+### 9.2 Test Commands
 
 ```json
 {
@@ -429,6 +818,7 @@ Add these scripts to `package.json` if they don't exist:
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "vitest run --project unit",
     "test:unit:watch": "vitest --project unit",
+    "test:unit:coverage": "vitest run --project unit --coverage",
     "test:integration": "vitest run --project integration",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -439,7 +829,7 @@ Add these scripts to `package.json` if they don't exist:
 
 **Note:** If these scripts don't exist, Claude Code should ask before adding them.
 
-### 7.3 Vitest Configuration
+### 9.3 Vitest Configuration
 
 Create `vitest.workspace.ts` if needed:
 
@@ -451,8 +841,8 @@ export default defineWorkspace([
     extends: './vitest.config.ts',
     test: {
       name: 'unit',
-      include: ['tests/unit/**/*.test.ts'],
-      environment: 'node',
+      include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.tsx'],
+      environment: 'jsdom',
     },
   },
   {
@@ -468,29 +858,18 @@ export default defineWorkspace([
 ])
 ```
 
-### 7.4 CI/CD Pipeline
+### 9.4 CI/CD Pipeline
 
 ```yaml
 # Tests run on every PR before merge
 PR → Unit Tests → Integration Tests → Deploy Preview → E2E Tests → Review → Merge
 ```
 
-### 7.5 TDD Approach
-
-For each feature:
-
-1. **Write test first** - Based on BLS action spec and RIS state machine
-2. **Run test** - Should fail (red)
-3. **Implement minimum code** - To make test pass
-4. **Run test** - Should pass (green)
-5. **Refactor** - Clean up while tests stay green
-6. **Repeat** - For next test case
-
 ---
 
-## 8. Code Standards
+## 10. Code Standards
 
-### 8.1 Error Handling
+### 10.1 Error Handling
 
 Use typed error objects with graceful fallbacks:
 
@@ -508,7 +887,7 @@ type ActionResult<T> =
   | { success: false; error: ActionError };
 
 // Usage in server action
-export async function someAction(input: Input): Promise<ActionResult<Output>> {
+export async function someAction(input: Input): Promise<ActionResult<O>> {
   try {
     // ... logic
     return { success: true, data: result };
@@ -525,7 +904,7 @@ export async function someAction(input: Input): Promise<ActionResult<Output>> {
 }
 ```
 
-### 8.2 Commit Messages
+### 10.2 Commit Messages
 
 Use conventional commits:
 
@@ -537,7 +916,7 @@ docs(readme): update setup instructions
 refactor(components): extract JobCard to shared
 ```
 
-### 8.3 PR Title Format
+### 10.3 PR Title Format
 
 ```
 [{DOMAIN}-R{NN}] {Brief description}
@@ -549,9 +928,9 @@ Examples:
 
 ---
 
-## 9. Boundaries and Approvals
+## 11. Boundaries and Approvals
 
-### 9.1 Claude Code Can Do Autonomously
+### 11.1 Claude Code Can Do Autonomously
 
 - Create new files in `src/app/jobsmarket/` (except `/legal`, `/privacy`)
 - Create new files in `tests/*/jobsmarket/`
@@ -561,7 +940,7 @@ Examples:
 - Create git commits
 - Create PRs
 
-### 9.2 Claude Code Must Ask First
+### 11.2 Claude Code Must Ask First
 
 | Action | Ask Who |
 |--------|---------|
@@ -574,7 +953,7 @@ Examples:
 | Add/modify scripts in `package.json` | Human |
 | Anything affecting protected paths | Human |
 
-### 9.3 Requires Plan Discussion
+### 11.3 Requires Plan Discussion
 
 Before implementing any route:
 1. Claude Code creates plan (Section 5.3 template)
@@ -584,7 +963,7 @@ Before implementing any route:
 
 ---
 
-## 10. Quick Start Checklist
+## 12. Quick Start Checklist
 
 For Claude Code starting a new route:
 
@@ -597,16 +976,37 @@ For Claude Code starting a new route:
 □ Check if similar services exist in src/domains/*/services/
 □ Create implementation plan (Section 5.3 template)
 □ Wait for human approval of plan
-□ Write tests first (TDD)
-□ Implement to pass tests
-□ Verify all tests pass
+
+TDD Phase (Tests First):
+□ Write all unit tests (should fail)
+□ Write all integration tests (should fail)
+□ Write E2E test outlines (should fail)
+□ Verify Gate 1 (Build) passes
+□ Verify Gate 2 (Lint) passes
+
+Implementation Phase:
+□ Implement components one by one
+□ Run tests after each component
+□ Continue until all tests pass
+
+Quality Gate Phase:
+□ Gate 1: Build passes
+□ Gate 2: Lint passes
+□ Gate 3: Dev server + browser test passes
+□ Gate 4a: Unit tests 90%+ coverage
+□ Gate 4b: Integration tests pass
+□ Gate 4c: E2E tests pass
+
+Completion:
+□ All gates pass
+□ Create completion report
 □ Create PR with conventional commit
 □ Wait for review
 ```
 
 ---
 
-## 11. Reference Documents
+## 13. Reference Documents
 
 | Document | Local Path | Project Knowledge | Purpose |
 |----------|------------|-------------------|---------|
@@ -620,13 +1020,14 @@ For Claude Code starting a new route:
 
 ---
 
-## 12. Changelog
+## 14. Changelog
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 3.1 | 2025-12-12 | Added URL-to-filesystem mapping (2.1.1), clarified doc locations (4.1), added critical gaps (6.1), clarified domain services convention (2.4.1), added test setup details (7.2, 7.3) |
+| 3.2 | 2025-12-20 | **MAJOR:** Added Section 7 (Quality Gates - MANDATORY) with 4 blocking gates. Added Section 8 (TDD Workflow) with explicit phases. Renumbered sections 8-11 to 9-12. Enhanced plan template with quality gate checklist. Added test-first checklist. Added coverage requirements (90%+). Added "NO DEFERRING TESTS" policy. |
+| 3.1 | 2025-12-12 | Added URL-to-filesystem mapping (2.1.1), clarified doc locations (4.1), added critical gaps (6.1), clarified domain services convention (2.4.1), added test setup details |
 | 3.0 | 2025-12-12 | Initial implementation phase instructions |
 
 ---
 
-*Start with AUTH-R01 (`/auth/login`). Create the implementation plan and wait for approval before coding.*
+*Start with your current route. Follow TDD: Write tests first, verify they fail, then implement to make them pass. ALL quality gates must pass before marking implementation complete.*

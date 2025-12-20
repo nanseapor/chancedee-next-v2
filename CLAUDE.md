@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**IMPORTANT:** Read `docs/jobsmarket/PROJECT_INSTRUCTIONS_v3.1.md` for full project context and workflow.
+**IMPORTANT:** Read `docs/jobsmarket/PROJECT_INSTRUCTIONS_v3_2.md` for full project context and workflow.
 
 ---
 
@@ -100,7 +100,7 @@ Then visit the route you implemented in browser using playwright MCP.
 
 ```bash
 # Run unit tests with coverage
-npm run test:unit:coverage
+npm run test:unit -- --coverage
 
 # View coverage report
 open coverage/index.html  # macOS
@@ -294,19 +294,130 @@ test.describe("Login Page - AUTH-R01", () => {
 
 ---
 
-### 🚫 ANTI-PATTERNS: What You Must NEVER Do
+### Quality Gate Summary
 
-#### ❌ NEVER Defer Tests
+| Gate | Command | Requirement | Blocking |
+|------|---------|-------------|----------|
+| **1** | `npm run build` | 0 errors | ⛔ STOP |
+| **2** | `npm run lint` | 0 errors | ⛔ STOP |
+| **3** | `npm run dev` + browser | Route loads, no console errors | ⛔ STOP |
+| **4a** | `npm run test:unit -- --coverage` | All pass, 90%+ coverage | ⛔ STOP |
+| **4b** | Integration tests | All pass | ⛔ STOP |
+| **4c** | `npx playwright test` | All RIS flows covered | ⛔ STOP |
+
+---
+
+## 🔴 TDD Workflow (MANDATORY)
+
+### TDD Phases
+
+You MUST follow Test-Driven Development. Write tests BEFORE implementation.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 1: ASSESSMENT                                          │
+├─────────────────────────────────────────────────────────────┤
+│ • Read RIS document                                          │
+│ • Read BLS sections                                          │
+│ • Create implementation plan                                 │
+│ • Identify test cases                                        │
+│ • Get SA approval                                            │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 2: WRITE TESTS FIRST (RED)                             │
+├─────────────────────────────────────────────────────────────┤
+│ • Write unit tests → All should FAIL                         │
+│ • Write integration tests → All should FAIL                  │
+│ • Write E2E test outlines → All should FAIL                  │
+│ • Verify: Gate 1 (Build) + Gate 2 (Lint) must pass           │
+│ • Verify: All tests FAIL (components don't exist yet)        │
+│                                                              │
+│ ⚠️ DO NOT write implementation code yet!                     │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 3: IMPLEMENTATION (GREEN)                              │
+├─────────────────────────────────────────────────────────────┤
+│ • Implement ONE component at a time                          │
+│ • Run tests after each component                             │
+│ • Watch tests turn GREEN                                     │
+│ • Continue until all unit tests pass                         │
+│ • Verify: Gate 1 + Gate 2 + Gate 4a must pass                │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Phase 4: VERIFY ALL GATES                                    │
+├─────────────────────────────────────────────────────────────┤
+│ • Gate 1: Build ✅                                           │
+│ • Gate 2: Lint ✅                                            │
+│ • Gate 3: Dev Server + Browser ✅                            │
+│ • Gate 4a: Unit Tests 90%+ ✅                                │
+│ • Gate 4b: Integration Tests ✅                              │
+│ • Gate 4c: E2E Tests ✅                                      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│ ✅ IMPLEMENTATION COMPLETE                                   │
+├─────────────────────────────────────────────────────────────┤
+│ • Fill completion checklist with evidence                    │
+│ • Create PR                                                  │
+│ • Request review                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### TDD Rules
+
+1. **Write test first** - Based on BLS action spec and RIS state machine
+2. **Run test** - Should fail (RED)
+3. **Implement minimum code** - To make test pass
+4. **Run test** - Should pass (GREEN)
+5. **Refactor** - Clean up while tests stay green
+6. **Repeat** - For next test case
+
+### Test-First Checklist
+
+Before writing ANY implementation code:
+
+- [ ] Unit tests written for all components
+- [ ] Unit tests written for all hooks
+- [ ] Unit tests written for all utility functions
+- [ ] Integration tests written for server actions (if applicable)
+- [ ] E2E tests outlined for all RIS user flows
+- [ ] All tests verified to FAIL (RED phase)
+- [ ] Gate 1 (Build) passes
+- [ ] Gate 2 (Lint) passes
+
+Only AFTER all tests are written and failing:
+
+- [ ] Begin implementation
+- [ ] Run tests after each component
+- [ ] Continue until all tests pass (GREEN phase)
+
+---
+
+## 🚫 ANTI-PATTERNS: What You Must NEVER Do
+
+### ❌ NEVER Defer Tests
 
 | ❌ WRONG - Immediate rejection | ✅ CORRECT |
 |-------------------------------|------------|
-| "I'll add tests later" | Write tests NOW as part of implementation |
+| "I'll add tests later" | Write tests NOW, BEFORE implementation |
 | "Tests can be added in a follow-up PR" | Tests are in THIS PR |
 | "The code works, tests are optional" | Tests are MANDATORY, not optional |
 | "I've implemented the feature, just need tests" | Feature is NOT implemented without tests |
 | "Due to time constraints, skipping tests" | There are no time constraints for tests |
+| "Let me implement first, then add tests" | NO. Tests come FIRST (TDD) |
 
-#### ❌ NEVER Skip Test Types
+### ❌ NEVER Skip TDD Phases
+
+| ❌ WRONG | ✅ CORRECT |
+|----------|------------|
+| Write code first, tests later | Write tests first (RED), then code (GREEN) |
+| Skip the RED phase | All tests must FAIL before implementation |
+| Implement multiple components before testing | Implement ONE component, run tests, repeat |
+
+### ❌ NEVER Skip Test Types
 
 | Implementation Type | Required Tests | You May NOT Skip |
 |--------------------|----------------|------------------|
@@ -315,7 +426,7 @@ test.describe("Login Page - AUTH-R01", () => {
 | Page/Route | Unit tests + E2E tests | ❌ Cannot skip |
 | Full feature | Unit + Integration + E2E | ❌ Cannot skip |
 
-#### ❌ NEVER Declare Complete Without Evidence
+### ❌ NEVER Declare Complete Without Evidence
 
 You must provide **actual test output** showing:
 - Unit test pass count and coverage percentage
@@ -330,6 +441,11 @@ You may ONLY say implementation is complete when ALL of these are true:
 
 ```markdown
 ## Completion Checklist
+
+### TDD Compliance
+- [ ] Phase 2 completed: All tests written FIRST and verified to FAIL
+- [ ] Phase 3 completed: Implementation makes all tests PASS
+- [ ] Phase 4 completed: All quality gates verified
 
 ### Quality Gates (ALL must pass)
 - [ ] Gate 1: `npm run build` → exits with code 0
@@ -698,11 +814,17 @@ Before implementing any route:
 5. **Check** for reusable code in `src/lib/database/actions/` and `src/domains/`
 6. **Create** an implementation plan (template in PROJECT_INSTRUCTIONS §5.3)
 7. **Wait** for human approval before coding
-8. **Write tests first** (TDD approach):
-   - Write unit tests for functions/hooks
-   - Write integration tests for server actions
-   - Write E2E tests for user flows
-9. **Implement** to pass tests
+
+**TDD Implementation (after approval):**
+
+8. **Write tests first** (TDD RED phase):
+   - Write unit tests for functions/hooks → verify they FAIL
+   - Write integration tests for server actions → verify they FAIL
+   - Write E2E tests for user flows → verify they FAIL
+9. **Implement** to pass tests (TDD GREEN phase):
+   - Implement ONE component at a time
+   - Run tests after each component
+   - Continue until all tests pass
 10. **Verify coverage** ≥ 90% for unit tests
 11. **Run ALL quality gates** (Gates 1-4)
 12. **Fill completion checklist** with evidence
@@ -754,7 +876,7 @@ public/
 
 docs/
 └── jobsmarket/
-    ├── PROJECT_INSTRUCTIONS_v3.1.md  # ← READ THIS FIRST
+    ├── PROJECT_INSTRUCTIONS_v3_2.md  # ← READ THIS FIRST
     ├── DOCUMENTATION-GUIDE.md
     ├── RIS/                # Route Implementation Specs
     ├── BLS/                # Business Logic Specs
@@ -778,7 +900,7 @@ tests/
 
 | Task | Document |
 |------|----------|
-| **Full project context** | `docs/jobsmarket/PROJECT_INSTRUCTIONS_v3.1.md` |
+| **Full project context** | `docs/jobsmarket/PROJECT_INSTRUCTIONS_v3_2.md` |
 | **How to use docs** | `docs/jobsmarket/DOCUMENTATION-GUIDE.md` |
 | **Implement a route** | `docs/jobsmarket/RIS/{DOMAIN}-R{NN}_*.md` |
 | **Server action logic** | `docs/jobsmarket/BLS/BLS-{NN}_*.md` |
@@ -790,7 +912,7 @@ tests/
 
 - RIS > BLS > Design Systems for implementation decisions
 - DO NOT use `docs/jobsmarket/architecture/state-inventory/` - it documents the old implementation
-- See PROJECT_INSTRUCTIONS_v3.1.md §4.4 for details
+- See PROJECT_INSTRUCTIONS_v3_2.md §4.4 for details
 
 ### URL to Filesystem Mapping
 
