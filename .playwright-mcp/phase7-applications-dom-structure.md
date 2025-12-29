@@ -1,0 +1,64 @@
+### New console messages
+- [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_7...
+- [LOG] [Fast Refresh] done in 542ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dis...
+
+### Page state
+- Page URL: http://localhost:3000/jobsmarket/companies/test-company-1/dashboard/applications
+- Page Title: จัดการใบสมัครงาน | Chancedee Jobs
+- Page Snapshot:
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - link "T Test Company" [ref=e6] [cursor=pointer]:
+          - /url: /jobsmarket/companies/test-company-1/dashboard
+          - generic [ref=e8]: T
+          - generic [ref=e9]: Test Company
+        - button "การแจ้งเตือน" [ref=e10]:
+          - img [ref=e11]
+        - button "S" [ref=e166]:
+          - generic [ref=e16]: S
+          - img [ref=e17]
+      - generic [ref=e19]:
+        - complementary [ref=e20]:
+          - navigation [ref=e22]:
+            - link "แดชบอร์ด" [ref=e23] [cursor=pointer]:
+              - /url: /jobsmarket/companies/test-company-1/dashboard
+              - img [ref=e24]
+              - generic [ref=e29]: แดชบอร์ด
+            - link "งานที่ประกาศ" [ref=e30] [cursor=pointer]:
+              - /url: /jobsmarket/companies/test-company-1/jobs
+              - img [ref=e31]
+              - generic [ref=e34]: งานที่ประกาศ
+            - link "ใบสมัคร" [ref=e35] [cursor=pointer]:
+              - /url: /jobsmarket/companies/test-company-1/applications
+              - img [ref=e36]
+              - generic [ref=e39]: ใบสมัคร
+            - link "ทีมงาน" [ref=e40] [cursor=pointer]:
+              - /url: /jobsmarket/companies/test-company-1/team
+              - img [ref=e41]
+              - generic [ref=e46]: ทีมงาน
+            - link "ตั้งค่า" [ref=e47] [cursor=pointer]:
+              - /url: /jobsmarket/companies/test-company-1/settings
+              - img [ref=e48]
+              - generic [ref=e51]: ตั้งค่า
+        - main [ref=e52]:
+          - generic [ref=e167]:
+            - generic [ref=e169]:
+              - generic [ref=e170]:
+                - heading "ใบสมัครงาน" [level=2] [ref=e171]
+                - paragraph [ref=e172]: 0 รายการ
+              - generic [ref=e173]:
+                - img [ref=e174]
+                - paragraph [ref=e176]: ยังไม่มีใบสมัครงาน
+                - paragraph [ref=e177]: เมื่อมีผู้สมัครงานตำแหน่งของคุณ ใบสมัครจะแสดงที่นี่
+            - main [ref=e178]:
+              - generic [ref=e179]:
+                - img [ref=e180]
+                - paragraph [ref=e182]: เลือกใบสมัครเพื่อดูรายละเอียด
+                - paragraph [ref=e183]: คลิกที่ใบสมัครในรายการด้านซ้ายเพื่อดูข้อมูลผู้สมัคร และดำเนินการต่างๆ
+  - button "Open Next.js Dev Tools" [ref=e161] [cursor=pointer]:
+    - img [ref=e162]
+  - alert [ref=e165]
+```

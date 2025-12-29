@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "province_id": 1,
+    "name_th": "พระนคร",
+    "name_en": "Phra Nakhon"
+  },
+  {
+    "id": 2,
+    "province_id": 1,
+    "name_th": "ดุสิต",
+    "name_en": "Dusit"
+  },
+  {
+    "id": 3,
+    "province_id": 1,
+    "name_th": "ห้วยขวาง",
+    "name_en": "Huai Khwang"
+  },
+  {
+    "id": 4,
+    "province_id": 1,
+    "name_th": "บางรัก",
+    "name_en": "Bang Rak"
+  },
+  {
+    "id": 5,
+    "province_id": 1,
+    "name_th": "สาทร",
+    "name_en": "Sathon"
+  },
+  {
+    "id": 10,
+    "province_id": 10,
+    "name_th": "เมืองเชียงใหม่",
+    "name_en": "Mueang Chiang Mai"
+  },
+  {
+    "id": 11,
+    "province_id": 10,
+    "name_th": "หางดง",
+    "name_en": "Hang Dong"
+  },
+  {
+    "id": 20,
+    "province_id": 20,
+    "name_th": "เมืองภูเก็ต",
+    "name_en": "Mueang Phuket"
+  },
+  {
+    "id": 21,
+    "province_id": 20,
+    "name_th": "กะทู้",
+    "name_en": "Kathu"
+  }
+]

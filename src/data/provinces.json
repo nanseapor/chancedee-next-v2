@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name_th": "กรุงเทพมหานคร",
+    "name_en": "Bangkok"
+  },
+  {
+    "id": 10,
+    "name_th": "เชียงใหม่",
+    "name_en": "Chiang Mai"
+  },
+  {
+    "id": 20,
+    "name_th": "ภูเก็ต",
+    "name_en": "Phuket"
+  },
+  {
+    "id": 24,
+    "name_th": "ชลบุรี",
+    "name_en": "Chonburi"
+  },
+  {
+    "id": 30,
+    "name_th": "นครราชสีมา",
+    "name_en": "Nakhon Ratchasima"
+  },
+  {
+    "id": 40,
+    "name_th": "ขอนแก่น",
+    "name_en": "Khon Kaen"
+  },
+  {
+    "id": 50,
+    "name_th": "เชียงราย",
+    "name_en": "Chiang Rai"
+  },
+  {
+    "id": 60,
+    "name_th": "นนทบุรี",
+    "name_en": "Nonthaburi"
+  },
+  {
+    "id": 70,
+    "name_th": "ปทุมธานี",
+    "name_en": "Pathum Thani"
+  },
+  {
+    "id": 71,
+    "name_th": "สมุทรปราการ",
+    "name_en": "Samut Prakan"
+  }
+]
