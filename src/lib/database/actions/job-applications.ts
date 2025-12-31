@@ -17,10 +17,17 @@ import { webJobInterviewGetByFilter } from "./job-interviews";
 // Per Next.js 15: "use server" files can only export async functions
 import {
   WITHDRAWABLE_STATUSES,
+  ACTIVE_APPLICATION_STATUSES,
+  REAPPLY_ALLOWED_STATUSES,
   type WithdrawableStatus,
+  type ActiveApplicationStatus,
+  type ReapplyAllowedStatus,
   type ApplicationWithDetails,
-  type InterviewDetails
+  type InterviewDetails,
+  type SubmitApplicationInput,
+  type SubmitApplicationResult
 } from './job-applications.constants';
+import { candidateInformationRepository } from "../repositories/candidate-information-repository";
 
 // Convert legacy jobApplicationData to new JobApplicationData schema
 function convertLegacyToNewJobApplicationData(legacy: jobApplicationData): JobApplicationData {
@@ -580,6 +587,193 @@ export async function webJobApplicationReject(
   }
 }
 
+/**
+ * BLS-03-01: Submit a job application
+ * Creates a new job application record and increments job apply count.
+ *
+ * @param input - Application input (jobId, expectedSalary, isNegotiable, overheadDays, headlines)
+ * @param candidateId - The candidate's UID (typically from session)
+ * @returns SubmitApplicationResult with success/error status
+ *
+ * Per BLS-03-01 specification and assessment
+ */
+export async function submitApplication(
+  input: SubmitApplicationInput,
+  candidateId?: string
+): Promise<SubmitApplicationResult> {
+  const { FieldValue } = await import('firebase-admin/firestore');
+
+  try {
+    // STEP 1: Input Validation
+    // Validate jobId (required)
+    if (!input.jobId || typeof input.jobId !== 'string' || input.jobId.trim() === '') {
+      throw new Error('Job ID is required');
+    }
+
+    // Validate expectedSalary range (0 to 999,999)
+    if (input.expectedSalary !== null && input.expectedSalary !== undefined) {
+      if (input.expectedSalary < 0) {
+        throw new Error('เงินเดือนต้องมากกว่า 0');
+      }
+      if (input.expectedSalary > 999999) {
+        throw new Error('เงินเดือนสูงเกินไป');
+      }
+    }
+
+    // Validate headlines length (max 500 characters)
+    if (input.headlines && input.headlines.length > 500) {
+      throw new Error('ข้อความยาวเกินไป');
+    }
+
+    // Validate overheadDays enum
+    const validOverheadDays = [0, 7, 15, 30, 60, 90];
+    if (input.overheadDays !== undefined && !validOverheadDays.includes(input.overheadDays)) {
+      throw new Error('Invalid overhead days value');
+    }
+
+    // STEP 2: Get current user/candidate
+    // For now, candidateId must be passed from caller
+    // TODO: In future, get from session/context
+    if (!candidateId) {
+      throw new Error('Candidate ID is required');
+    }
+
+    // STEP 3: Precondition Checks
+    // 3.1: Check profile completion
+    const candidate = await candidateInformationRepository.getById(candidateId);
+    if (!candidate) {
+      throw new Error('Candidate not found');
+    }
+    if (!candidate.isResumeCompleted) {
+      return {
+        success: false,
+        error: 'PROFILE_INCOMPLETE',
+      };
+    }
+
+    // 3.2: Check job exists and is available
+    const job = await jobsRepository.getById(input.jobId);
+    if (!job) {
+      return {
+        success: false,
+        error: 'JOB_NOT_FOUND',
+      };
+    }
+
+    // Check job is active
+    if (!job.isActive) {
+      return {
+        success: false,
+        error: 'JOB_CLOSED',
+      };
+    }
+
+    // Check job expiry date (with fallback per SA decision)
+    if (job.postExpiryDate && job.postExpiryDate < Date.now()) {
+      return {
+        success: false,
+        error: 'JOB_CLOSED',
+      };
+    }
+
+    // 3.3: Check for existing active application
+    const candidateRef = getFirebaseAdminFirestore()
+      .collection('candidate_information')
+      .doc(candidateId);
+
+    const jobRef = getFirebaseAdminFirestore()
+      .collection('jobs')
+      .doc(input.jobId);
+
+    const existingApplications = await jobApplicationsRepository.getByFilter(
+      Filter.and(
+        Filter.where('candidate_id', '==', candidateRef),
+        Filter.where('job_id', '==', jobRef)
+      )
+    );
+
+    // Check if any existing application has an active status
+    if (existingApplications && existingApplications.length > 0) {
+      const hasActiveApplication = existingApplications.some(app =>
+        ACTIVE_APPLICATION_STATUSES.includes(app.status as ActiveApplicationStatus)
+      );
+
+      if (hasActiveApplication) {
+        return {
+          success: false,
+          error: 'ALREADY_APPLIED',
+        };
+      }
+    }
+
+    // STEP 4: Create Application Record
+    const now = Date.now();
+    const applicationData: JobApplicationData = {
+      uid: '', // Will be set by repository
+      jobId: input.jobId,
+      candidateId: candidateId,
+      companyId: job.companyId || '',
+      companyName: job.companyName || '',
+      status: 'applied',
+      // Use explicit null check to preserve null vs undefined distinction
+      // When not provided (undefined), default to null
+      expectedSalary: input.expectedSalary === null ? null : (input.expectedSalary ?? null),
+      isNegotiable: input.isNegotiable ?? true, // Default true
+      overheadDays: input.overheadDays ?? 0, // Default 0
+      headlines: input.headlines ?? '', // Default empty string
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    // STEP 5: Create application using repository
+    const applicationId = await jobApplicationsRepository.create(
+      applicationData,
+      candidateId
+    );
+
+    // STEP 6: Increment job apply count
+    // TODO: Phase 3 - Use transaction to make this atomic with application creation
+    const db = getFirebaseAdminFirestore();
+    const jobRefForUpdate = db.collection('jobs').doc(input.jobId);
+    await jobRefForUpdate.update({
+      apply_count: FieldValue.increment(1),
+    });
+
+    // STEP 7: Return Success
+    return {
+      success: true,
+      data: {
+        applicationId: applicationId,
+        status: 'applied',
+        appliedAt: now,
+      },
+      keysToInvalidate: [
+        `job-${input.jobId}`,
+        `candidate-applications-${candidateId}`,
+      ],
+    };
+
+    // TODO: Phase 2 - Send notification to company (BLS-03 line 136)
+    // TODO: Phase 2 - Check and award first application reward (BLS-03 line 293)
+
+  } catch (error) {
+    console.error('Error submitting application:', error);
+
+    // Check if it's a validation error
+    if (error instanceof Error && error.message.includes('เงินเดือน')) {
+      throw error; // Re-throw validation errors
+    }
+    if (error instanceof Error && error.message.includes('ข้อความยาวเกินไป')) {
+      throw error; // Re-throw validation errors
+    }
+
+    return {
+      success: false,
+      error: 'NETWORK_ERROR',
+    };
+  }
+}
+
 export {
   webJobApplicationCreate,
   webJobApplicationDelete,
@@ -592,6 +786,8 @@ export {
 export type {
   ApplicationWithDetails,
   InterviewDetails,
-  WithdrawableStatus
+  WithdrawableStatus,
+  SubmitApplicationInput,
+  SubmitApplicationResult
 } from './job-applications.constants';
 

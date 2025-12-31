@@ -64,3 +64,59 @@ export const WITHDRAWABLE_STATUSES = [
 ] as const;
 
 export type WithdrawableStatus = typeof WITHDRAWABLE_STATUSES[number];
+
+/**
+ * Active application statuses - block new application
+ * Per BLS-03-01 Assessment and SA decision
+ */
+export const ACTIVE_APPLICATION_STATUSES = [
+  'applied',
+  'read',
+  'accepted',
+  'scheduled',
+  'confirmed',
+] as const;
+
+export type ActiveApplicationStatus = typeof ACTIVE_APPLICATION_STATUSES[number];
+
+/**
+ * Reapply allowed statuses - allow reapplication
+ * Per BLS-03-01 Assessment and SA decision
+ */
+export const REAPPLY_ALLOWED_STATUSES = [
+  'withdraw',
+  'rejected',
+  'declined',
+  'cancelled',
+  'closed',
+  'systemclosed',
+] as const;
+
+export type ReapplyAllowedStatus = typeof REAPPLY_ALLOWED_STATUSES[number];
+
+/**
+ * SubmitApplicationInput - Input for submitApplication server action
+ * Per BLS-03-01 specification
+ */
+export interface SubmitApplicationInput {
+  jobId: string;
+  expectedSalary?: number | null;
+  isNegotiable?: boolean;
+  overheadDays?: 0 | 7 | 15 | 30 | 60 | 90;
+  headlines?: string;
+}
+
+/**
+ * SubmitApplicationResult - Return type for submitApplication server action
+ * Per BLS-03-01 specification
+ */
+export interface SubmitApplicationResult {
+  success: boolean;
+  data?: {
+    applicationId: string;
+    status: 'applied';
+    appliedAt: number;
+  };
+  error?: 'ALREADY_APPLIED' | 'JOB_CLOSED' | 'JOB_NOT_FOUND' | 'PROFILE_INCOMPLETE' | 'NETWORK_ERROR';
+  keysToInvalidate?: string[];
+}
