@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - link "ChanceDeeJobs" [ref=e6] [cursor=pointer]:
+        - /url: /jobsmarket
+      - main [ref=e7]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - heading "เข้าสู่ระบบ" [level=3] [ref=e11]
+            - paragraph [ref=e12]: เข้าสู่ระบบเพื่อจัดการประวัติและค้นหางาน
+          - generic [ref=e13]:
+            - button "เข้าสู่ระบบด้วย Google" [ref=e14]:
+              - img [ref=e15]
+              - generic [ref=e20]: เข้าสู่ระบบด้วย Google
+            - generic [ref=e24]: หรือ
+            - generic [ref=e25]:
+              - generic [ref=e26]:
+                - text: อีเมล
+                - textbox "อีเมล" [ref=e27]:
+                  - /placeholder: you@example.com
+                  - text: xalanaseon@hotmail.com
+              - generic [ref=e28]:
+                - generic [ref=e29]:
+                  - generic [ref=e30]: รหัสผ่าน
+                  - link "ลืมรหัสผ่าน?" [ref=e31] [cursor=pointer]:
+                    - /url: /jobsmarket/auth/reset
+                - generic [ref=e32]:
+                  - textbox "กรอกรหัสผ่าน" [active] [ref=e33]: P@ssw0rd@1
+                  - button "แสดงรหัสผ่าน" [ref=e34]:
+                    - img [ref=e35]
+              - generic [ref=e38]:
+                - checkbox "ยอมรับ ข้อกำหนดการใช้งาน และ นโยบายความเป็นส่วนตัว" [ref=e39]
+                - checkbox
+                - generic [ref=e40] [cursor=pointer]:
+                  - text: ยอมรับ
+                  - link "ข้อกำหนดการใช้งาน" [ref=e41]:
+                    - /url: /jobsmarket/legal/terms
+                  - text: และ
+                  - link "นโยบายความเป็นส่วนตัว" [ref=e42]:
+                    - /url: /jobsmarket/privacy
+              - button "เข้าสู่ระบบ" [ref=e43]
+          - paragraph [ref=e45]:
+            - text: ยังไม่มีบัญชี?
+            - link "สมัครสมาชิก" [ref=e46] [cursor=pointer]:
+              - /url: /jobsmarket/auth/register
+      - paragraph [ref=e48]: © 2026 ChanceDee. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e54] [cursor=pointer]:
+    - img [ref=e55]
+  - alert [ref=e58]
+```

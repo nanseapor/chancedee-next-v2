@@ -141,15 +141,12 @@ test.describe("AUTH-R05: Status Page", () => {
    * - Unit tests: status-detection.test.ts (26 tests)
    * - Integration tests: status-routing.test.tsx (mocked data)
    */
-  test.skip("deleted view - requires test account with deleted status", async () => {
-    // Would need: user with roles: ['deleted'] or status: 'deleted'
-  });
+  // TODO: Requires test account with deleted status
+  test.skip("deleted view - requires test account with deleted status", async () => {});
 
-  test.skip("staff-pending view - requires test account with pending status", async () => {
-    // Would need: user with roles: ['pending', 'candidate'] and transfer.targetCompany
-  });
+  // TODO: Requires test account with pending staff status
+  test.skip("staff-pending view - requires test account with pending status", async () => {});
 
-  test.skip("company-pending view - requires test account with pending admin", async () => {
-    // Would need: user with roles: ['pending', 'admin'] and transfer.targetCompany
-  });
+  // TODO: Requires test account with pending admin status
+  test.skip("company-pending view - requires test account with pending admin", async () => {});
 });

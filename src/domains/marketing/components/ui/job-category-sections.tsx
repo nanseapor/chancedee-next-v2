@@ -15,7 +15,7 @@ import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 
 const JobCategorySections = ({ homeData }: { homeData: Home }) => {
   const [api, setApi] = useState<CarouselApi>();
@@ -31,12 +31,15 @@ const JobCategorySections = ({ homeData }: { homeData: Home }) => {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
-    console.log("current", api.selectedScrollSnap());
+    startTransition(() => {
+      setCount(api.scrollSnapList().length);
+      setCurrent(api.selectedScrollSnap());
+    });
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
+      startTransition(() => {
+        setCurrent(api.selectedScrollSnap());
+      });
     });
   }, [api]);
 

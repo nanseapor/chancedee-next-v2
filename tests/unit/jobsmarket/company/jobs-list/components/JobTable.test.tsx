@@ -3,6 +3,19 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { JobTable } from '@/components/jobsmarket/company/jobs/JobTable';
 import type { JobListItem } from '@/types/jobsmarket/jobs-list.types';
 
+// Mock next/navigation for JobRow's useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+  }),
+  usePathname: () => '/companies/test/jobs',
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 describe('JobTable', () => {
   const mockJobs: JobListItem[] = [
     {

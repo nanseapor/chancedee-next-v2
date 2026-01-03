@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast-notification";
 import { sendContactUsMessage } from "@/lib/send-mail";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 import { z } from "zod";
 
 const schema = z.object({
@@ -93,13 +93,15 @@ export default function ContactUs({ cover_image }: { cover_image: string }) {
     if (state.message) {
       if (state.success) {
         addToast(state.message, "success");
-        setIsSuccess(true);
+        startTransition(() => {
+          setIsSuccess(true);
+        });
       } else {
         console.log("Contact us state error", state.errors);
         addToast(state.errors?.email?.join() || "", "error");
       }
     }
-  }, [state.time]);
+  }, [state.time, state.message, state.success, state.errors, addToast]);
 
   return (
     <section className="px-4 lg:px-[6rem] 2xl:px-[12rem] pt-6 sm:pt-20">

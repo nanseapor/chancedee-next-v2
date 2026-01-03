@@ -121,7 +121,7 @@ const ImageUploader = ({
         }
       };
     }
-  }, [croppedAreaPixels, src]);
+  }, [croppedAreaPixels, src, setImage, setLoading]);
 
   return (
     <Dialog

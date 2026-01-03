@@ -32,8 +32,13 @@ import { Input } from "../ui/input";
 const ChangePasswordForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [redirectPath, setRedirectPath] = useState<string>("/");
-  const [error, setError] = useState("");
+  const [redirectPath, setRedirectPath] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("redirect") || "/";
+    }
+    return "/";
+  });
+  const [_error, setError] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -86,12 +91,6 @@ const ChangePasswordForm = () => {
     }
   };
 
-  useEffect(() => {
-    const storedRedirectPath = localStorage.getItem("redirect");
-    if (storedRedirectPath) {
-      setRedirectPath(storedRedirectPath);
-    }
-  }, []);
 
   const onSubmit = useCallback(
     (values: z.infer<typeof ChangePasswordSchema>) => {

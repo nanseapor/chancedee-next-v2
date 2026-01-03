@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { useAutoSave } from "@/hooks/jobsmarket/jobs/use-auto-save-field";
 
 describe("useAutoSave", () => {
@@ -8,6 +8,7 @@ describe("useAutoSave", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -89,29 +90,32 @@ describe("useAutoSave", () => {
     });
 
     it("should track saving state", async () => {
-      const onSave = vi.fn().mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      );
+      let resolvePromise: () => void;
+      const savePromise = new Promise<void>((resolve) => {
+        resolvePromise = resolve;
+      });
+      const onSave = vi.fn().mockReturnValue(savePromise);
       const { result } = renderHook(() => useAutoSave(onSave, 1000));
 
       act(() => {
         result.current.markDirty("title", "Test");
       });
 
+      // Trigger the debounced save
       await act(async () => {
         vi.advanceTimersByTime(1000);
       });
 
+      // Save should be in progress
       expect(result.current.isSaving).toBe(true);
 
+      // Resolve the save promise
       await act(async () => {
-        vi.advanceTimersByTime(100);
-        await vi.runAllTimersAsync();
+        resolvePromise!();
+        await savePromise;
       });
 
-      await waitFor(() => {
-        expect(result.current.isSaving).toBe(false);
-      });
+      expect(result.current.isSaving).toBe(false);
     });
 
     it("should update lastSaved timestamp after successful save", async () => {
@@ -124,14 +128,14 @@ describe("useAutoSave", () => {
         result.current.markDirty("title", "Test");
       });
 
+      // Trigger and complete the save
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        // Allow the save promise to resolve
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.lastSaved).toBeInstanceOf(Date);
-      });
+      expect(result.current.lastSaved).toBeInstanceOf(Date);
     });
 
     it("should clear dirty state after successful save", async () => {
@@ -144,14 +148,13 @@ describe("useAutoSave", () => {
 
       expect(result.current.isDirty).toBe(true);
 
+      // Trigger and complete the save
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.isDirty).toBe(false);
-      });
+      expect(result.current.isDirty).toBe(false);
     });
   });
 
@@ -164,14 +167,15 @@ describe("useAutoSave", () => {
         result.current.markDirty("title", "Test");
       });
 
+      // Trigger and wait for the rejected save
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        // Let the promise rejection settle
+        await Promise.resolve();
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.error).toBe("Save failed");
-      });
+      expect(result.current.error).toBe("Save failed");
     });
 
     it("should keep dirty state on save error", async () => {
@@ -182,14 +186,14 @@ describe("useAutoSave", () => {
         result.current.markDirty("title", "Test");
       });
 
+      // Trigger and wait for the rejected save
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        await Promise.resolve();
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.isDirty).toBe(true);
-      });
+      expect(result.current.isDirty).toBe(true);
     });
 
     it("should retry save after error", async () => {
@@ -207,12 +211,11 @@ describe("useAutoSave", () => {
 
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        await Promise.resolve();
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.error).toBe("First fail");
-      });
+      expect(result.current.error).toBe("First fail");
 
       // Second attempt succeeds
       act(() => {
@@ -221,13 +224,11 @@ describe("useAutoSave", () => {
 
       await act(async () => {
         vi.advanceTimersByTime(1000);
-        await vi.runAllTimersAsync();
+        await Promise.resolve();
       });
 
-      await waitFor(() => {
-        expect(result.current.error).toBeNull();
-        expect(result.current.lastSaved).toBeInstanceOf(Date);
-      });
+      expect(result.current.error).toBeNull();
+      expect(result.current.lastSaved).toBeInstanceOf(Date);
     });
   });
 

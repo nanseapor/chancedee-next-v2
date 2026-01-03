@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useState,
+  startTransition,
 } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -31,11 +32,15 @@ export const useDotButton = (
   );
 
   const onInit = useCallback((emblaApi: EmblaCarouselType) => {
-    setScrollSnaps(emblaApi.scrollSnapList());
+    startTransition(() => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+    });
   }, []);
 
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap());
+    startTransition(() => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
   }, []);
 
   useEffect(() => {

@@ -99,21 +99,32 @@ describe('useJobActionsDetail', () => {
 
     it('should set isProcessing true during action', async () => {
       const { webJobPublish } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobPublish).mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve({ success: true }), 100))
-      );
+
+      // Use a deferred promise to control timing
+      let resolvePromise: (value: { success: boolean }) => void;
+      const deferredPromise = new Promise<{ success: boolean }>((resolve) => {
+        resolvePromise = resolve;
+      });
+      vi.mocked(webJobPublish).mockReturnValue(deferredPromise);
 
       const { result } = renderHook(() => useJobActionsDetail(mockDraftJob));
 
-      const publishPromise = act(async () => {
-        return result.current.publish();
+      // Start the action but don't await it yet
+      let publishPromise: Promise<unknown>;
+      act(() => {
+        publishPromise = result.current.publish();
       });
 
+      // Now isProcessing should be true while waiting
       await waitFor(() => {
         expect(result.current.isProcessing).toBe(true);
       });
 
-      await publishPromise;
+      // Complete the action
+      await act(async () => {
+        resolvePromise!({ success: true });
+        await publishPromise;
+      });
     });
 
     it('should return success result on completion', async () => {
@@ -122,11 +133,12 @@ describe('useJobActionsDetail', () => {
 
       const { result } = renderHook(() => useJobActionsDetail(mockDraftJob));
 
-      const publishResult = await act(async () => {
-        return await result.current.publish();
+      let publishResult: unknown;
+      await act(async () => {
+        publishResult = await result.current.publish();
       });
 
-      expect(publishResult.success).toBe(true);
+      expect((publishResult as { success: boolean }).success).toBe(true);
     });
 
     it('should return error on failure', async () => {
@@ -138,12 +150,13 @@ describe('useJobActionsDetail', () => {
 
       const { result } = renderHook(() => useJobActionsDetail(mockDraftJob));
 
-      const publishResult = await act(async () => {
-        return await result.current.publish();
+      let publishResult: unknown;
+      await act(async () => {
+        publishResult = await result.current.publish();
       });
 
-      expect(publishResult.success).toBe(false);
-      expect(publishResult.error).toBe('Failed to publish');
+      expect((publishResult as { success: boolean; error?: string }).success).toBe(false);
+      expect((publishResult as { success: boolean; error?: string }).error).toBe('Failed to publish');
     });
   });
 
@@ -235,12 +248,13 @@ describe('useJobActionsDetail', () => {
 
       const { result } = renderHook(() => useJobActionsDetail(mockDraftJob));
 
-      const duplicateResult = await act(async () => {
-        return await result.current.duplicate();
+      let duplicateResult: unknown;
+      await act(async () => {
+        duplicateResult = await result.current.duplicate();
       });
 
-      expect(duplicateResult.success).toBe(true);
-      expect(duplicateResult.data?.uid).toBe('new-job-456');
+      expect((duplicateResult as { success: boolean }).success).toBe(true);
+      expect((duplicateResult as { success: boolean; data?: { uid: string } }).data?.uid).toBe('new-job-456');
     });
   });
 
@@ -297,21 +311,32 @@ describe('useJobActionsDetail', () => {
 
     it('should track current action during processing', async () => {
       const { webJobPublish } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobPublish).mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve({ success: true }), 100))
-      );
+
+      // Use a deferred promise to control timing
+      let resolvePromise: (value: { success: boolean }) => void;
+      const deferredPromise = new Promise<{ success: boolean }>((resolve) => {
+        resolvePromise = resolve;
+      });
+      vi.mocked(webJobPublish).mockReturnValue(deferredPromise);
 
       const { result } = renderHook(() => useJobActionsDetail(mockDraftJob));
 
-      const publishPromise = act(async () => {
-        return result.current.publish();
+      // Start the action but don't await it yet
+      let publishPromise: Promise<unknown>;
+      act(() => {
+        publishPromise = result.current.publish();
       });
 
+      // Now currentAction should be set while waiting
       await waitFor(() => {
         expect(result.current.currentAction).toBe('publish');
       });
 
-      await publishPromise;
+      // Complete the action
+      await act(async () => {
+        resolvePromise!({ success: true });
+        await publishPromise;
+      });
     });
   });
 });

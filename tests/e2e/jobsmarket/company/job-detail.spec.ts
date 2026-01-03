@@ -54,7 +54,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display company shell with navigation', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -65,7 +64,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display tabs (Overview, Applications, Settings)', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -76,7 +74,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should switch tabs when clicked', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -110,7 +107,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('View Mode', () => {
     test('should display job header with title and status', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -120,7 +116,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display Edit button', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -130,7 +125,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display stats cards', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -140,7 +134,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display views chart or empty state', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -153,7 +146,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display recent applications section', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -163,7 +155,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display job details section', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -178,7 +169,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Status Actions', () => {
     test('should show action menu when clicked', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -194,7 +184,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should show duplicate option in menu', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -207,18 +196,14 @@ test.describe('COMP-R07: Job Detail Page', () => {
       }
     });
 
-    // Skip data-modifying tests by default
-    test.skip('should publish draft job', async ({ page }) => {
-      // Implement with proper test data setup/teardown
-    });
+    // TODO: Requires proper test data setup/teardown to avoid data corruption
+    test.skip('should publish draft job', async () => {});
 
-    test.skip('should unpublish published job', async ({ page }) => {
-      // Implement with proper test data setup/teardown
-    });
+    // TODO: Requires proper test data setup/teardown to avoid data corruption
+    test.skip('should unpublish published job', async () => {});
 
-    test.skip('should close job', async ({ page }) => {
-      // Implement with proper test data setup/teardown
-    });
+    // TODO: Requires proper test data setup/teardown to avoid data corruption
+    test.skip('should close job', async () => {});
   });
 
   // ==========================================
@@ -226,7 +211,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Edit Mode', () => {
     test('should enter edit mode when Edit button clicked', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -240,7 +224,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display form fields in edit mode', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -255,7 +238,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should show Save and Cancel buttons in edit mode', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -272,7 +254,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should disable Save button when no changes made', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -289,7 +270,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should enable Save button when changes made', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -309,7 +289,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should show validation error for empty required field', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -328,7 +307,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should return to view mode when Cancel clicked (no changes)', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -351,7 +329,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Change Tracking', () => {
     test('should show change indicator when field modified', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -370,7 +347,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should show unsaved changes message', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -394,7 +370,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Navigation Guards', () => {
     test('should show confirmation modal when canceling with unsaved changes', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -416,7 +391,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should discard changes when Discard clicked', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -443,7 +417,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Enhanced Form Fields', () => {
     test('should display employment type dropdown', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -459,7 +432,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display job type dropdown', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -475,7 +447,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display positions input with +/- buttons', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -494,7 +465,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should increment positions when + clicked', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);
@@ -516,7 +486,6 @@ test.describe('COMP-R07: Job Detail Page', () => {
     });
 
     test('should display work location field', async ({ page }) => {
-      test.skip(!TEST_JOB_ID, 'No test job found');
 
       await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
       await waitForPageLoad(page);

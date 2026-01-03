@@ -1,0 +1,129 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e6] [cursor=pointer]:
+          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard
+          - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e7]
+          - generic [ref=e8]: บริษัท จัดหางาน พีเพิล วัน จำกัด
+        - button "การแจ้งเตือน" [ref=e9]:
+          - img [ref=e10]
+        - button "C" [ref=e13]:
+          - generic [ref=e15]: C
+          - img [ref=e16]
+      - generic [ref=e18]:
+        - complementary [ref=e19]:
+          - navigation [ref=e21]:
+            - link "แดชบอร์ด" [ref=e22] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard
+              - img [ref=e23]
+              - generic [ref=e28]: แดชบอร์ด
+            - link "งานที่ประกาศ" [ref=e29] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/jobs
+              - img [ref=e30]
+              - generic [ref=e33]: งานที่ประกาศ
+            - link "ใบสมัคร" [ref=e34] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/applications
+              - img [ref=e35]
+              - generic [ref=e38]: ใบสมัคร
+            - link "ทีมงาน" [ref=e39] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/team
+              - img [ref=e40]
+              - generic [ref=e45]: ทีมงาน
+            - link "ตั้งค่า" [ref=e46] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/settings
+              - img [ref=e47]
+              - generic [ref=e50]: ตั้งค่า
+        - main [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - heading "แดชบอร์ด" [level=1] [ref=e54]
+              - paragraph [ref=e55]: ยินดีต้อนรับภาพรวมบริษัทของคุณ
+            - generic [ref=e56]:
+              - 'link "งานทั้งหมด: 12" [ref=e57] [cursor=pointer]':
+                - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/jobs
+                - generic [ref=e59]:
+                  - img [ref=e61]
+                  - generic:
+                    - paragraph: งานทั้งหมด
+                    - paragraph: "12"
+              - 'link "งานที่เปิดรับ: 5" [ref=e64] [cursor=pointer]':
+                - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/jobs?status=active
+                - generic [ref=e66]:
+                  - img [ref=e68]
+                  - generic:
+                    - paragraph: งานที่เปิดรับ
+                    - paragraph: "5"
+              - 'link "ใบสมัครทั้งหมด: 87" [ref=e72] [cursor=pointer]':
+                - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/applications
+                - generic [ref=e74]:
+                  - img [ref=e76]
+                  - generic:
+                    - paragraph: ใบสมัครทั้งหมด
+                    - paragraph: "87"
+              - 'link "ใบสมัครใหม่: 14" [ref=e79] [cursor=pointer]':
+                - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/applications?status=new
+                - generic [ref=e81]:
+                  - img [ref=e83]
+                  - generic:
+                    - paragraph: ใบสมัครใหม่
+                    - paragraph: "14"
+            - generic [ref=e86]:
+              - generic [ref=e87]:
+                - heading "ดำเนินการด่วน" [level=3] [ref=e89]
+                - generic [ref=e90]:
+                  - link "สร้างประกาศงาน" [ref=e91] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard/jobs/new
+                    - button "สร้างประกาศงาน" [ref=e92]:
+                      - img [ref=e93]
+                      - text: สร้างประกาศงาน
+                  - link "ดูใบสมัคร" [ref=e94] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard/applications
+                    - button "ดูใบสมัคร" [ref=e95]:
+                      - img [ref=e96]
+                      - text: ดูใบสมัคร
+                  - generic [ref=e99]:
+                    - button "ค้นหาผู้สมัคร" [disabled]:
+                      - img
+                      - text: ค้นหาผู้สมัคร
+                    - generic [ref=e100]: เร็วๆ นี้
+              - generic [ref=e101]:
+                - heading "กิจกรรมล่าสุด" [level=3] [ref=e103]
+                - generic [ref=e105]:
+                  - generic [ref=e106]:
+                    - img [ref=e108]
+                    - generic [ref=e111]:
+                      - paragraph [ref=e112]: ได้รับใบสมัครใหม่จาก สมชาย ใจดี สำหรับตำแหน่ง นักพัฒนา
+                      - paragraph [ref=e113]: 5 นาทีที่แล้ว
+                  - generic [ref=e114]:
+                    - img [ref=e116]
+                    - generic [ref=e119]:
+                      - paragraph [ref=e120]: ประกาศงาน "นักพัฒนา Frontend" เผยแพร่แล้ว
+                      - paragraph [ref=e121]: 1 ชั่วโมงที่แล้ว
+                  - generic [ref=e122]:
+                    - img [ref=e124]
+                    - generic [ref=e127]:
+                      - paragraph [ref=e128]: ยอมรับใบสมัครของ สมหญิง รักงาน
+                      - paragraph [ref=e129]: 3 ชั่วโมงที่แล้ว
+                  - generic [ref=e130]:
+                    - img [ref=e132]
+                    - generic [ref=e135]:
+                      - paragraph [ref=e136]: ปิดรับสมัครงาน "เจ้าหน้าที่บัญชี"
+                      - paragraph [ref=e137]: เมื่อวาน
+                  - generic [ref=e138]:
+                    - img [ref=e140]
+                    - generic [ref=e143]:
+                      - paragraph [ref=e144]: ได้รับใบสมัครใหม่จาก มานะ ขยัน
+                      - paragraph [ref=e145]: 2 วันที่แล้ว
+  - button "Open Next.js Dev Tools" [ref=e151] [cursor=pointer]:
+    - generic [ref=e154]:
+      - text: Compiling
+      - generic [ref=e155]:
+        - generic [ref=e156]: .
+        - generic [ref=e157]: .
+        - generic [ref=e158]: .
+  - alert [ref=e159]
+```

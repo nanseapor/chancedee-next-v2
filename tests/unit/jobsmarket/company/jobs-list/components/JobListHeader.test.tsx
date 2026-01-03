@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { JobListHeader } from '@/components/jobsmarket/company/jobs/JobListHeader';
 
 // Mock Next.js Link
@@ -12,6 +12,10 @@ vi.mock('next/link', () => ({
 describe('JobListHeader', () => {
   const mockOnSearch = vi.fn();
   const mockCompanyId = 'test-company-123';
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders title "ประกาศงาน"', () => {
     render(
@@ -65,17 +69,19 @@ describe('JobListHeader', () => {
 
     const searchInput = screen.getByPlaceholderText('ค้นหาตำแหน่งงาน');
 
-    fireEvent.change(searchInput, { target: { value: 'developer' } });
+    await act(async () => {
+      fireEvent.change(searchInput, { target: { value: 'developer' } });
+    });
 
     // Should not call immediately
     expect(mockOnSearch).not.toHaveBeenCalled();
 
     // Fast-forward 300ms
-    vi.advanceTimersByTime(300);
-
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('developer');
+    await act(async () => {
+      vi.advanceTimersByTime(300);
     });
+
+    expect(mockOnSearch).toHaveBeenCalledWith('developer');
 
     vi.useRealTimers();
   });

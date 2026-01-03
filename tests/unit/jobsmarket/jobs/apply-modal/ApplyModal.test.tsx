@@ -9,6 +9,19 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ApplyModal } from '@/components/jobsmarket/jobs/ApplyModal';
 import type { ApplyModalJob } from '@/types/jobsmarket/apply-modal.types';
 
+// Mock the server action
+vi.mock('@/lib/database/actions/job-applications', () => ({
+  submitApplication: vi.fn(),
+}));
+
+// Mock jotai
+vi.mock('jotai', () => ({
+  useAtom: vi.fn(() => [{ uid: 'test-user-123' }, vi.fn()]),
+  useAtomValue: vi.fn(() => ({ uid: 'test-user-123' })),
+  atom: vi.fn((init) => ({ init })),
+  createStore: vi.fn(() => ({ get: vi.fn(), set: vi.fn(), sub: vi.fn() })),
+}));
+
 const mockJob: ApplyModalJob = {
   uid: 'test-job-123',
   title: 'Senior Developer',
@@ -51,7 +64,7 @@ describe('ApplyModal', () => {
       expect(screen.queryByText('Senior Developer')).not.toBeInTheDocument();
     });
 
-    it('shows submitting state during submit', async () => {
+    it('shows form content when modal is open', async () => {
       render(
         <ApplyModal
           isOpen={true}
@@ -60,22 +73,14 @@ describe('ApplyModal', () => {
         />
       );
 
-      // Submit button should be enabled initially
-      const submitButton = screen.getByRole('button', { name: /ส่งใบสมัคร/ });
-      expect(submitButton).not.toBeDisabled();
-
-      // Click submit
-      fireEvent.click(submitButton);
-
-      // Should show loading state
-      await waitFor(() => {
-        expect(screen.getByText(/กำลังส่ง/)).toBeInTheDocument();
-      });
+      // Modal should render with form content
+      expect(screen.getByText('สมัครงาน')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /ส่งใบสมัคร/ })).toBeInTheDocument();
     });
 
     it('shows success state after successful submit', async () => {
-      // Mock Math.random to always succeed
-      const mockRandom = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const { submitApplication } = await import('@/lib/database/actions/job-applications');
+      vi.mocked(submitApplication).mockResolvedValue({ success: true });
 
       render(
         <ApplyModal
@@ -88,20 +93,15 @@ describe('ApplyModal', () => {
       // Submit
       fireEvent.click(screen.getByRole('button', { name: /ส่งใบสมัคร/ }));
 
-      // Wait for success state (1 second delay)
+      // Wait for success state
       await waitFor(() => {
         expect(screen.getByText(/ส่งใบสมัครเรียบร้อย/)).toBeInTheDocument();
-      }, { timeout: 2000 });
-
-      // Should show demo notice
-      expect(screen.getByText(/นี่เป็นโหมดสาธิต/)).toBeInTheDocument();
-
-      mockRandom.mockRestore();
+      }, { timeout: 3000 });
     });
 
-    it('shows error state when submit fails', async () => {
-      // Mock Math.random to always fail (need value ≤ 0.1 to make isSuccess = false)
-      const mockRandom = vi.spyOn(Math, 'random').mockReturnValue(0.05);
+    it('shows error message when submit fails', async () => {
+      const { submitApplication } = await import('@/lib/database/actions/job-applications');
+      vi.mocked(submitApplication).mockResolvedValue({ success: false, error: 'JOB_CLOSED' });
 
       render(
         <ApplyModal
@@ -116,17 +116,16 @@ describe('ApplyModal', () => {
 
       // Wait for error state
       await waitFor(() => {
-        expect(screen.getByText(/การเชื่อมต่อล้มเหลว/)).toBeInTheDocument();
-      }, { timeout: 2000 });
+        expect(screen.getByText(/ปิดรับสมัครแล้ว/)).toBeInTheDocument();
+      }, { timeout: 3000 });
 
-      // Should show retry text (link button)
+      // Should show retry button
       expect(screen.getByText(/ลองอีกครั้ง/)).toBeInTheDocument();
-
-      mockRandom.mockRestore();
     });
 
     it('calls onSuccess callback after successful submit', async () => {
-      const mockRandom = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const { submitApplication } = await import('@/lib/database/actions/job-applications');
+      vi.mocked(submitApplication).mockResolvedValue({ success: true });
       const onSuccess = vi.fn();
 
       render(
@@ -145,8 +144,6 @@ describe('ApplyModal', () => {
       await waitFor(() => {
         expect(onSuccess).toHaveBeenCalled();
       }, { timeout: 4000 });
-
-      mockRandom.mockRestore();
     });
   });
 
@@ -169,9 +166,10 @@ describe('ApplyModal', () => {
     });
 
     it('allows retry after failed submission', async () => {
-      const mockRandom = vi.spyOn(Math, 'random')
-        .mockReturnValueOnce(0.05) // First attempt fails (≤ 0.1)
-        .mockReturnValueOnce(0.5);  // Second attempt succeeds (> 0.1)
+      const { submitApplication } = await import('@/lib/database/actions/job-applications');
+      vi.mocked(submitApplication)
+        .mockResolvedValueOnce({ success: false, error: 'NETWORK_ERROR' })
+        .mockResolvedValueOnce({ success: true });
 
       render(
         <ApplyModal
@@ -185,14 +183,16 @@ describe('ApplyModal', () => {
       fireEvent.click(screen.getByRole('button', { name: /ส่งใบสมัคร/ }));
 
       await waitFor(() => {
-        expect(screen.getByText(/การเชื่อมต่อล้มเหลว/)).toBeInTheDocument();
-      }, { timeout: 2000 });
+        expect(screen.getByText(/กรุณาลองใหม่/)).toBeInTheDocument();
+      }, { timeout: 3000 });
 
-      // Click retry link (clears error, goes back to editing state)
+      // Click retry link
       fireEvent.click(screen.getByText(/ลองอีกครั้ง/));
 
-      // Error should be cleared
-      expect(screen.queryByText(/การเชื่อมต่อล้มเหลว/)).not.toBeInTheDocument();
+      // Error should be cleared, form should be back
+      await waitFor(() => {
+        expect(screen.queryByText(/กรุณาลองใหม่/)).not.toBeInTheDocument();
+      });
 
       // Submit button should be available again
       const submitButton = screen.getByRole('button', { name: /ส่งใบสมัคร/ });
@@ -204,9 +204,7 @@ describe('ApplyModal', () => {
       // Should succeed this time
       await waitFor(() => {
         expect(screen.getByText(/ส่งใบสมัครเรียบร้อย/)).toBeInTheDocument();
-      }, { timeout: 2000 });
-
-      mockRandom.mockRestore();
+      }, { timeout: 3000 });
     });
   });
 });

@@ -2,40 +2,53 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSaveJobMutation } from '@/hooks/jobsmarket/useSaveJobMutation';
 import type { SessionState } from '@/store/jobsmarket/global-atoms';
-import { saveJob, unsaveJob } from '@/domains/jobs/services/server/actions/jobsmarket/public-jobs';
-import { useAtomValue } from 'jotai';
-import { toast } from 'sonner';
 import { sessionStateAtom } from '@/store/jobsmarket/global-atoms';
 import { userAtom } from '@/store/atom-store';
 
 // Mock server actions
-vi.mock('@/domains/jobs/services/server/actions/jobsmarket/public-jobs');
-
-// Mock Jotai atoms
-vi.mock('jotai');
+const mockSaveJob = vi.fn();
+const mockUnsaveJob = vi.fn();
+vi.mock('@/domains/jobs/services/server/actions/jobsmarket/public-jobs', () => ({
+  saveJob: (...args: unknown[]) => mockSaveJob(...args),
+  unsaveJob: (...args: unknown[]) => mockUnsaveJob(...args),
+}));
 
 // Mock toast
-vi.mock('sonner');
+const mockToastSuccess = vi.fn();
+const mockToastError = vi.fn();
+vi.mock('sonner', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+}));
+
+// Mock Jotai atoms - create a map to track atom state
+let mockAtomValues: Map<unknown, unknown> = new Map();
+
+vi.mock('jotai', () => ({
+  useAtomValue: (atom: unknown) => mockAtomValues.get(atom),
+  atom: vi.fn((init) => ({ init })),
+  createStore: vi.fn(() => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    sub: vi.fn(),
+  })),
+}));
 
 describe('useSaveJobMutation', () => {
   const mockUser = { uid: 'test-candidate-123' };
-  const mockSaveJob = vi.mocked(saveJob);
-  const mockUnsaveJob = vi.mocked(unsaveJob);
-  const mockUseAtomValue = vi.mocked(useAtomValue);
-  const mockToast = vi.mocked(toast);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAtomValues = new Map();
   });
 
   describe('when guest (not authenticated)', () => {
     beforeEach(() => {
       // Mock unauthenticated state
-      mockUseAtomValue.mockImplementation((atom) => {
-        if (atom === sessionStateAtom) return 'unauthenticated' as SessionState;
-        if (atom === userAtom) return null;
-        return undefined;
-      });
+      mockAtomValues.set(sessionStateAtom, 'unauthenticated' as SessionState);
+      mockAtomValues.set(userAtom, null);
     });
 
     it('calls onAuthRequired callback', async () => {
@@ -79,11 +92,8 @@ describe('useSaveJobMutation', () => {
   describe('when authenticated', () => {
     beforeEach(() => {
       // Mock authenticated state
-      mockUseAtomValue.mockImplementation((atom) => {
-        if (atom === sessionStateAtom) return 'authenticated' as SessionState;
-        if (atom === userAtom) return mockUser;
-        return undefined;
-      });
+      mockAtomValues.set(sessionStateAtom, 'authenticated' as SessionState);
+      mockAtomValues.set(userAtom, mockUser);
     });
 
     describe('save job', () => {
@@ -148,7 +158,7 @@ describe('useSaveJobMutation', () => {
         });
 
         await waitFor(() => {
-          expect(mockToast.success).toHaveBeenCalledWith('บันทึกงานแล้ว');
+          expect(mockToastSuccess).toHaveBeenCalledWith('บันทึกงานแล้ว');
         });
       });
 
@@ -177,7 +187,7 @@ describe('useSaveJobMutation', () => {
         });
 
         await waitFor(() => {
-          expect(mockToast.error).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
+          expect(mockToastError).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
         });
       });
 
@@ -192,7 +202,7 @@ describe('useSaveJobMutation', () => {
 
         await waitFor(() => {
           expect(result.current.savedJobIds.has('job-123')).toBe(false);
-          expect(mockToast.error).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
+          expect(mockToastError).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
         });
       });
     });
@@ -239,7 +249,7 @@ describe('useSaveJobMutation', () => {
         });
 
         await waitFor(() => {
-          expect(mockToast.success).toHaveBeenCalledWith('ยกเลิกบันทึกแล้ว');
+          expect(mockToastSuccess).toHaveBeenCalledWith('ยกเลิกบันทึกแล้ว');
         });
       });
 
@@ -268,7 +278,7 @@ describe('useSaveJobMutation', () => {
         });
 
         await waitFor(() => {
-          expect(mockToast.error).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
+          expect(mockToastError).toHaveBeenCalledWith('เกิดข้อผิดพลาด กรุณาลองใหม่');
         });
       });
     });
@@ -305,11 +315,8 @@ describe('useSaveJobMutation', () => {
 
   describe('isJobSaved', () => {
     beforeEach(() => {
-      mockUseAtomValue.mockImplementation((atom) => {
-        if (atom === sessionStateAtom) return 'authenticated' as SessionState;
-        if (atom === userAtom) return mockUser;
-        return undefined;
-      });
+      mockAtomValues.set(sessionStateAtom, 'authenticated' as SessionState);
+      mockAtomValues.set(userAtom, mockUser);
     });
 
     it('returns true for saved jobs', () => {
@@ -361,11 +368,8 @@ describe('useSaveJobMutation', () => {
 
   describe('edge cases', () => {
     it('handles missing candidateId gracefully', async () => {
-      mockUseAtomValue.mockImplementation((atom) => {
-        if (atom === sessionStateAtom) return 'authenticated' as SessionState;
-        if (atom === userAtom) return null; // No user
-        return undefined;
-      });
+      mockAtomValues.set(sessionStateAtom, 'authenticated' as SessionState);
+      mockAtomValues.set(userAtom, null); // No user
 
       const { result } = renderHook(() => useSaveJobMutation([]));
 
@@ -377,11 +381,8 @@ describe('useSaveJobMutation', () => {
     });
 
     it('handles multiple rapid toggles', async () => {
-      mockUseAtomValue.mockImplementation((atom) => {
-        if (atom === sessionStateAtom) return 'authenticated' as SessionState;
-        if (atom === userAtom) return mockUser;
-        return undefined;
-      });
+      mockAtomValues.set(sessionStateAtom, 'authenticated' as SessionState);
+      mockAtomValues.set(userAtom, mockUser);
 
       mockSaveJob.mockResolvedValue({ success: true });
       mockUnsaveJob.mockResolvedValue({ success: true });

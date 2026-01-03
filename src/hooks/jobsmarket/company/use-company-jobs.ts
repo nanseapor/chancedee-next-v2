@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition, useCallback } from "react";
 import type {
   JobListItem,
   JobListQuery,
@@ -47,7 +47,7 @@ export function useCompanyJobs(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -72,37 +72,41 @@ export function useCompanyJobs(
       webJobGetCompanyJobsAggregation(companyId),
     ]);
 
-    // Handle jobs list result
-    if (jobsResult.status === "fulfilled") {
-      const result = jobsResult.value;
-      if (result.success && result.data) {
-        setJobs(result.data);
-        setTotal(result.total || 0);
-        setCurrentPage(result.page || 1);
-        setCurrentLimit(result.limit || 20);
+    startTransition(() => {
+      // Handle jobs list result
+      if (jobsResult.status === "fulfilled") {
+        const result = jobsResult.value;
+        if (result.success && result.data) {
+          setJobs(result.data);
+          setTotal(result.total || 0);
+          setCurrentPage(result.page || 1);
+          setCurrentLimit(result.limit || 20);
+        } else {
+          setError(new Error(result.error || "Failed to fetch jobs"));
+        }
       } else {
-        setError(new Error(result.error || "Failed to fetch jobs"));
+        setError(jobsResult.reason as Error);
       }
-    } else {
-      setError(jobsResult.reason as Error);
-    }
 
-    // Handle aggregation result
-    if (aggResult.status === "fulfilled" && aggResult.value) {
-      const result = aggResult.value;
-      if (result.success && result.data) {
-        setAggregation(result.data);
+      // Handle aggregation result
+      if (aggResult.status === "fulfilled" && aggResult.value) {
+        const result = aggResult.value;
+        if (result.success && result.data) {
+          setAggregation(result.data);
+        }
       }
-    }
 
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    });
+  }, [companyId, status, q, page, limit, sort]);
 
   useEffect(() => {
     if (companyId) {
-      fetchData();
+      startTransition(() => {
+        fetchData();
+      });
     }
-  }, [companyId, status, q, page, limit, sort]);
+  }, [companyId, fetchData]);
 
   return {
     jobs,

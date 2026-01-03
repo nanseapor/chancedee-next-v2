@@ -354,8 +354,9 @@ describe('getSimilarJobs', () => {
 
     const result = await getSimilarJobs(mockJobId, 5);
 
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(mockSimilarJob);
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]).toEqual(mockSimilarJob);
   });
 
   it('should exclude the current job from results', async () => {
@@ -370,7 +371,8 @@ describe('getSimilarJobs', () => {
 
     const result = await getSimilarJobs(mockJobId, 5);
 
-    expect(result.every(job => job.uid !== mockJobId)).toBe(true);
+    expect(result.success).toBe(true);
+    expect(result.data.every(job => job.uid !== mockJobId)).toBe(true);
   });
 
   it('should respect the limit parameter', async () => {
@@ -385,7 +387,8 @@ describe('getSimilarJobs', () => {
 
     const result = await getSimilarJobs(mockJobId, 3);
 
-    expect(result).toHaveLength(3);
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(3);
   });
 
   it('should return empty array when no similar jobs found', async () => {
@@ -399,7 +402,8 @@ describe('getSimilarJobs', () => {
 
     const result = await getSimilarJobs(mockJobId, 5);
 
-    expect(result).toEqual([]);
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual([]);
   });
 });
 

@@ -138,9 +138,13 @@ describe('useJobEdit', () => {
 
     it('should set editState to saving during save', async () => {
       const { webJobUpdate } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobUpdate).mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve('job-123'), 100))
-      );
+
+      // Use a deferred promise to control timing
+      let resolvePromise: (value: string) => void;
+      const deferredPromise = new Promise<string>((resolve) => {
+        resolvePromise = resolve;
+      });
+      vi.mocked(webJobUpdate).mockReturnValue(deferredPromise);
 
       const { result } = renderHook(() => useJobEdit(mockJob));
 
@@ -148,15 +152,22 @@ describe('useJobEdit', () => {
         result.current.setField('title', 'Senior Software Engineer');
       });
 
-      const savePromise = act(async () => {
-        return result.current.save();
+      // Start the save but don't await it yet
+      let savePromise: Promise<unknown>;
+      act(() => {
+        savePromise = result.current.save();
       });
 
+      // Now editState should be 'saving' while waiting
       await waitFor(() => {
-        expect(['saving', 'clean']).toContain(result.current.editState);
+        expect(result.current.editState).toBe('saving');
       });
 
-      await savePromise;
+      // Complete the save
+      await act(async () => {
+        resolvePromise!('job-123');
+        await savePromise;
+      });
     });
 
     it('should set editState to clean after successful save', async () => {
@@ -186,12 +197,13 @@ describe('useJobEdit', () => {
         result.current.setField('title', 'Senior Software Engineer');
       });
 
-      const saveResult = await act(async () => {
-        return await result.current.save();
+      let saveResult: unknown;
+      await act(async () => {
+        saveResult = await result.current.save();
       });
 
-      expect(saveResult.success).toBe(false);
-      expect(saveResult.error).toBeDefined();
+      expect((saveResult as { success: boolean }).success).toBe(false);
+      expect((saveResult as { success: boolean; error?: string }).error).toBeDefined();
     });
   });
 

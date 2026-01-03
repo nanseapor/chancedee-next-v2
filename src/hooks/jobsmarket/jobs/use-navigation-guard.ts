@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { useRouter } from "next/navigation";
 
 /**
@@ -59,8 +59,10 @@ export function useNavigationGuard(isDirty: boolean) {
    */
   useEffect(() => {
     if (!isDirty && showConfirmModal) {
-      setShowConfirmModal(false);
-      setPendingPath(null);
+      startTransition(() => {
+        setShowConfirmModal(false);
+        setPendingPath(null);
+      });
     }
   }, [isDirty, showConfirmModal]);
 

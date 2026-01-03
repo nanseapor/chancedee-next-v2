@@ -147,11 +147,11 @@ describe('FilterPanel', () => {
       const clearButton = screen.getByRole('button', { name: /ล้างตัวกรอง/ });
       fireEvent.click(clearButton);
 
-      // Clear filters resets to show ALL statuses (not empty)
+      // Clear filters resets statuses to empty (no filter = show all)
       expect(onFiltersChange).toHaveBeenCalled();
       const callArg = onFiltersChange.mock.calls[0][0];
       expect(callArg.jobId).toBe(null);
-      expect(callArg.statuses.length).toBe(7); // All 7 statuses
+      expect(callArg.statuses.length).toBe(0); // Empty means no filter applied = show all
     });
 
     it('apply button is enabled and clickable', () => {

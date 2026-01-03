@@ -8,6 +8,7 @@ import {
   setPersistence,
 } from "firebase/auth";
 import { type FirebaseStorage, getStorage } from "firebase/storage";
+import { type Firestore, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,12 +22,14 @@ const firebaseConfig = {
 let firebaseApp: FirebaseApp;
 let auth: Auth;
 let storage: FirebaseStorage;
+let firestore: Firestore;
 
 function initializeFirebase() {
   if (!getApps().length) {
     firebaseApp = initializeApp(firebaseConfig);
     auth = getAuth(firebaseApp);
     storage = getStorage(firebaseApp);
+    firestore = getFirestore(firebaseApp);
     setPersistence(auth, browserLocalPersistence)
       .then(() => {
         console.log("Firebase persistence set to LOCAL");
@@ -37,6 +40,7 @@ function initializeFirebase() {
   } else {
     firebaseApp = getApps()[0]!;
     auth = getAuth(firebaseApp);
+    firestore = getFirestore(firebaseApp);
   }
 }
 
@@ -61,8 +65,15 @@ export function getFirebaseStorage(): FirebaseStorage {
   return storage;
 }
 
+export function getFirebaseFirestore(): Firestore {
+  if (!firestore) {
+    initializeFirebase();
+  }
+  return firestore;
+}
+
 // Initialize Firebase when this module is imported
 initializeFirebase();
 
 // Export initialized instances for direct use
-export { auth, firebaseApp, storage };
+export { auth, firebaseApp, storage, firestore };

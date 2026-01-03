@@ -16,13 +16,7 @@ interface JobRowProps {
 }
 
 export function JobRow({ job, isSelected, onSelect, onAction }: JobRowProps) {
-  let router;
-  try {
-    router = useRouter();
-  } catch (e) {
-    // In test environment without router provider, use a mock
-    router = { push: () => {} };
-  }
+  const router = useRouter();
 
   const handleRowClick = (e: React.MouseEvent) => {
     // Don't navigate if clicking checkbox or action menu

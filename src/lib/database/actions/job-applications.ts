@@ -715,9 +715,8 @@ export async function submitApplication(
       companyId: job.companyId || '',
       companyName: job.companyName || '',
       status: 'applied',
-      // Use explicit null check to preserve null vs undefined distinction
-      // When not provided (undefined), default to null
-      expectedSalary: input.expectedSalary === null ? null : (input.expectedSalary ?? null),
+      // Schema expects number | undefined, not number | null
+      expectedSalary: input.expectedSalary ?? undefined,
       isNegotiable: input.isNegotiable ?? true, // Default true
       overheadDays: input.overheadDays ?? 0, // Default 0
       headlines: input.headlines ?? '', // Default empty string

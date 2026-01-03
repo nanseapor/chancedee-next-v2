@@ -120,44 +120,11 @@ test.describe("Job Creation Wizard - COMP-R06", () => {
   });
 
   test.describe("Happy Path: Resume and Duplicate", () => {
-    test.skip("should resume editing existing draft", async ({ page }) => {
-      // This test requires a pre-existing draft ID
-      const draftId = "test-draft-id";
+    // TODO: Implement when draft resume functionality is ready
+    test.skip("should resume editing existing draft", async () => {});
 
-      await page.goto(`${WIZARD_URL}?draftId=${draftId}`);
-
-      // Verify form is pre-filled
-      await expect(page.getByLabel(/ชื่อตำแหน่งงาน/)).toHaveValue(/.+/);
-
-      // Make changes
-      await page.getByLabel(/จำนวนตำแหน่งที่รับ/).fill("5");
-
-      // Verify auto-save indicator
-      await expect(page.getByText(/บันทึกร่างแล้ว/)).toBeVisible({ timeout: 2000 });
-    });
-
-    test.skip("should duplicate existing job", async ({ page }) => {
-      const sourceJobId = "existing-job-id";
-
-      await page.goto(`${WIZARD_URL}?duplicateFrom=${sourceJobId}`);
-
-      // Verify form is pre-filled with source data
-      await expect(page.getByLabel(/ชื่อตำแหน่งงาน/)).toHaveValue(/.+/);
-
-      // Modify title to distinguish from original
-      const originalTitle = await page.getByLabel(/ชื่อตำแหน่งงาน/).inputValue();
-      await page.getByLabel(/ชื่อตำแหน่งงาน/).fill(`${originalTitle} (Copy)`);
-
-      // Navigate through wizard
-      await page.getByRole("button", { name: /ถัดไป/ }).click();
-      await page.getByRole("button", { name: /ถัดไป/ }).click();
-      await page.getByRole("button", { name: /ถัดไป/ }).click();
-
-      // Publish
-      await page.getByRole("button", { name: /เผยแพร่ทันที/ }).click();
-
-      await expect(page.getByText(/เผยแพร่งานสำเร็จ/)).toBeVisible();
-    });
+    // TODO: Implement when job duplication feature is ready
+    test.skip("should duplicate existing job", async () => {});
   });
 
   test.describe("Invalid Inputs: Validation Errors", () => {

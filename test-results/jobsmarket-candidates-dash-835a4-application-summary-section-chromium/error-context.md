@@ -1,0 +1,67 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - link "ChanceDeeJobs" [ref=e6] [cursor=pointer]:
+        - /url: /jobsmarket
+      - main [ref=e7]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - heading "เข้าสู่ระบบ" [level=3] [ref=e11]
+            - paragraph [ref=e12]: เข้าสู่ระบบเพื่อจัดการประวัติและค้นหางาน
+          - generic [ref=e13]:
+            - alert [ref=e14]:
+              - img [ref=e15]
+              - generic [ref=e17]: เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้ง
+            - button "เข้าสู่ระบบด้วย Google" [ref=e18]:
+              - img [ref=e19]
+              - generic [ref=e24]: เข้าสู่ระบบด้วย Google
+            - generic [ref=e28]: หรือ
+            - generic [ref=e29]:
+              - generic [ref=e30]:
+                - text: อีเมล
+                - textbox "อีเมล" [ref=e31]:
+                  - /placeholder: you@example.com
+                  - text: xalanaseon@hotmail.com
+              - generic [ref=e32]:
+                - generic [ref=e33]:
+                  - generic [ref=e34]: รหัสผ่าน
+                  - link "ลืมรหัสผ่าน?" [ref=e35] [cursor=pointer]:
+                    - /url: /jobsmarket/auth/reset
+                - generic [ref=e36]:
+                  - textbox "กรอกรหัสผ่าน" [ref=e37]: P@ssw0rd@1
+                  - button "แสดงรหัสผ่าน" [ref=e38]:
+                    - img [ref=e39]
+              - generic [ref=e42]:
+                - checkbox "ยอมรับ ข้อกำหนดการใช้งาน และ นโยบายความเป็นส่วนตัว" [checked] [ref=e43]:
+                  - generic:
+                    - img
+                - checkbox [checked]
+                - generic [ref=e44] [cursor=pointer]:
+                  - text: ยอมรับ
+                  - link "ข้อกำหนดการใช้งาน" [ref=e45]:
+                    - /url: /jobsmarket/legal/terms
+                  - text: และ
+                  - link "นโยบายความเป็นส่วนตัว" [ref=e46]:
+                    - /url: /jobsmarket/privacy
+              - button "เข้าสู่ระบบ" [ref=e47]
+          - paragraph [ref=e49]:
+            - text: ยังไม่มีบัญชี?
+            - link "สมัครสมาชิก" [ref=e50] [cursor=pointer]:
+              - /url: /jobsmarket/auth/register
+      - paragraph [ref=e52]: © 2026 ChanceDee. All rights reserved.
+  - generic [ref=e57] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e58]:
+      - img [ref=e59]
+    - generic [ref=e62]:
+      - button "Open issues overlay" [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]: "0"
+          - generic [ref=e66]: "1"
+        - generic [ref=e67]: Issue
+      - button "Collapse issues badge" [ref=e68]:
+        - img [ref=e69]
+  - alert [ref=e71]
+```

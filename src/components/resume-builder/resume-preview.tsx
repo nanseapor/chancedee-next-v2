@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import type { ResumePreviewProps } from "@/types/resume";
 import { Download, FileText, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 
 export function ResumePreview({
   isOpen,
@@ -35,7 +35,9 @@ export function ResumePreview({
     if (generatedResume && isOpen) {
       // Force a re-render to ensure content is visible after state changes
       const timer = setTimeout(() => {
-        setForceUpdate((prev) => prev + 1);
+        startTransition(() => {
+          setForceUpdate((prev) => prev + 1);
+        });
       }, 50); // Small delay to ensure state synchronization
 
       return () => clearTimeout(timer);
@@ -46,14 +48,18 @@ export function ResumePreview({
   // Manage loading overlay visibility
   useEffect(() => {
     if (isGenerating) {
-      setShowLoadingOverlay(true);
-      setProgressComplete(false);
+      startTransition(() => {
+        setShowLoadingOverlay(true);
+        setProgressComplete(false);
+      });
       return undefined;
     } else {
       // Hide overlay when generation is complete
       const timer = setTimeout(() => {
-        setShowLoadingOverlay(false);
-        setProgressComplete(false);
+        startTransition(() => {
+          setShowLoadingOverlay(false);
+          setProgressComplete(false);
+        });
       }, 500); // Small delay to show completion
 
       return () => clearTimeout(timer);

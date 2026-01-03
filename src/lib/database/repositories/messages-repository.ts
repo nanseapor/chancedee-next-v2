@@ -123,9 +123,97 @@ function transformToFirebaseModel(
   };
 }
 
-// Create and export the repository
-export const messagesRepository: IRepository<MessageWithId> = createRepository<MessageWithId, FirebaseMessagesType>(
+// Create the base repository
+const baseRepository: IRepository<MessageWithId> = createRepository<MessageWithId, FirebaseMessagesType>(
   'messages',
   transformToAppModel,
   transformToFirebaseModel
 );
+
+// Extended repository with message-specific methods
+export interface MessagesRepository extends IRepository<MessageWithId> {
+  getByRoomIdPaginated(
+    roomId: string,
+    options?: { limit?: number; cursor?: string }
+  ): Promise<{ messages: MessageWithId[]; hasMore: boolean; cursor: string | null }>;
+  batchUpdate(
+    messages: Omit<MessageWithId, "createdBy" | "updatedBy">[],
+    actorId: string
+  ): Promise<void>;
+}
+
+export const messagesRepository: MessagesRepository = {
+  ...baseRepository,
+
+  /**
+   * Get messages for a room with cursor-based pagination
+   */
+  async getByRoomIdPaginated(
+    roomId: string,
+    options?: { limit?: number; cursor?: string }
+  ): Promise<{ messages: MessageWithId[]; hasMore: boolean; cursor: string | null }> {
+    const limit = options?.limit || 50;
+    const db = getFirebaseAdminFirestore();
+
+    let query = db
+      .collection("messages")
+      .where("room_id", "==", db.collection("chats").doc(roomId))
+      .orderBy("timestamp", "desc")
+      .limit(limit + 1); // +1 to check hasMore
+
+    if (options?.cursor) {
+      const cursorTimestamp = parseInt(options.cursor, 10);
+      query = query.startAfter(Timestamp.fromMillis(cursorTimestamp));
+    }
+
+    const snapshot = await query.get();
+    const hasMore = snapshot.docs.length > limit;
+    const docs = hasMore ? snapshot.docs.slice(0, limit) : snapshot.docs;
+
+    const messages = docs.map((doc) => {
+      const data = doc.data() as FirebaseMessagesType;
+      return transformToAppModel(
+        { ...data, uid: doc.id },
+        doc.createTime?.toMillis(),
+        doc.updateTime?.toMillis()
+      );
+    });
+
+    // Messages are fetched in desc order, reverse for chronological display
+    const lastMessage = messages[messages.length - 1];
+    const cursor = hasMore && lastMessage
+      ? lastMessage.timestamp.toString()
+      : null;
+
+    return {
+      messages: messages.reverse(), // Return in chronological order
+      hasMore,
+      cursor,
+    };
+  },
+
+  /**
+   * Batch update multiple messages
+   */
+  async batchUpdate(
+    messages: Omit<MessageWithId, "createdBy" | "updatedBy">[],
+    actorId: string
+  ): Promise<void> {
+    if (messages.length === 0) return;
+
+    const db = getFirebaseAdminFirestore();
+    const batch = db.batch();
+    const updatorRef = db.collection("user_accounts").doc(actorId);
+
+    for (const msg of messages) {
+      const ref = db.collection("messages").doc(msg.uid);
+      batch.update(ref, {
+        unread: msg.unread,
+        updated_by: updatorRef,
+        updated_at: Timestamp.now(),
+      });
+    }
+
+    await batch.commit();
+  },
+};

@@ -4,8 +4,8 @@ import {
   webJobApplicationWithdraw,
   webJobApplicationCreate,
   webJobApplicationGetById,
-  WITHDRAWABLE_STATUSES,
 } from '@/lib/database/actions/job-applications';
+import { WITHDRAWABLE_STATUSES } from '@/lib/database/actions/job-applications.constants';
 import {
   generateTestId,
   cleanupTestData,

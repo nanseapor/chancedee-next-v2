@@ -36,7 +36,8 @@ export function JobDetailHeader({ job, onEditClick, actions, onActionSuccess }: 
   const isEditable = canEditJob(job.jobStatus);
 
   const formattedDate = useMemo(() => {
-    return new Date(job.createdAt || Date.now()).toLocaleDateString('th-TH');
+    if (!job.createdAt) return '-';
+    return new Date(job.createdAt).toLocaleDateString('th-TH');
   }, [job.createdAt]);
 
   return (

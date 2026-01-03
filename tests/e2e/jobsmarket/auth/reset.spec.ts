@@ -143,10 +143,8 @@ test.describe("Password Reset Page", () => {
       await expect(page).toHaveURL(/\/jobsmarket\/auth\/login/);
     });
 
-    test.skip("should disable back button during submission", async () => {
-      // This would require mocking Firebase - skip for now
-      // Tested in component behavior
-    });
+    // TODO: Implement when Firebase mocking is available - tested in component tests
+    test.skip("should disable back button during submission", async () => {});
   });
 
   test.describe("Submitting State", () => {
