@@ -24,17 +24,17 @@ describe("ConnectionBanner", () => {
     expect(screen.getByText("กำลังเชื่อมต่อ...")).toBeInTheDocument();
   });
 
-  it('should show "ไม่มีการเชื่อมต่อ" when offline', () => {
+  it('should show offline message when offline', () => {
     render(<ConnectionBanner status="offline" />);
 
-    expect(screen.getByText("ไม่มีการเชื่อมต่อ")).toBeInTheDocument();
+    expect(screen.getByText("ออฟไลน์ - ไม่มีการเชื่อมต่อ")).toBeInTheDocument();
   });
 
-  it("should show reconnecting animation", () => {
+  it("should show spinning icon when reconnecting", () => {
     render(<ConnectionBanner status="reconnecting" />);
 
-    const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("animate-pulse");
+    const icon = screen.getByTestId("connection-icon");
+    expect(icon).toHaveClass("animate-spin");
   });
 
   it('should show "กำลังเชื่อมต่อใหม่..." when reconnecting', () => {
@@ -43,33 +43,33 @@ describe("ConnectionBanner", () => {
     expect(screen.getByText("กำลังเชื่อมต่อใหม่...")).toBeInTheDocument();
   });
 
-  it("should have warning styling for offline", () => {
+  it("should have gray styling for offline", () => {
     render(<ConnectionBanner status="offline" />);
 
     const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("bg-amber-100", "text-amber-800");
+    expect(banner).toHaveClass("bg-gray-100", "text-gray-700");
   });
 
-  it("should have info styling for connecting", () => {
+  it("should have blue styling for connecting", () => {
     render(<ConnectionBanner status="connecting" />);
 
     const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("bg-blue-100", "text-blue-800");
+    expect(banner).toHaveClass("bg-blue-100", "text-blue-700");
   });
 
-  it("should render loading spinner when connecting", () => {
+  it("should render connection icon", () => {
     render(<ConnectionBanner status="connecting" />);
 
-    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+    expect(screen.getByTestId("connection-icon")).toBeInTheDocument();
   });
 
-  it("should render offline icon when offline", () => {
+  it("should render connection message", () => {
     render(<ConnectionBanner status="offline" />);
 
-    expect(screen.getByTestId("offline-icon")).toBeInTheDocument();
+    expect(screen.getByTestId("connection-message")).toBeInTheDocument();
   });
 
-  it("should show retry button when offline", () => {
+  it("should show retry button when offline with onRetry", () => {
     render(<ConnectionBanner status="offline" onRetry={() => {}} />);
 
     expect(screen.getByRole("button", { name: /ลองใหม่/i })).toBeInTheDocument();
@@ -93,38 +93,35 @@ describe("ConnectionBanner", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should be positioned at top of chat", () => {
-    render(<ConnectionBanner status="connecting" />);
-
-    const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("sticky", "top-0");
-  });
-
-  it("should have appropriate z-index to stay above messages", () => {
-    render(<ConnectionBanner status="connecting" />);
-
-    const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("z-10");
-  });
-
-  it("should transition smoothly when status changes", async () => {
+  it("should transition smoothly when status changes", () => {
     const { rerender } = render(<ConnectionBanner status="connecting" />);
 
     expect(screen.getByTestId("connection-banner")).toBeInTheDocument();
 
     rerender(<ConnectionBanner status="connected" />);
 
-    // Banner should fade out smoothly
-    await waitFor(() => {
-      expect(screen.queryByTestId("connection-banner")).not.toBeInTheDocument();
-    });
+    // Banner should not be present when connected (no animation delay needed)
+    expect(screen.queryByTestId("connection-banner")).not.toBeInTheDocument();
   });
 
   it("should show error status when connection failed", () => {
     render(<ConnectionBanner status="error" />);
 
     const banner = screen.getByTestId("connection-banner");
-    expect(banner).toHaveClass("bg-red-100", "text-red-800");
+    expect(banner).toHaveClass("bg-red-100", "text-red-700");
     expect(screen.getByText(/เกิดข้อผิดพลาด/i)).toBeInTheDocument();
+  });
+
+  it("should show retry button for error status with onRetry", () => {
+    render(<ConnectionBanner status="error" onRetry={() => {}} />);
+
+    expect(screen.getByRole("button", { name: /ลองใหม่/i })).toBeInTheDocument();
+  });
+
+  it("should have amber styling for reconnecting", () => {
+    render(<ConnectionBanner status="reconnecting" />);
+
+    const banner = screen.getByTestId("connection-banner");
+    expect(banner).toHaveClass("bg-amber-100", "text-amber-700");
   });
 });

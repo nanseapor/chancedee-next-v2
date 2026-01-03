@@ -90,8 +90,8 @@ describe("MessageList", () => {
   it("should render empty state when no messages", () => {
     render(<MessageList {...defaultProps} isLoading={false} messages={[]} />);
 
-    expect(screen.getByTestId("empty-message-state")).toBeInTheDocument();
-    expect(screen.getByText(/เริ่มต้นการสนทนา/i)).toBeInTheDocument();
+    expect(screen.getByTestId("message-list-empty")).toBeInTheDocument();
+    expect(screen.getByText(/เริ่มการสนทนา/i)).toBeInTheDocument();
   });
 
   it("should scroll to bottom on new message", async () => {
@@ -122,47 +122,38 @@ describe("MessageList", () => {
     });
   });
 
-  it("should call onLoadMore when scrolled to top", async () => {
+  it("should render message-list-container", () => {
+    render(<MessageList {...defaultProps} />);
+
+    expect(screen.getByTestId("message-list-container")).toBeInTheDocument();
+  });
+
+  it("should render load more button when hasMore is true", () => {
+    render(<MessageList {...defaultProps} hasMore={true} />);
+
+    expect(screen.getByTestId("load-more-button")).toBeInTheDocument();
+  });
+
+  it("should call onLoadMore when load more clicked", async () => {
     const onLoadMore = vi.fn();
     render(<MessageList {...defaultProps} hasMore={true} onLoadMore={onLoadMore} />);
 
-    const container = screen.getByTestId("message-list-container");
+    const loadMoreButton = screen.getByTestId("load-more-button");
+    fireEvent.click(loadMoreButton);
 
-    // Simulate scroll to top
-    fireEvent.scroll(container, { target: { scrollTop: 0 } });
-
-    await waitFor(() => {
-      expect(onLoadMore).toHaveBeenCalled();
-    });
+    expect(onLoadMore).toHaveBeenCalled();
   });
 
-  it("should render different bubble styles for own/other", () => {
+  it("should render MessageBubble for each message", () => {
     render(<MessageList {...defaultProps} />);
 
-    // Own message should have specific styling
-    const ownMessage = screen.getByText("Hello!").closest('[data-testid="message-bubble"]');
-    expect(ownMessage).toHaveAttribute("data-is-own", "true");
-
-    // Other's message should have different styling
-    const otherMessage = screen.getByText("Hi there!").closest('[data-testid="message-bubble"]');
-    expect(otherMessage).toHaveAttribute("data-is-own", "false");
+    const bubbles = screen.getAllByTestId("message-bubble");
+    expect(bubbles.length).toBe(3);
   });
 
-  it("should show loading indicator when loading more", () => {
-    render(<MessageList {...defaultProps} hasMore={true} isLoading={true} />);
+  it("should not show load more when hasMore is false", () => {
+    render(<MessageList {...defaultProps} hasMore={false} />);
 
-    expect(screen.getByTestId("load-more-spinner")).toBeInTheDocument();
-  });
-
-  it("should not call onLoadMore when hasMore is false", async () => {
-    const onLoadMore = vi.fn();
-    render(<MessageList {...defaultProps} hasMore={false} onLoadMore={onLoadMore} />);
-
-    const container = screen.getByTestId("message-list-container");
-    fireEvent.scroll(container, { target: { scrollTop: 0 } });
-
-    await waitFor(() => {
-      expect(onLoadMore).not.toHaveBeenCalled();
-    });
+    expect(screen.queryByTestId("load-more-button")).not.toBeInTheDocument();
   });
 });

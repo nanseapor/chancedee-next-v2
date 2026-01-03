@@ -191,7 +191,9 @@ describe("ChatRoomClient", () => {
 
     render(<ChatRoomClient {...defaultProps} />);
 
-    expect(screen.getByText(/เกิดข้อผิดพลาด/i)).toBeInTheDocument();
+    // Use specific testid since both ConnectionBanner and error div show error text
+    expect(screen.getByTestId("error-message")).toBeInTheDocument();
+    expect(screen.getByTestId("error-message")).toHaveTextContent(/เกิดข้อผิดพลาด/i);
   });
 
   it("should render interview card when interview exists", () => {

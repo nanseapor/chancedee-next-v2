@@ -222,7 +222,7 @@ describe("useChatFileUpload", () => {
     });
   });
 
-  it("should call sendAttachment on complete", async () => {
+  it("should call sendAttachment with file metadata on complete", async () => {
     const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
     vi.mocked(sendAttachment).mockResolvedValue({ messageId: "msg-001" });
 
@@ -236,10 +236,15 @@ describe("useChatFileUpload", () => {
       await result.current.upload(mockFile);
     });
 
+    // Implementation uploads to storage first, then calls sendAttachment with metadata
     expect(sendAttachment).toHaveBeenCalledWith(
       expect.objectContaining({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/file.jpg", // From mocked uploadDocument
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       })
     );
   });
