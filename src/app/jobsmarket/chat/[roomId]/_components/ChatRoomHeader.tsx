@@ -39,16 +39,13 @@ export function ChatRoomHeader({
 
       <div className="relative shrink-0">
         <Avatar className="h-10 w-10">
-          {otherPartyPhoto ? (
-            <AvatarImage
-              src={otherPartyPhoto}
-              alt={`${otherPartyName} avatar`}
-            />
-          ) : (
-            <AvatarFallback data-testid="avatar-fallback">
-              {initials}
-            </AvatarFallback>
-          )}
+          <AvatarImage
+            src={otherPartyPhoto || undefined}
+            alt={`${otherPartyName} avatar`}
+          />
+          <AvatarFallback data-testid="avatar-fallback">
+            {initials}
+          </AvatarFallback>
         </Avatar>
         {isOnline !== undefined && (
           <span

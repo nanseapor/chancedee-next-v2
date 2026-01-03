@@ -20,9 +20,19 @@ vi.mock("@/lib/database/repositories/chat-repository", () => ({
   },
 }));
 
+vi.mock("@/lib/database/actions/candidate-information", () => ({
+  webCandidateInformationGetById: vi.fn(),
+}));
+
+vi.mock("@/lib/database/actions/company-information", () => ({
+  webCompanyInformationGetById: vi.fn(),
+}));
+
 import { getSessionUser } from "@/lib/firebase/admin-auth";
 import { messagesRepository } from "@/lib/database/repositories/messages-repository";
 import { chatRepository } from "@/lib/database/repositories/chat-repository";
+import { webCandidateInformationGetById } from "@/lib/database/actions/candidate-information";
+import { webCompanyInformationGetById } from "@/lib/database/actions/company-information";
 
 describe("sendMessageFirestore", () => {
   const mockSessionUser = {
@@ -45,6 +55,18 @@ describe("sendMessageFirestore", () => {
     vi.clearAllMocks();
     vi.mocked(getSessionUser).mockResolvedValue(mockSessionUser);
     vi.mocked(chatRepository.getById).mockResolvedValue(mockRoom);
+    // Mock candidate info for sender display name
+    vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+      uid: "candidate-123",
+      firstnameTH: "Test",
+      lastnameTH: "Candidate",
+      resumePhotoURL: "https://example.com/photo.jpg",
+    } as ReturnType<typeof webCandidateInformationGetById> extends Promise<infer T> ? T : never);
+    vi.mocked(webCompanyInformationGetById).mockResolvedValue({
+      uid: "company-456",
+      companyName: "Test Company",
+      profilePhoto: "https://example.com/company.jpg",
+    } as ReturnType<typeof webCompanyInformationGetById> extends Promise<infer T> ? T : never);
   });
 
   afterEach(() => {

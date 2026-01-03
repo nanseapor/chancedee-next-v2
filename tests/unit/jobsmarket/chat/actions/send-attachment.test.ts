@@ -19,17 +19,19 @@ vi.mock("@/lib/database/repositories/chat-repository", () => ({
   },
 }));
 
-vi.mock("@/lib/firebase/storage", () => ({
-  firebaseStorageService: {
-    uploadFile: vi.fn(),
-    validateFile: vi.fn(),
-  },
+vi.mock("@/lib/database/actions/candidate-information", () => ({
+  webCandidateInformationGetById: vi.fn(),
+}));
+
+vi.mock("@/lib/database/actions/company-information", () => ({
+  webCompanyInformationGetById: vi.fn(),
 }));
 
 import { getSessionUser } from "@/lib/firebase/admin-auth";
 import { messagesRepository } from "@/lib/database/repositories/messages-repository";
 import { chatRepository } from "@/lib/database/repositories/chat-repository";
-import { firebaseStorageService } from "@/lib/firebase/storage";
+import { webCandidateInformationGetById } from "@/lib/database/actions/candidate-information";
+import { webCompanyInformationGetById } from "@/lib/database/actions/company-information";
 
 describe("sendAttachment", () => {
   const mockSessionUser = {
@@ -46,29 +48,22 @@ describe("sendAttachment", () => {
     companyName: "Test Company",
   };
 
-  const createMockFile = (
-    name: string,
-    size: number,
-    type: string
-  ): File => {
-    const blob = new Blob(["x".repeat(size)], { type });
-    return new File([blob], name, { type });
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(getSessionUser).mockResolvedValue(mockSessionUser);
     vi.mocked(chatRepository.getById).mockResolvedValue(mockRoom);
-    vi.mocked(firebaseStorageService.validateFile).mockReturnValue({
-      isValid: true,
-    });
-    vi.mocked(firebaseStorageService.uploadFile).mockResolvedValue({
-      downloadUrl: "https://storage.example.com/files/test.jpg",
-      path: "chats/room-123/test.jpg",
-      fileName: "test.jpg",
-      fileSize: 1000,
-      contentType: "image/jpeg",
-    });
+    // Mock candidate info for sender display name
+    vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+      uid: "candidate-123",
+      firstnameTH: "Test",
+      lastnameTH: "Candidate",
+      resumePhotoURL: "https://example.com/photo.jpg",
+    } as ReturnType<typeof webCandidateInformationGetById> extends Promise<infer T> ? T : never);
+    vi.mocked(webCompanyInformationGetById).mockResolvedValue({
+      uid: "company-456",
+      companyName: "Test Company",
+      profilePhoto: "https://example.com/company.jpg",
+    } as ReturnType<typeof webCompanyInformationGetById> extends Promise<infer T> ? T : never);
   });
 
   afterEach(() => {
@@ -76,30 +71,36 @@ describe("sendAttachment", () => {
   });
 
   describe("image upload", () => {
-    it("should upload file to Firebase Storage", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
+    it("should create message with correct roomId", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
-      expect(firebaseStorageService.uploadFile).toHaveBeenCalledWith(
-        mockFile,
+      expect(messagesRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          path: expect.stringContaining("chats/room-123"),
-        })
+          roomId: "room-123",
+        }),
+        expect.any(String)
       );
     });
 
     it('should create message with type "image"', async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
@@ -110,13 +111,16 @@ describe("sendAttachment", () => {
       );
     });
 
-    it("should set fileUrl to storage URL", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
+    it("should set attachments to file URL", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
@@ -127,52 +131,62 @@ describe("sendAttachment", () => {
       );
     });
 
-    it("should set fileType to MIME type", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
+    it("should set message text to filename", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          fileType: "image/jpeg",
+          message: "test.jpg",
         }),
         expect.any(String)
       );
     });
 
-    it("should set fileSize", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
+    it("should set senderId from session", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          fileSize: 1000,
+          senderId: "user-123",
         }),
-        expect.any(String)
+        "user-123"
       );
     });
 
-    it("should generate thumbnail for images", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
+    it("should update room lastMessage with image emoji", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
       });
 
-      expect(messagesRepository.create).toHaveBeenCalledWith(
+      expect(chatRepository.update).toHaveBeenCalledWith(
+        "room-123",
         expect.objectContaining({
-          thumbnailUrl: expect.any(String),
+          lastMessage: "📷 รูปภาพ",
         }),
         expect.any(String)
       );
@@ -181,19 +195,15 @@ describe("sendAttachment", () => {
 
   describe("file upload", () => {
     it('should create message with type "file"', async () => {
-      const mockFile = createMockFile("document.pdf", 5000, "application/pdf");
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
-      vi.mocked(firebaseStorageService.uploadFile).mockResolvedValue({
-        downloadUrl: "https://storage.example.com/files/document.pdf",
-        path: "chats/room-123/document.pdf",
-        fileName: "document.pdf",
-        fileSize: 5000,
-        contentType: "application/pdf",
-      });
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/document.pdf",
+        fileName: "document.pdf",
+        fileType: "application/pdf",
+        fileSize: 5000,
+        type: "file",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
@@ -205,137 +215,112 @@ describe("sendAttachment", () => {
     });
 
     it("should preserve original filename", async () => {
-      const mockFile = createMockFile(
-        "my-document.pdf",
-        5000,
-        "application/pdf"
-      );
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/my-document.pdf",
+        fileName: "my-document.pdf",
+        fileType: "application/pdf",
+        fileSize: 5000,
+        type: "file",
       });
 
       expect(messagesRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          fileName: "my-document.pdf",
+          message: "my-document.pdf",
         }),
         expect.any(String)
       );
     });
 
-    it("should set fileUrl to storage URL", async () => {
-      const mockFile = createMockFile("document.pdf", 5000, "application/pdf");
+    it("should update room lastMessage with file emoji", async () => {
       vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
-      vi.mocked(firebaseStorageService.uploadFile).mockResolvedValue({
-        downloadUrl: "https://storage.example.com/files/document.pdf",
-        path: "chats/room-123/document.pdf",
-        fileName: "document.pdf",
-        fileSize: 5000,
-        contentType: "application/pdf",
-      });
 
       await sendAttachment({
         roomId: "room-123",
-        file: mockFile,
+        fileUrl: "https://storage.example.com/files/document.pdf",
+        fileName: "document.pdf",
+        fileType: "application/pdf",
+        fileSize: 5000,
+        type: "file",
       });
 
-      expect(messagesRepository.create).toHaveBeenCalledWith(
+      expect(chatRepository.update).toHaveBeenCalledWith(
+        "room-123",
         expect.objectContaining({
-          attachments: "https://storage.example.com/files/document.pdf",
+          lastMessage: "📎 ไฟล์แนบ",
         }),
         expect.any(String)
       );
     });
   });
 
-  describe("validation", () => {
-    it("should reject files over 10MB", async () => {
-      const largeFile = createMockFile(
-        "large.jpg",
-        11 * 1024 * 1024,
-        "image/jpeg"
-      );
-      vi.mocked(firebaseStorageService.validateFile).mockReturnValue({
-        isValid: false,
-        error: "FILE_TOO_LARGE",
-      });
-
-      await expect(
-        sendAttachment({
-          roomId: "room-123",
-          file: largeFile,
-        })
-      ).rejects.toThrow("FILE_TOO_LARGE");
-    });
-
-    it("should reject disallowed file types", async () => {
-      const executableFile = createMockFile(
-        "malware.exe",
-        1000,
-        "application/x-msdownload"
-      );
-      vi.mocked(firebaseStorageService.validateFile).mockReturnValue({
-        isValid: false,
-        error: "INVALID_FILE_TYPE",
-      });
-
-      await expect(
-        sendAttachment({
-          roomId: "room-123",
-          file: executableFile,
-        })
-      ).rejects.toThrow("INVALID_FILE_TYPE");
-    });
-
+  describe("authorization", () => {
     it("should throw UNAUTHORIZED when no session", async () => {
       vi.mocked(getSessionUser).mockResolvedValue(null);
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
 
       await expect(
         sendAttachment({
           roomId: "room-123",
-          file: mockFile,
+          fileUrl: "https://storage.example.com/files/test.jpg",
+          fileName: "test.jpg",
+          fileType: "image/jpeg",
+          fileSize: 1000,
+          type: "image",
         })
       ).rejects.toThrow("UNAUTHORIZED");
     });
-  });
 
-  describe("progress", () => {
-    it("should report upload progress", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
-      const onProgress = vi.fn();
-      vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
+    it("should throw ROOM_NOT_FOUND for invalid roomId", async () => {
+      vi.mocked(chatRepository.getById).mockResolvedValue(null);
 
-      await sendAttachment({
-        roomId: "room-123",
-        file: mockFile,
-        onProgress,
-      });
-
-      expect(firebaseStorageService.uploadFile).toHaveBeenCalledWith(
-        mockFile,
-        expect.objectContaining({
-          onProgress: expect.any(Function),
+      await expect(
+        sendAttachment({
+          roomId: "invalid-room",
+          fileUrl: "https://storage.example.com/files/test.jpg",
+          fileName: "test.jpg",
+          fileType: "image/jpeg",
+          fileSize: 1000,
+          type: "image",
         })
-      );
+      ).rejects.toThrow("ROOM_NOT_FOUND");
     });
 
-    it("should handle upload cancellation", async () => {
-      const mockFile = createMockFile("test.jpg", 1000, "image/jpeg");
-      const abortController = new AbortController();
-      vi.mocked(firebaseStorageService.uploadFile).mockRejectedValue(
-        new Error("UPLOAD_CANCELLED")
-      );
+    it("should throw NOT_PARTICIPANT if user not in room", async () => {
+      vi.mocked(chatRepository.getById).mockResolvedValue({
+        ...mockRoom,
+        candidateId: "other-candidate",
+        companyId: "other-company",
+      });
 
       await expect(
         sendAttachment({
           roomId: "room-123",
-          file: mockFile,
-          signal: abortController.signal,
+          fileUrl: "https://storage.example.com/files/test.jpg",
+          fileName: "test.jpg",
+          fileType: "image/jpeg",
+          fileSize: 1000,
+          type: "image",
         })
-      ).rejects.toThrow("UPLOAD_CANCELLED");
+      ).rejects.toThrow("NOT_PARTICIPANT");
+    });
+  });
+
+  describe("return value", () => {
+    it("should return created message with messageId", async () => {
+      vi.mocked(messagesRepository.create).mockResolvedValue("message-001");
+
+      const result = await sendAttachment({
+        roomId: "room-123",
+        fileUrl: "https://storage.example.com/files/test.jpg",
+        fileName: "test.jpg",
+        fileType: "image/jpeg",
+        fileSize: 1000,
+        type: "image",
+      });
+
+      expect(result).toEqual({ messageId: "message-001" });
     });
   });
 });
