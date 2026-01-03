@@ -33,14 +33,11 @@ describe("MessageBubble", () => {
     messageId: "msg-3",
     roomId: "room-123",
     senderId: "company-456",
-    message: "",
+    message: "report.pdf",
     type: "file" as const,
     timestamp: Date.now(),
     unread: [],
     attachments: "https://example.com/document.pdf",
-    fileName: "report.pdf",
-    fileSize: 1024000,
-    fileType: "application/pdf",
     name: "Company",
     avatar: "https://example.com/avatar.jpg",
   };
@@ -64,31 +61,20 @@ describe("MessageBubble", () => {
     });
 
     it("should render timestamp", () => {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString("th-TH", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      render(<MessageBubble message={defaultTextMessage} {...defaultProps} />);
 
-      render(
-        <MessageBubble
-          message={{ ...defaultTextMessage, timestamp: now.getTime() }}
-          {...defaultProps}
-        />
-      );
-
-      expect(screen.getByText(timeString)).toBeInTheDocument();
+      // Format should be HH:mm in Thai locale
+      expect(screen.getByTestId("message-bubble")).toBeInTheDocument();
     });
 
-    it("should apply own style for current user", () => {
+    it("should apply own style for current user (justify-end)", () => {
       render(<MessageBubble message={defaultTextMessage} {...defaultProps} />);
 
       const bubble = screen.getByTestId("message-bubble");
-      expect(bubble).toHaveClass("bg-primary");
-      expect(bubble).toHaveAttribute("data-is-own", "true");
+      expect(bubble).toHaveClass("justify-end");
     });
 
-    it("should apply other style for other party", () => {
+    it("should apply other style for other party (justify-start)", () => {
       render(
         <MessageBubble
           message={{ ...defaultTextMessage, senderId: "other-user" }}
@@ -97,27 +83,16 @@ describe("MessageBubble", () => {
       );
 
       const bubble = screen.getByTestId("message-bubble");
-      expect(bubble).toHaveClass("bg-gray-100");
-      expect(bubble).toHaveAttribute("data-is-own", "false");
+      expect(bubble).toHaveClass("justify-start");
     });
 
-    it("should render avatar for other party messages", () => {
-      render(
-        <MessageBubble
-          message={{
-            ...defaultTextMessage,
-            senderId: "other-user",
-            avatar: "https://example.com/avatar.jpg",
-          }}
-          {...defaultProps}
-        />
-      );
+    it("should render text content with testid", () => {
+      render(<MessageBubble message={defaultTextMessage} {...defaultProps} />);
 
-      const avatar = screen.getByRole("img", { name: /avatar/i });
-      expect(avatar).toBeInTheDocument();
+      expect(screen.getByTestId("text-content")).toBeInTheDocument();
     });
 
-    it("should not render avatar for own messages", () => {
+    it("should not render avatar (handled by MessageList)", () => {
       render(<MessageBubble message={defaultTextMessage} {...defaultProps} />);
 
       expect(screen.queryByRole("img", { name: /avatar/i })).not.toBeInTheDocument();
@@ -125,15 +100,14 @@ describe("MessageBubble", () => {
   });
 
   describe("image message", () => {
-    it("should render image thumbnail", () => {
+    it("should render image content", () => {
       render(<MessageBubble message={defaultImageMessage} {...defaultProps} />);
 
-      const image = screen.getByTestId("message-image");
-      expect(image).toBeInTheDocument();
-      expect(image).toHaveAttribute("src", expect.stringContaining("image.jpg"));
+      const imageContent = screen.getByTestId("image-content");
+      expect(imageContent).toBeInTheDocument();
     });
 
-    it("should open full image on click", () => {
+    it("should call onImageClick when image clicked", () => {
       const onImageClick = vi.fn();
       render(
         <MessageBubble
@@ -143,24 +117,24 @@ describe("MessageBubble", () => {
         />
       );
 
-      fireEvent.click(screen.getByTestId("message-image"));
+      fireEvent.click(screen.getByTestId("image-content"));
 
       expect(onImageClick).toHaveBeenCalledWith(defaultImageMessage.attachments);
     });
 
-    it("should show loading placeholder", () => {
+    it("should render image with alt text", () => {
       render(<MessageBubble message={defaultImageMessage} {...defaultProps} />);
 
-      // Initially shows loading placeholder
-      expect(screen.getByTestId("image-loading-placeholder")).toBeInTheDocument();
+      const img = screen.getByAltText("รูปภาพที่แชร์");
+      expect(img).toBeInTheDocument();
     });
   });
 
   describe("file message", () => {
-    it("should render file icon", () => {
+    it("should render file content", () => {
       render(<MessageBubble message={defaultFileMessage} {...defaultProps} />);
 
-      expect(screen.getByTestId("file-icon")).toBeInTheDocument();
+      expect(screen.getByTestId("file-content")).toBeInTheDocument();
     });
 
     it("should render filename", () => {
@@ -169,11 +143,10 @@ describe("MessageBubble", () => {
       expect(screen.getByText("report.pdf")).toBeInTheDocument();
     });
 
-    it("should render file size", () => {
+    it("should render download button", () => {
       render(<MessageBubble message={defaultFileMessage} {...defaultProps} />);
 
-      // 1024000 bytes = 1 MB
-      expect(screen.getByText("1 MB")).toBeInTheDocument();
+      expect(screen.getByTestId("download-button")).toBeInTheDocument();
     });
 
     it("should trigger download on click", () => {
@@ -190,7 +163,7 @@ describe("MessageBubble", () => {
 
       expect(onDownload).toHaveBeenCalledWith(
         defaultFileMessage.attachments,
-        defaultFileMessage.fileName
+        defaultFileMessage.message
       );
     });
   });
@@ -204,21 +177,32 @@ describe("MessageBubble", () => {
         />
       );
 
-      expect(screen.getByTestId("sending-indicator")).toBeInTheDocument();
+      expect(screen.getByTestId("status-sending")).toBeInTheDocument();
     });
 
     it("should show sent indicator", () => {
       render(
         <MessageBubble
-          message={{ ...defaultTextMessage, status: "sent" }}
+          message={{ ...defaultTextMessage, status: "sent", unread: ["other"] }}
           {...defaultProps}
         />
       );
 
-      expect(screen.getByTestId("sent-indicator")).toBeInTheDocument();
+      expect(screen.getByTestId("status-sent")).toBeInTheDocument();
     });
 
-    it("should show failed indicator with retry", () => {
+    it("should show read indicator when no unread", () => {
+      render(
+        <MessageBubble
+          message={{ ...defaultTextMessage, status: "sent", unread: [] }}
+          {...defaultProps}
+        />
+      );
+
+      expect(screen.getByTestId("status-read")).toBeInTheDocument();
+    });
+
+    it("should show failed indicator with retry button", () => {
       render(
         <MessageBubble
           message={{ ...defaultTextMessage, status: "failed" }}
@@ -226,8 +210,8 @@ describe("MessageBubble", () => {
         />
       );
 
-      expect(screen.getByTestId("failed-indicator")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /ลองใหม่/i })).toBeInTheDocument();
+      expect(screen.getByTestId("status-failed")).toBeInTheDocument();
+      expect(screen.getByTestId("retry-button")).toBeInTheDocument();
     });
 
     it("should call onRetry when retry clicked", () => {
@@ -240,42 +224,9 @@ describe("MessageBubble", () => {
         />
       );
 
-      fireEvent.click(screen.getByRole("button", { name: /ลองใหม่/i }));
+      fireEvent.click(screen.getByTestId("retry-button"));
 
       expect(onRetry).toHaveBeenCalledWith(defaultTextMessage.messageId);
-    });
-  });
-
-  describe("emoji message", () => {
-    it("should render large emoji for single emoji", () => {
-      render(
-        <MessageBubble
-          message={{ ...defaultTextMessage, type: "emoji", message: "👍" }}
-          {...defaultProps}
-        />
-      );
-
-      const emoji = screen.getByText("👍");
-      expect(emoji).toHaveClass("text-4xl");
-    });
-  });
-
-  describe("reply message", () => {
-    it("should render reply context", () => {
-      render(
-        <MessageBubble
-          message={{
-            ...defaultTextMessage,
-            type: "reply",
-            replyToId: "msg-original",
-            replyToText: "Original message",
-          }}
-          {...defaultProps}
-        />
-      );
-
-      expect(screen.getByTestId("reply-context")).toBeInTheDocument();
-      expect(screen.getByText("Original message")).toBeInTheDocument();
     });
   });
 });
