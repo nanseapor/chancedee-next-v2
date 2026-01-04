@@ -248,8 +248,8 @@ describe("sendMessageFirestore", () => {
       ).rejects.toThrow("MESSAGE_EMPTY");
     });
 
-    it("should reject message over 5000 characters", async () => {
-      const longMessage = "a".repeat(5001);
+    it("should reject message over 2000 characters", async () => {
+      const longMessage = "a".repeat(2001);
 
       await expect(
         sendMessageFirestore({

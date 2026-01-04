@@ -39,7 +39,7 @@ export async function sendMessageFirestore(
     throw new Error("MESSAGE_EMPTY");
   }
 
-  if (message.length > 5000) {
+  if (message.length > 2000) {
     throw new Error("MESSAGE_TOO_LONG");
   }
 
@@ -233,8 +233,11 @@ export async function markMessagesAsRead(input: {
   }
 
   // 3. Find unread messages for this user
+  const db = getFirebaseAdminFirestore();
+  const roomRef = db.collection("chats").doc(roomId);
+
   const filter = Filter.and(
-    Filter.where("roomId", "==", roomId),
+    Filter.where("room_id", "==", roomRef),
     Filter.where("unread", "array-contains", sessionUser.uid)
   );
 

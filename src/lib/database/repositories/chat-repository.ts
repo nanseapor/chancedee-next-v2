@@ -63,7 +63,7 @@ function transformToFirebaseModel(
     responsible_hr_name: appModel.hrName,
     last_message_text: appModel.lastMessage,
     last_message_time: Timestamp.fromMillis(appModel.lastupdate),
-    last_message_sender: actorId,
+    last_message_sender: appModel.lastMessageSender || undefined,
     timestamp: Timestamp.now(),
   };
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { Filter } from "firebase-admin/firestore";
+import { Filter, Timestamp } from "firebase-admin/firestore";
 
 // These tests use the real dev database (not emulator)
 // Test data is created and cleaned up for each test
@@ -41,16 +41,28 @@ describe("Chat Room Integration", () => {
       email: "test@example.com",
     });
 
-    // Create test room in Firestore
+    // Create test room in Firestore with correct schema (snake_case + DocumentReferences)
     const db = getFirebaseAdminFirestore();
+    const candidateRef = db.collection("candidate_information").doc(TEST_CANDIDATE_ID);
+    const companyRef = db.collection("company_information").doc(TEST_COMPANY_ID);
+    const userRef = db.collection("user_accounts").doc(TEST_USER_ID);
+
     await db.collection("chats").doc(TEST_ROOM_ID).set({
-      candidateId: TEST_CANDIDATE_ID,
-      companyId: TEST_COMPANY_ID,
-      candidateName: "Test Candidate",
-      companyName: "Test Company",
-      lastMessage: null,
-      lastupdate: null,
-      createdAt: Date.now(),
+      uid: TEST_ROOM_ID,
+      candidate_id: candidateRef,
+      company_id: companyRef,
+      responsible_hr_id: userRef, // Required by chat-repository transform
+      candidate_name: "Test Candidate",
+      company_name: "Test Company",
+      responsible_hr_name: "",
+      last_message_text: null,
+      last_message_time: null,
+      last_message_sender: null,
+      timestamp: Timestamp.now(),
+      created_at: Timestamp.now(),
+      updated_at: Timestamp.now(),
+      created_by: userRef,
+      updated_by: userRef,
     });
 
     // Create test candidate info
@@ -71,11 +83,12 @@ describe("Chat Room Integration", () => {
   afterEach(async () => {
     // Clean up test data
     const db = getFirebaseAdminFirestore();
+    const roomRef = db.collection("chats").doc(TEST_ROOM_ID);
 
-    // Delete test messages
+    // Delete test messages (using correct snake_case field + DocumentReference)
     const messagesSnapshot = await db
       .collection("messages")
-      .where("roomId", "==", TEST_ROOM_ID)
+      .where("room_id", "==", roomRef)
       .get();
 
     const batch = db.batch();
@@ -116,7 +129,8 @@ describe("Chat Room Integration", () => {
       expect(messageDoc.exists).toBe(true);
       expect(messageDoc.data()?.message).toBe("Integration test message");
       expect(messageDoc.data()?.type).toBe("text");
-      expect(messageDoc.data()?.roomId).toBe(TEST_ROOM_ID);
+      // room_id is a DocumentReference, check its path contains the room ID
+      expect(messageDoc.data()?.room_id?.path).toContain(TEST_ROOM_ID);
     });
 
     it("should update room document", async () => {
@@ -126,13 +140,13 @@ describe("Chat Room Integration", () => {
         type: "text",
       });
 
-      // Verify room was updated
+      // Verify room was updated (using snake_case field names in Firestore)
       const db = getFirebaseAdminFirestore();
       const roomDoc = await db.collection("chats").doc(TEST_ROOM_ID).get();
 
-      expect(roomDoc.data()?.lastMessage).toBe("Update room test");
-      expect(roomDoc.data()?.lastupdate).toBeDefined();
-      expect(roomDoc.data()?.lastMessageSender).toBe("candidate");
+      expect(roomDoc.data()?.last_message_text).toBe("Update room test");
+      expect(roomDoc.data()?.last_message_time).toBeDefined();
+      expect(roomDoc.data()?.last_message_sender).toBe("candidate");
     });
 
     it("should set correct unread array", async () => {
@@ -178,18 +192,25 @@ describe("Chat Room Integration", () => {
 
   describe("markMessagesAsRead", () => {
     beforeEach(async () => {
-      // Create unread messages for testing
+      // Create unread messages for testing with correct schema
       const db = getFirebaseAdminFirestore();
+      const roomRef = db.collection("chats").doc(TEST_ROOM_ID);
+      const senderRef = db.collection("user_accounts").doc(TEST_COMPANY_ID);
+      const userRef = db.collection("user_accounts").doc(TEST_USER_ID);
 
       for (let i = 0; i < 3; i++) {
         await db.collection("messages").add({
-          roomId: TEST_ROOM_ID,
-          messageId: `${TEST_PREFIX}-msg-${i}`,
-          senderId: TEST_COMPANY_ID,
+          uid: `${TEST_PREFIX}-msg-${i}`,
+          room_id: roomRef,
+          sender_id: senderRef,
           message: `Unread message ${i}`,
           type: "text",
-          timestamp: Date.now() - i * 1000,
+          timestamp: Timestamp.fromMillis(Date.now() - i * 1000),
           unread: [TEST_USER_ID],
+          created_by: senderRef,
+          updated_by: senderRef,
+          created_at: Timestamp.now(),
+          updated_at: Timestamp.now(),
         });
       }
     });
@@ -201,9 +222,10 @@ describe("Chat Room Integration", () => {
 
       // Verify messages are marked as read
       const db = getFirebaseAdminFirestore();
+      const roomRef = db.collection("chats").doc(TEST_ROOM_ID);
       const messagesSnapshot = await db
         .collection("messages")
-        .where("roomId", "==", TEST_ROOM_ID)
+        .where("room_id", "==", roomRef)
         .get();
 
       messagesSnapshot.docs.forEach((doc) => {
@@ -223,9 +245,10 @@ describe("Chat Room Integration", () => {
 
       // Verify all 3 messages were updated
       const db = getFirebaseAdminFirestore();
+      const roomRef = db.collection("chats").doc(TEST_ROOM_ID);
       const messagesSnapshot = await db
         .collection("messages")
-        .where("roomId", "==", TEST_ROOM_ID)
+        .where("room_id", "==", roomRef)
         .where("unread", "array-contains", TEST_USER_ID)
         .get();
 
@@ -235,18 +258,26 @@ describe("Chat Room Integration", () => {
 
   describe("loadMessageHistory", () => {
     beforeEach(async () => {
-      // Create messages for pagination testing
+      // Create messages for pagination testing with correct schema
       const db = getFirebaseAdminFirestore();
+      const roomRef = db.collection("chats").doc(TEST_ROOM_ID);
+      const userRef = db.collection("user_accounts").doc(TEST_USER_ID);
+      const companyRef = db.collection("user_accounts").doc(TEST_COMPANY_ID);
 
       for (let i = 0; i < 60; i++) {
+        const senderRef = i % 2 === 0 ? userRef : companyRef;
         await db.collection("messages").add({
-          roomId: TEST_ROOM_ID,
-          messageId: `${TEST_PREFIX}-history-${i}`,
-          senderId: i % 2 === 0 ? TEST_USER_ID : TEST_COMPANY_ID,
+          uid: `${TEST_PREFIX}-history-${i}`,
+          room_id: roomRef,
+          sender_id: senderRef,
           message: `History message ${i}`,
           type: "text",
-          timestamp: Date.now() - i * 60000, // 1 minute apart
+          timestamp: Timestamp.fromMillis(Date.now() - i * 60000), // 1 minute apart
           unread: [],
+          created_by: senderRef,
+          updated_by: senderRef,
+          created_at: Timestamp.now(),
+          updated_at: Timestamp.now(),
         });
       }
     });
@@ -290,9 +321,10 @@ describe("Chat Room Integration", () => {
         roomId: TEST_ROOM_ID,
       });
 
-      // Messages should be ordered by timestamp descending
+      // Messages should be ordered by timestamp ascending (chronological order)
+      // Repository fetches desc and reverses for chronological display
       for (let i = 0; i < result.messages.length - 1; i++) {
-        expect(result.messages[i].timestamp).toBeGreaterThanOrEqual(
+        expect(result.messages[i].timestamp).toBeLessThanOrEqual(
           result.messages[i + 1].timestamp
         );
       }
