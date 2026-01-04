@@ -382,10 +382,25 @@ export interface AttachmentPreviewProps {
 
 /**
  * Props for InterviewCard component
+ * Extended with action buttons for BLS-05 Interview Management
  */
 export interface InterviewCardProps {
   interview: RoomInterview;
   userRole: "candidate" | "company";
+  /** Callback when candidate confirms interview */
+  onConfirm?: () => void;
+  /** Callback when candidate declines interview */
+  onDecline?: () => void;
+  /** Callback when company cancels interview */
+  onCancel?: () => void;
+  /** Callback when company reschedules interview */
+  onReschedule?: () => void;
+  /** Callback when company schedules new interview after cancel/decline */
+  onScheduleNew?: () => void;
+  /** Whether an action is currently in progress */
+  isActionLoading?: boolean;
+  /** Which action is loading (for spinner display) */
+  loadingAction?: "confirm" | "decline" | "cancel" | "reschedule" | "scheduleNew";
 }
 
 /**

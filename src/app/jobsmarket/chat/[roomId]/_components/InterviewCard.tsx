@@ -11,10 +11,12 @@ import {
   CheckCircle2,
   XCircle,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { InterviewCardProps, InterviewStatus } from "@/types/chat.types";
 
@@ -56,7 +58,17 @@ const badgeVariantClasses = {
   neutral: "bg-gray-100 text-gray-600 border-gray-600",
 };
 
-export function InterviewCard({ interview, userRole }: InterviewCardProps) {
+export function InterviewCard({
+  interview,
+  userRole,
+  onConfirm,
+  onDecline,
+  onCancel,
+  onReschedule,
+  onScheduleNew,
+  isActionLoading = false,
+  loadingAction,
+}: InterviewCardProps) {
   const config = statusConfig[interview.status];
   const StatusIcon = config.icon;
 
@@ -66,6 +78,18 @@ export function InterviewCard({ interview, userRole }: InterviewCardProps) {
   });
 
   const isOnline = interview.channel === "online";
+
+  // Determine which buttons to show based on role, status, and callback availability
+  const showCandidateActions =
+    userRole === "candidate" && interview.status === "pending" && (onConfirm || onDecline);
+  const showCompanyScheduledActions =
+    userRole === "company" && interview.status === "pending" && (onCancel || onReschedule);
+  const showCompanyCancelOnly =
+    userRole === "company" && interview.status === "confirmed" && onCancel;
+  const showCompanyRescheduleOnly =
+    userRole === "company" && interview.status === "rescheduled" && onReschedule;
+  const showCompanyScheduleNew =
+    userRole === "company" && interview.status === "cancelled" && onScheduleNew;
 
   return (
     <Card data-testid="interview-card" className="mx-4 my-2 shadow-sm">
@@ -145,6 +169,127 @@ export function InterviewCard({ interview, userRole }: InterviewCardProps) {
             >
               {interview.note}
             </p>
+          </div>
+        )}
+
+        {/* Action Buttons - Candidate */}
+        {showCandidateActions && (
+          <div className="pt-3 flex gap-2 border-t">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onConfirm}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "confirm" ? "true" : undefined}
+              className="flex-1"
+            >
+              {loadingAction === "confirm" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              ยืนยัน
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onDecline}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "decline" ? "true" : undefined}
+              className="flex-1 text-rose-600 border-rose-300 hover:bg-rose-50"
+            >
+              {loadingAction === "decline" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              ปฏิเสธ
+            </Button>
+          </div>
+        )}
+
+        {/* Action Buttons - Company (Scheduled) */}
+        {showCompanyScheduledActions && (
+          <div className="pt-3 flex gap-2 border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onReschedule}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "reschedule" ? "true" : undefined}
+              className="flex-1"
+            >
+              {loadingAction === "reschedule" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              เลื่อนนัด
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onCancel}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "cancel" ? "true" : undefined}
+              className="flex-1 text-rose-600 border-rose-300 hover:bg-rose-50"
+            >
+              {loadingAction === "cancel" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              ยกเลิก
+            </Button>
+          </div>
+        )}
+
+        {/* Action Buttons - Company (Confirmed) - Cancel only */}
+        {showCompanyCancelOnly && (
+          <div className="pt-3 flex gap-2 border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onCancel}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "cancel" ? "true" : undefined}
+              className="flex-1 text-rose-600 border-rose-300 hover:bg-rose-50"
+            >
+              {loadingAction === "cancel" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              ยกเลิก
+            </Button>
+          </div>
+        )}
+
+        {/* Action Buttons - Company (Declined/Rescheduled) - Schedule new */}
+        {showCompanyRescheduleOnly && (
+          <div className="pt-3 flex gap-2 border-t">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onScheduleNew}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "scheduleNew" ? "true" : undefined}
+              className="flex-1"
+            >
+              {loadingAction === "scheduleNew" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              นัดใหม่
+            </Button>
+          </div>
+        )}
+
+        {/* Action Buttons - Company (Cancelled) - Schedule new */}
+        {showCompanyScheduleNew && (
+          <div className="pt-3 flex gap-2 border-t">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onScheduleNew}
+              disabled={isActionLoading}
+              data-loading={loadingAction === "scheduleNew" ? "true" : undefined}
+              className="flex-1"
+            >
+              {loadingAction === "scheduleNew" && isActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              นัดใหม่
+            </Button>
           </div>
         )}
       </CardContent>
