@@ -61,7 +61,7 @@ export function useJobActions(
       }
       // Navigate to edit page for duplicated job
       if (result.data?.uid) {
-        router.push(`/jobsmarket/jobs/${result.data.uid}/edit`);
+        router.push(`/jobs/${result.data.uid}/edit`);
       }
     }
   };

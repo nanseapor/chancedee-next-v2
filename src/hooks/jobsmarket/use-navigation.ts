@@ -39,7 +39,7 @@ export function useNavigation() {
 
     // Priority 1: Check for deleted account
     if (roles.includes("deleted")) {
-      const destination = "/jobsmarket/auth/status?type=deleted";
+      const destination = "/auth/status?type=deleted";
       router.replace(destination);
       return destination;
     }
@@ -61,7 +61,7 @@ export function useNavigation() {
 
     // Priority 4: Handle referral code (new registration flow)
     if (refCode) {
-      const destination = `/jobsmarket/auth/register?refCode=${refCode}`;
+      const destination = `/auth/register?refCode=${refCode}`;
       router.replace(destination);
       return destination;
     }
@@ -69,7 +69,7 @@ export function useNavigation() {
     // Priority 5: Handle job application flow
     if (jobId && (roles.includes("candidate") || pageType === "candidate")) {
       setActiveRole("candidate");
-      const destination = `/jobsmarket/jobs/${jobId}`;
+      const destination = `/jobs/${jobId}`;
       router.replace(destination);
       return destination;
     }
@@ -86,14 +86,14 @@ export function useNavigation() {
         // Use saved preference
         setActiveRole(savedRole);
         const destination = savedRole === "candidate"
-          ? `/jobsmarket/candidates/${uid}`
-          : `/jobsmarket/companies/${companyId}/dashboard`;
+          ? `/candidates/${uid}`
+          : `/companies/${companyId}/dashboard`;
         router.replace(destination);
         return destination;
       }
 
       // No saved preference or pageType override - go to role selector
-      const destination = "/jobsmarket/auth/select-role";
+      const destination = "/auth/select-role";
       router.replace(destination);
       return destination;
     }
@@ -102,19 +102,19 @@ export function useNavigation() {
     if (pageType === "company" || (pageType === "auto" && hasCompany)) {
       if (hasCompany && companyId) {
         setActiveRole("company");
-        const destination = `/jobsmarket/companies/${companyId}/dashboard`;
+        const destination = `/companies/${companyId}/dashboard`;
         router.replace(destination);
         return destination;
       }
       // User doesn't have company role - show context mismatch
-      const destination = "/jobsmarket/auth/login?context=company&error=role-mismatch";
+      const destination = "/auth/login?context=company&error=role-mismatch";
       router.replace(destination);
       return destination;
     }
 
     if (pageType === "candidate" || (pageType === "auto" && hasCandidate)) {
       setActiveRole("candidate");
-      const destination = `/jobsmarket/candidates/${uid}`;
+      const destination = `/candidates/${uid}`;
       router.replace(destination);
       return destination;
     }
@@ -135,16 +135,16 @@ export function useNavigation() {
 function determinePendingDestination(roles: string[], companyId?: string): string {
   // Company Admin (new company) - pending platform approval
   if (roles.includes("company") && roles.includes("admin") && companyId) {
-    return `/jobsmarket/companies/${companyId}/pending`;
+    return `/companies/${companyId}/pending`;
   }
 
   // Company Staff - pending company admin approval
   if (roles.includes("company") && companyId) {
-    return "/jobsmarket/auth/status?type=staff-pending";
+    return "/auth/status?type=staff-pending";
   }
 
   // Generic pending (e.g., role addition)
-  return "/jobsmarket/auth/status?type=pending";
+  return "/auth/status?type=pending";
 }
 
 /**

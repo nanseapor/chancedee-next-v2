@@ -18,7 +18,7 @@ export function JobListEmpty({ reason, companyId }: JobListEmptyProps) {
           เริ่มต้นสร้างประกาศงานแรกของคุณ
         </p>
         <Link
-          href={`/jobsmarket/companies/${companyId}/jobs/create`}
+          href={`/companies/${companyId}/jobs/create`}
           className="rounded-[0.625rem] bg-primary px-6 py-3 font-medium tracking-widest text-primary-foreground hover:bg-primary-900"
         >
           ลงประกาศงานแรก

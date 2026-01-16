@@ -54,7 +54,7 @@ export function JobListHeader({
         </div>
 
         {canCreateJobs && (
-          <Link href={`/jobsmarket/companies/${companyId}/dashboard/jobs/new`}>
+          <Link href={`/companies/${companyId}/dashboard/jobs/new`}>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               ลงประกาศงานใหม่

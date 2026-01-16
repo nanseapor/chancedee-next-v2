@@ -56,7 +56,7 @@ export default function CompanyHeader({
 
         {/* Company logo and name */}
         <Link
-          href={`/jobsmarket/companies/${company.uid}/dashboard`}
+          href={`/companies/${company.uid}/dashboard`}
           className="flex items-center gap-2 font-semibold"
         >
           {company.profilePhoto ? (

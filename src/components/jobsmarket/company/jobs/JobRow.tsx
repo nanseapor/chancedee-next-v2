@@ -26,7 +26,7 @@ export function JobRow({ job, isSelected, onSelect, onAction }: JobRowProps) {
     ) {
       return;
     }
-    router.push(`/jobsmarket/jobs/${job.uid}`);
+    router.push(`/jobs/${job.uid}`);
   };
 
   const handleMenuAction = (action: JobAction) => {
