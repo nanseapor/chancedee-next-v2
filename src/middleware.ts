@@ -40,7 +40,8 @@ function getSubdomainApp(hostname: string): "content" | "jobsmarket" | null {
  *
  * Handles:
  * 1. Subdomain-based routing (www -> /content, jobs -> /jobsmarket)
- * 2. Session cookie clearing on auth pages (content site only)
+ * 2. URL enforcement: redirects /jobsmarket/* from non-jobs subdomains to jobs subdomain
+ * 3. Session cookie clearing on auth pages (content site only)
  */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -54,10 +55,37 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") || // API routes are shared across subdomains
     pathname.startsWith("/content") || // Already rewritten
-    pathname.startsWith("/jobsmarket") || // Already rewritten
+    pathname.startsWith("/platform") || // Admin platform routes (not subdomain-based)
     pathname.includes(".") // Static files like favicon.ico, robots.txt
   ) {
     console.log(`[Middleware] Skipping: ${pathname}`);
+    return NextResponse.next();
+  }
+
+  // URL Enforcement: Redirect /jobsmarket/* requests from non-jobs subdomains
+  // Users should not see /jobsmarket in their URL - they should be on jobs.* subdomain
+  if (pathname.startsWith("/jobsmarket")) {
+    const subdomainApp = getSubdomainApp(hostname);
+
+    // If user is on www/content subdomain but accessing /jobsmarket/*, redirect to jobs subdomain
+    if (subdomainApp === "content") {
+      // Extract the clean path (remove /jobsmarket prefix)
+      const cleanPath = pathname.replace(/^\/jobsmarket/, "") || "/";
+
+      // Build the redirect URL to jobs subdomain
+      const isProduction = process.env.NODE_ENV === "production";
+      const jobsHost = isProduction ? JOBS_HOST : `jobs.${hostname.split(":")[0]}:${request.nextUrl.port || "3000"}`;
+      const redirectUrl = new URL(cleanPath, `${request.nextUrl.protocol}//${jobsHost}`);
+
+      // Preserve query params
+      redirectUrl.search = request.nextUrl.search;
+
+      console.log(`[Middleware] Redirecting /jobsmarket/* to jobs subdomain: ${redirectUrl.toString()}`);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // If already on jobs subdomain, allow the request (internal rewrite path)
+    console.log(`[Middleware] Allowing /jobsmarket/* on jobs subdomain: ${pathname}`);
     return NextResponse.next();
   }
 
@@ -74,12 +102,16 @@ export function middleware(request: NextRequest) {
 
     console.log(`[Middleware] Rewriting to: ${rewritePath}`);
 
+    // Create rewrite URL and preserve query params
+    const rewriteUrl = new URL(rewritePath, request.url);
+    rewriteUrl.search = request.nextUrl.search; // Preserve query params
+
     // Handle auth session clearing for content site auth pages
     if (subdomainApp === "content" && (pathname === "/auth/sign-in" || pathname === "/auth/sign-up")) {
-      return handleAuthSessionClear(request, new URL(rewritePath, request.url));
+      return handleAuthSessionClear(request, rewriteUrl);
     }
 
-    return NextResponse.rewrite(new URL(rewritePath, request.url));
+    return NextResponse.rewrite(rewriteUrl);
   }
 
   return NextResponse.next();
