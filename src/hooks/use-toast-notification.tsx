@@ -9,6 +9,7 @@ import {
   useContext,
   useEffect,
   useState,
+  startTransition,
 } from "react";
 
 interface Toast {
@@ -65,9 +66,13 @@ const ToastItem: React.FC<{
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
+    startTransition(() => {
+      setIsVisible(true);
+    });
     const timer = setTimeout(() => {
-      setIsVisible(false);
+      startTransition(() => {
+        setIsVisible(false);
+      });
       setTimeout(() => removeToast(toast.id), 300); // Match this with transition duration
     }, 5000); // Adjust this value to control how long the toast stays visible
     return () => clearTimeout(timer);

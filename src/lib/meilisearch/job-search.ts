@@ -149,3 +149,155 @@ export const searchJobs = async (params: JobSearchParams): Promise<JobSearchResu
 
   return { data: jobs, totalPages, totalCount };
 };
+
+/**
+ * Advanced job search with filters (for public job routes)
+ * Supports all filters from JobSearchParams type
+ */
+import type { JobSearchParams as PublicJobSearchParams, JobCardData, ExperienceRange } from "@/types/public-jobs";
+
+interface JobSearchWithFiltersResult {
+  jobs: JobCardData[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  processingTime: number;
+}
+
+/**
+ * Map experience range to year filters
+ */
+function mapExperienceToFilter(experience: ExperienceRange): string {
+  switch (experience) {
+    case '0':
+      return 'is_accept_new_grads = true OR min_experience_year = 0';
+    case '1-3':
+      return 'min_experience_year <= 3 AND max_experience_year >= 1';
+    case '3-5':
+      return 'min_experience_year <= 5 AND max_experience_year >= 3';
+    case '5-10':
+      return 'min_experience_year <= 10 AND max_experience_year >= 5';
+    case '10+':
+      return 'min_experience_year >= 10';
+  }
+}
+
+/**
+ * Build MeiliSearch filter array from job search params
+ */
+function buildMeiliFilters(params: PublicJobSearchParams): string[] {
+  const filters: string[] = [
+    `job_status IN ["ontimer", "published"]`,
+    `is_active = true`,
+  ];
+
+  // Location filter (province)
+  if (params.locations && params.locations.length > 0) {
+    const locationFilter = params.locations.map(loc => `"${loc}"`).join(', ');
+    filters.push(`province IN [${locationFilter}]`);
+  }
+
+  // Employment type filter
+  if (params.types && params.types.length > 0) {
+    const typeFilter = params.types.map(type => `"${type}"`).join(', ');
+    filters.push(`employment IN [${typeFilter}]`);
+  }
+
+  // Salary filters
+  if (params.salaryMin !== undefined && params.salaryMin !== null) {
+    filters.push(`max_salary >= ${params.salaryMin}`);
+  }
+  if (params.salaryMax !== undefined && params.salaryMax !== null) {
+    filters.push(`min_salary <= ${params.salaryMax}`);
+  }
+
+  // Education level filter
+  if (params.education && params.education.length > 0) {
+    const educationFilter = params.education.map(edu => `"${edu}"`).join(', ');
+    filters.push(`education_level IN [${educationFilter}]`);
+  }
+
+  // Experience filter (complex mapping)
+  if (params.experience) {
+    filters.push(`(${mapExperienceToFilter(params.experience)})`);
+  }
+
+  // Work mode filter (remote/hybrid/onsite)
+  if (params.remote) {
+    filters.push(`work_mode = "${params.remote}"`);
+  }
+
+  return filters;
+}
+
+/**
+ * Build MeiliSearch sort array from job search params
+ */
+function buildMeiliSort(sortOption?: string): string[] {
+  switch (sortOption) {
+    case 'salary_desc':
+      return ['max_salary:desc', 'post_start_date:desc'];
+    case 'salary_asc':
+      return ['min_salary:asc', 'post_start_date:desc'];
+    case 'newest':
+    default:
+      return ['post_start_date:desc'];
+  }
+}
+
+/**
+ * Transform MeiliSearch hit to JobCardData (lightweight)
+ */
+function transformHitToJobCard(hit: MeiliJobHit): JobCardData {
+  return {
+    uid: hit.uid || "",
+    title: hit.title || "",
+    companyId: hit.company_id || "",
+    companyName: hit.company_name || "",
+    companyLogo: hit.company_logo || "",
+    minSalary: hit.min_salary ?? null,
+    maxSalary: hit.max_salary ?? null,
+    isNegotiable: hit.is_negotiable ?? false,
+    workLocationText: hit.work_location_text || "",
+    employmentText: hit.employment_text || "",
+    experienceText: hit.experience_text || "",
+    createdAt: extractMeiliTimestamp(hit.created_at) || 0,
+  };
+}
+
+/**
+ * Search jobs with advanced filters (for public job routes)
+ * Returns lightweight JobCardData for list display
+ */
+export const searchJobsWithFilters = async (
+  params: PublicJobSearchParams
+): Promise<JobSearchWithFiltersResult> => {
+  const startTime = Date.now();
+  const page = params.page || 1;
+  const pageSize = params.pageSize || 20;
+  const keyword = params.q || "";
+
+  const filters = buildMeiliFilters(params);
+  const sort = buildMeiliSort(params.sort);
+
+  const result = await jobIndex.search(keyword, {
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+    filter: filters,
+    sort,
+  });
+
+  const jobs: JobCardData[] = result.hits.map(transformHitToJobCard);
+
+  const totalCount = result.estimatedTotalHits || 0;
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const processingTime = Date.now() - startTime;
+
+  return {
+    jobs,
+    totalCount,
+    totalPages,
+    currentPage: page,
+    processingTime,
+  };
+};

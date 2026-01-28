@@ -16,23 +16,21 @@ import CreatePasswordForm from "./create-password";
 const PasswordSettings = ({ userContext }: { userContext: userDataProps }) => {
   const { addToast } = useToast();
   const { subscription, isLoading: isSubscriptionLoading } = useSubscription();
-  const [subscriptionToggle, setSubscriptionToggle] = useState<boolean>();
   const currentUser = getFirebaseAuth().currentUser;
   const userType = useMemo(() => {
     return currentUser?.providerData;
   }, [currentUser]);
 
-  useEffect(() => {
+  const subscriptionToggle = useMemo(() => {
     if (
       !isSubscriptionLoading &&
       subscription &&
       subscription.find((sub) => sub.email === userContext?.email)
     ) {
-      setSubscriptionToggle(true);
-    } else {
-      setSubscriptionToggle(false);
+      return true;
     }
-  }, [subscription, isSubscriptionLoading]);
+    return false;
+  }, [subscription, isSubscriptionLoading, userContext?.email]);
 
   const handleToggle = (checked: boolean) => {
     // ... (handleToggle function remains unchanged)

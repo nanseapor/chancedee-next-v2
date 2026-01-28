@@ -7,8 +7,8 @@ import { test, expect } from "@playwright/test";
  */
 
 // Check for test credentials
-const TEST_EMAIL = process.env.TEST_USER_EMAIL;
-const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
+const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
+const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
 
 test.describe("AUTH-R06 Settings Page", () => {
   test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");

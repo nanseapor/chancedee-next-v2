@@ -1,0 +1,49 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e6] [cursor=pointer]:
+          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard
+          - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e7]
+          - generic [ref=e8]: บริษัท จัดหางาน พีเพิล วัน จำกัด
+        - button "การแจ้งเตือน" [ref=e9]:
+          - img [ref=e10]
+        - button "C" [ref=e13]:
+          - generic [ref=e15]: C
+          - img [ref=e16]
+      - generic [ref=e18]:
+        - complementary [ref=e19]:
+          - navigation [ref=e21]:
+            - link "แดชบอร์ด" [ref=e22] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/dashboard
+              - img [ref=e23]
+              - generic [ref=e28]: แดชบอร์ด
+            - link "งานที่ประกาศ" [ref=e29] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/jobs
+              - img [ref=e30]
+              - generic [ref=e33]: งานที่ประกาศ
+            - link "ใบสมัคร" [ref=e34] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/applications
+              - img [ref=e35]
+              - generic [ref=e38]: ใบสมัคร
+            - link "ทีมงาน" [ref=e39] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/team
+              - img [ref=e40]
+              - generic [ref=e45]: ทีมงาน
+            - link "ตั้งค่า" [ref=e46] [cursor=pointer]:
+              - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu/settings
+              - img [ref=e47]
+              - generic [ref=e50]: ตั้งค่า
+        - main [ref=e51]
+  - button "Open Next.js Dev Tools" [ref=e66] [cursor=pointer]:
+    - generic [ref=e69]:
+      - text: Rendering
+      - generic [ref=e70]:
+        - generic [ref=e71]: .
+        - generic [ref=e72]: .
+        - generic [ref=e73]: .
+  - alert [ref=e74]
+```

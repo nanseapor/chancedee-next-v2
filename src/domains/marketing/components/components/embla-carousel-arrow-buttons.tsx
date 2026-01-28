@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useState,
+  startTransition,
 } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -35,8 +36,10 @@ export const usePrevNextButtons = (
   }, [emblaApi, onButtonClick]);
 
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setPrevBtnDisabled(!emblaApi.canScrollPrev());
-    setNextBtnDisabled(!emblaApi.canScrollNext());
+    startTransition(() => {
+      setPrevBtnDisabled(!emblaApi.canScrollPrev());
+      setNextBtnDisabled(!emblaApi.canScrollNext());
+    });
   }, []);
 
   useEffect(() => {

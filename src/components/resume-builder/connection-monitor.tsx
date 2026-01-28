@@ -11,7 +11,7 @@ import {
   RefreshCw,
   WifiOff,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, startTransition } from "react";
 
 interface ConnectionMonitorProps {
   onConnectionChange?: (status: "connected" | "error" | "loading") => void;
@@ -210,17 +210,23 @@ export function useConnectionMonitor() {
 
   const checkConnection = useCallback(async () => {
     if (!isOnline) {
-      setConnectionStatus("error");
+      startTransition(() => {
+        setConnectionStatus("error");
+      });
       return false;
     }
 
     try {
       const health = await apiClient.checkHealth();
       const connected = health.status === "healthy";
-      setConnectionStatus(connected ? "connected" : "error");
+      startTransition(() => {
+        setConnectionStatus(connected ? "connected" : "error");
+      });
       return connected;
-    } catch (error) {
-      setConnectionStatus("error");
+    } catch (_error) {
+      startTransition(() => {
+        setConnectionStatus("error");
+      });
       return false;
     }
   }, [isOnline]);

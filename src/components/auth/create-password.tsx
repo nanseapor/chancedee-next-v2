@@ -28,8 +28,13 @@ import { Label } from "../ui/label";
 
 const CreatePasswordForm = () => {
   const router = useRouter();
-  const [redirectPath, setRedirectPath] = useState<string>("/");
-  const [error, setError] = useState("");
+  const [redirectPath, setRedirectPath] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("redirect") || "/";
+    }
+    return "/";
+  });
+  const [_error, setError] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -72,12 +77,6 @@ const CreatePasswordForm = () => {
     }
   };
 
-  useEffect(() => {
-    const storedRedirectPath = localStorage.getItem("redirect");
-    if (storedRedirectPath) {
-      setRedirectPath(storedRedirectPath);
-    }
-  }, []);
 
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);

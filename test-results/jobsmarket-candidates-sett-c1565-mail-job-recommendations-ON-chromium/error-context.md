@@ -1,0 +1,106 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - link "ChanceDee" [ref=e7] [cursor=pointer]:
+          - /url: /jobsmarket
+          - img "ChanceDee" [ref=e8]
+        - navigation [ref=e9]:
+          - list [ref=e10]:
+            - listitem [ref=e11]:
+              - button "แดชบอร์ด" [disabled] [ref=e12]:
+                - img [ref=e14]
+                - generic [ref=e16]: แดชบอร์ด
+            - listitem [ref=e17]:
+              - link "โปรไฟล์" [ref=e18] [cursor=pointer]:
+                - /url: /jobsmarket/candidates/bywpdkLOSTWjvV8JhhQL6LNditJ3/profile
+                - img [ref=e20]
+                - generic [ref=e22]: โปรไฟล์
+            - listitem [ref=e23]:
+              - button "ค้นหางาน" [disabled] [ref=e24]:
+                - img [ref=e26]
+                - generic [ref=e28]: ค้นหางาน
+            - listitem [ref=e29]:
+              - button "ใบสมัคร" [disabled] [ref=e30]:
+                - img [ref=e32]
+                - generic [ref=e34]: ใบสมัคร
+            - listitem [ref=e35]:
+              - button "รายการที่บันทึก" [disabled] [ref=e36]:
+                - img [ref=e38]
+                - generic [ref=e40]: รายการที่บันทึก
+            - listitem [ref=e41]:
+              - button "การตั้งค่า" [disabled] [ref=e42]:
+                - img [ref=e44]
+                - generic [ref=e47]: การตั้งค่า
+      - generic [ref=e48]:
+        - generic [ref=e50]:
+          - link "การแจ้งเตือน" [ref=e51] [cursor=pointer]:
+            - /url: /jobsmarket/notifications
+            - img [ref=e52]
+          - button "เมนูผู้ใช้" [ref=e56]:
+            - img "สมชาย ทดสอบ" [ref=e57]
+            - generic [ref=e59]: สมชาย ทดสอบ
+            - img [ref=e60]
+        - main [ref=e62]:
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - heading "การตั้งค่า" [level=1] [ref=e66]
+              - paragraph [ref=e67]: Settings
+            - generic [ref=e68]:
+              - link "การตั้งค่าบัญชี รหัสผ่าน, อีเมล, ความเป็นส่วนตัว Account Settings" [ref=e70] [cursor=pointer]:
+                - /url: /jobsmarket/auth/settings
+                - generic [ref=e71]:
+                  - heading "การตั้งค่าบัญชี" [level=3] [ref=e72]
+                  - paragraph [ref=e73]: รหัสผ่าน, อีเมล, ความเป็นส่วนตัว
+                  - paragraph [ref=e74]: Account Settings
+                - img [ref=e75]
+              - generic [ref=e78]:
+                - generic [ref=e79]:
+                  - heading "การมองเห็นโปรไฟล์" [level=2] [ref=e80]
+                  - paragraph [ref=e81]: Profile Visibility
+                - generic [ref=e82]:
+                  - generic [ref=e83]:
+                    - text: อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน
+                    - paragraph [ref=e84]: เมื่อเปิด บริษัทจะสามารถค้นหาและดูโปรไฟล์ของคุณได้
+                    - paragraph [ref=e85]: Allow companies to find my profile
+                  - switch "อนุญาตให้บริษัทค้นหาโปรไฟล์ของฉัน" [ref=e87] [cursor=pointer]
+              - generic [ref=e89]:
+                - generic [ref=e90]:
+                  - heading "การตั้งค่าการสมัคร" [level=2] [ref=e91]
+                  - paragraph [ref=e92]: Application Settings
+                - generic [ref=e93]:
+                  - generic [ref=e94]:
+                    - text: แนบจดหมายสมัครงานอัตโนมัติ
+                    - paragraph [ref=e95]: ใช้จดหมายสมัครงานเริ่มต้นเมื่อสมัครงาน
+                    - paragraph [ref=e96]: Auto-attach cover letter
+                  - switch "แนบจดหมายสมัครงานอัตโนมัติ" [checked] [ref=e98] [cursor=pointer]
+                - generic [ref=e99]:
+                  - generic [ref=e101]: "จดหมายสมัครงานเริ่มต้น:"
+                  - textbox "จดหมายสมัครงานเริ่มต้น:" [ref=e102]:
+                    - /placeholder: เขียนจดหมายสมัครงานเริ่มต้นของคุณ...
+                    - text: E2E Test Cover Letter - 1767455109159
+                  - paragraph [ref=e103]: 37/2000 ตัวอักษร
+              - generic [ref=e105]:
+                - generic [ref=e106]:
+                  - heading "การแจ้งเตือนงาน" [level=2] [ref=e107]
+                  - paragraph [ref=e108]: Job Notifications
+                - generic [ref=e109]:
+                  - generic [ref=e110]:
+                    - text: รับงานแนะนำทางอีเมล
+                    - paragraph [ref=e111]: รับอีเมลแนะนำงานที่ตรงกับโปรไฟล์ของคุณ
+                    - paragraph [ref=e112]: Receive job recommendations via email
+                  - switch "รับงานแนะนำทางอีเมล" [ref=e114] [cursor=pointer]
+                - generic [ref=e116]:
+                  - generic [ref=e117]:
+                    - text: รับการแจ้งเตือนแบบ Push
+                    - paragraph [ref=e118]: เปิดการแจ้งเตือนแบบ push บนอุปกรณ์ของคุณ
+                    - paragraph [ref=e119]: Receive push notifications
+                    - paragraph [ref=e120]: เร็วๆ นี้ (Coming soon)
+                  - switch [disabled] [ref=e121]
+  - button "Open Next.js Dev Tools" [ref=e127] [cursor=pointer]:
+    - img [ref=e128]
+  - alert [ref=e131]
+```

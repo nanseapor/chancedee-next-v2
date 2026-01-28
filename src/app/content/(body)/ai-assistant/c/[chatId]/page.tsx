@@ -805,14 +805,15 @@ export default function ChatPage({ params }: ChatPageProps) {
                             <Loader2 className="w-4 h-4 animate-spin text-gray-500 flex-shrink-0" />
                           )}
                           {message.status === "error" && (
-                            <button
-                              type="button"
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => retryMessage(message.id)}
-                              className="flex-shrink-0"
+                              className="flex-shrink-0 h-6 w-6 p-0"
                               title="Failed to send. Click to retry."
                             >
                               <AlertCircle className="w-4 h-4 text-red-500 hover:text-red-600" />
-                            </button>
+                            </Button>
                           )}
                         </div>
                       </div>

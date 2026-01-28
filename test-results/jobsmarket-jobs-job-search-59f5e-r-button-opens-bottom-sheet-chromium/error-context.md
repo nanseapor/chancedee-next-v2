@@ -1,0 +1,703 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - link "ChanceDee" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: ChanceDee
+        - generic [ref=e8]:
+          - link "เข้าสู่ระบบ" [ref=e9] [cursor=pointer]:
+            - /url: /jobsmarket/auth/login
+            - button "เข้าสู่ระบบ" [ref=e10]
+          - link:
+            - /url: /jobsmarket/auth/register
+      - main [ref=e11]:
+        - generic [ref=e13]:
+          - generic [ref=e16]:
+            - heading "หางาน" [level=1] [ref=e17]
+            - paragraph [ref=e18]: ค้นหางานที่ใช่สำหรับคุณ
+            - generic [ref=e19]:
+              - img [ref=e20]
+              - textbox "ค้นหาตำแหน่งงาน, บริษัท, คำสำคัญ..." [ref=e23]
+          - main [ref=e26]:
+            - button "ตัวกรอง" [active] [ref=e28]:
+              - img [ref=e29]
+              - text: ตัวกรอง
+            - generic [ref=e31]:
+              - generic [ref=e33]: พบ 105 ตำแหน่ง
+              - combobox [ref=e35]:
+                - generic: ใหม่สุด
+                - img [ref=e36]
+            - generic [ref=e38]:
+              - generic [ref=e39]:
+                - generic [ref=e41]:
+                  - link "Molecular Studio co.,ltd." [ref=e42] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                    - img "Molecular Studio co.,ltd." [ref=e44]
+                  - generic [ref=e45]:
+                    - generic [ref=e46]:
+                      - generic [ref=e47]:
+                        - link "ทดสอบ Job ปฎิ เสธ CHAT" [ref=e48] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/LnGogSEQZh0ZFO3c0ujQ
+                          - heading "ทดสอบ Job ปฎิ เสธ CHAT" [level=3] [ref=e49]
+                        - link "Molecular Studio co.,ltd." [ref=e50] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                      - button "บันทึกงาน" [ref=e51]:
+                        - img [ref=e52]
+                    - generic [ref=e54]:
+                      - generic [ref=e55]:
+                        - img [ref=e56]
+                        - text: Onsite
+                      - generic [ref=e59]:
+                        - img [ref=e60]
+                        - text: Full Time
+                      - generic [ref=e63]:
+                        - img [ref=e64]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e67]:
+                      - generic [ref=e68]: ฿10,890 - ฿15,000
+                      - generic [ref=e69]:
+                        - img [ref=e70]
+                        - text: โพสต์เมื่อ 7 เดือนที่แล้ว
+                - generic [ref=e74]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e75] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e77]
+                  - generic [ref=e78]:
+                    - generic [ref=e79]:
+                      - generic [ref=e80]:
+                        - link "เจ้าหน้าที่หน้า shop (กัลปพฤกษ์ สำเพ็ง2)" [ref=e81] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/dcpA3ZyGTBf5X50ka9oS
+                          - heading "เจ้าหน้าที่หน้า shop (กัลปพฤกษ์ สำเพ็ง2)" [level=3] [ref=e82]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e83] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e84]:
+                        - img [ref=e85]
+                    - generic [ref=e87]:
+                      - generic [ref=e88]:
+                        - img [ref=e89]
+                        - text: Onsite
+                      - generic [ref=e92]:
+                        - img [ref=e93]
+                        - text: Contract
+                      - generic [ref=e96]:
+                        - img [ref=e97]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e100]:
+                      - generic [ref=e101]: ฿10,890 - ฿15,000
+                      - generic [ref=e102]:
+                        - img [ref=e103]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e107]:
+                  - link "Bluebik Group PLC." [ref=e108] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e110]
+                  - generic [ref=e111]:
+                    - generic [ref=e112]:
+                      - generic [ref=e113]:
+                        - link "Sales Consultant (Cybersecurity)" [ref=e114] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/O6Oy2z4CA63R45q0IeBD
+                          - heading "Sales Consultant (Cybersecurity)" [level=3] [ref=e115]
+                        - link "Bluebik Group PLC." [ref=e116] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e117]:
+                        - img [ref=e118]
+                    - generic [ref=e120]:
+                      - generic [ref=e121]:
+                        - img [ref=e122]
+                        - text: Hybrid
+                      - generic [ref=e125]:
+                        - img [ref=e126]
+                        - text: Full Time
+                      - generic [ref=e129]:
+                        - img [ref=e130]
+                        - text: พนักงานอาวุโส
+                    - generic [ref=e133]:
+                      - generic [ref=e134]: ฿30,001 - ฿50,000
+                      - generic [ref=e135]:
+                        - img [ref=e136]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e140]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e141] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e143]
+                  - generic [ref=e144]:
+                    - generic [ref=e145]:
+                      - generic [ref=e146]:
+                        - link "พนักงานPC โฮมโปร สาขาพัทยา" [ref=e147] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/XF1EpNSzwaLr7Y8wpMAk
+                          - heading "พนักงานPC โฮมโปร สาขาพัทยา" [level=3] [ref=e148]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e149] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e150]:
+                        - img [ref=e151]
+                    - generic [ref=e153]:
+                      - generic [ref=e154]:
+                        - img [ref=e155]
+                        - text: Onsite
+                      - generic [ref=e158]:
+                        - img [ref=e159]
+                        - text: Contract
+                      - generic [ref=e162]:
+                        - img [ref=e163]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e166]:
+                      - generic [ref=e167]: ฿10,890 - ฿15,000
+                      - generic [ref=e168]:
+                        - img [ref=e169]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e173]:
+                  - link "Molecular Studio co.,ltd." [ref=e174] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                    - img "Molecular Studio co.,ltd." [ref=e176]
+                  - generic [ref=e177]:
+                    - generic [ref=e178]:
+                      - generic [ref=e179]:
+                        - link "งานทดสอบลำดับที่ 3" [ref=e180] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/o7vHLGaciSWOpRPg3lm3
+                          - heading "งานทดสอบลำดับที่ 3" [level=3] [ref=e181]
+                        - link "Molecular Studio co.,ltd." [ref=e182] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                      - button "บันทึกงาน" [ref=e183]:
+                        - img [ref=e184]
+                    - generic [ref=e186]:
+                      - generic [ref=e187]:
+                        - img [ref=e188]
+                        - text: Onsite
+                      - generic [ref=e191]:
+                        - img [ref=e192]
+                        - text: Contract
+                      - generic [ref=e195]:
+                        - img [ref=e196]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e199]:
+                      - generic [ref=e200]: ฿10,890 - ฿15,000
+                      - generic [ref=e201]:
+                        - img [ref=e202]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e206]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e207] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e209]
+                  - generic [ref=e210]:
+                    - generic [ref=e211]:
+                      - generic [ref=e212]:
+                        - link "พนักงานPCไทวัสดุ สาขานครอินทร์ (ก็อกน้ำ) + (ปูนกาว ยาแนว)" [ref=e213] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/LKSxOvRAPhz9dbB0hqU0
+                          - heading "พนักงานPCไทวัสดุ สาขานครอินทร์ (ก็อกน้ำ) + (ปูนกาว ยาแนว)" [level=3] [ref=e214]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e215] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e216]:
+                        - img [ref=e217]
+                    - generic [ref=e219]:
+                      - generic [ref=e220]:
+                        - img [ref=e221]
+                        - text: Onsite
+                      - generic [ref=e224]:
+                        - img [ref=e225]
+                        - text: Contract
+                      - generic [ref=e228]:
+                        - img [ref=e229]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e232]:
+                      - generic [ref=e233]: ฿10,890 - ฿15,000
+                      - generic [ref=e234]:
+                        - img [ref=e235]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e239]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e240] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e242]
+                  - generic [ref=e243]:
+                    - generic [ref=e244]:
+                      - generic [ref=e245]:
+                        - link "พนักงานPC ไทวัสดุ สาขาอยุธยา ขายสุขภัณฑ์และก๊อกน้ำ" [ref=e246] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/Ex87LbQWdEHOBXKiksrZ
+                          - heading "พนักงานPC ไทวัสดุ สาขาอยุธยา ขายสุขภัณฑ์และก๊อกน้ำ" [level=3] [ref=e247]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e248] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e249]:
+                        - img [ref=e250]
+                    - generic [ref=e252]:
+                      - generic [ref=e253]:
+                        - img [ref=e254]
+                        - text: Onsite
+                      - generic [ref=e257]:
+                        - img [ref=e258]
+                        - text: Contract
+                      - generic [ref=e261]:
+                        - img [ref=e262]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e265]:
+                      - generic [ref=e266]: ฿10,890 - ฿15,000
+                      - generic [ref=e267]:
+                        - img [ref=e268]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e272]:
+                  - link "บริษัท แอจไจล เอนเนอร์ยี่ อินเตอร์เนชั่นแนล จำกัด" [ref=e273] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/SwhTSZ1QyHkJcRZZgT2W
+                    - img "บริษัท แอจไจล เอนเนอร์ยี่ อินเตอร์เนชั่นแนล จำกัด" [ref=e275]
+                  - generic [ref=e276]:
+                    - generic [ref=e277]:
+                      - generic [ref=e278]:
+                        - link "Sales Engineer" [ref=e279] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/CsYdnCd2tpJkgGwipGt4
+                          - heading "Sales Engineer" [level=3] [ref=e280]
+                        - link "บริษัท แอจไจล เอนเนอร์ยี่ อินเตอร์เนชั่นแนล จำกัด" [ref=e281] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/SwhTSZ1QyHkJcRZZgT2W
+                      - button "บันทึกงาน" [ref=e282]:
+                        - img [ref=e283]
+                    - generic [ref=e285]:
+                      - generic [ref=e286]:
+                        - img [ref=e287]
+                        - text: Onsite
+                      - generic [ref=e290]:
+                        - img [ref=e291]
+                        - text: Full Time
+                      - generic [ref=e294]:
+                        - img [ref=e295]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e298]:
+                      - generic [ref=e299]: ฿20,001 - ฿30,000
+                      - generic [ref=e300]:
+                        - img [ref=e301]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e305]:
+                  - link "Bluebik Group PLC." [ref=e306] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e308]
+                  - generic [ref=e309]:
+                    - generic [ref=e310]:
+                      - generic [ref=e311]:
+                        - link "CEO Office" [ref=e312] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/nQIe7fWPuAasuuY6E6Sv
+                          - heading "CEO Office" [level=3] [ref=e313]
+                        - link "Bluebik Group PLC." [ref=e314] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e315]:
+                        - img [ref=e316]
+                    - generic [ref=e318]:
+                      - generic [ref=e319]:
+                        - img [ref=e320]
+                        - text: Hybrid
+                      - generic [ref=e323]:
+                        - img [ref=e324]
+                        - text: Full Time
+                      - generic [ref=e327]:
+                        - img [ref=e328]
+                        - text: ผู้จัดการ
+                    - generic [ref=e331]:
+                      - generic [ref=e332]: ฿30,001 - ฿50,000
+                      - generic [ref=e333]:
+                        - img [ref=e334]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e338]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e339] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e341]
+                  - generic [ref=e342]:
+                    - generic [ref=e343]:
+                      - generic [ref=e344]:
+                        - link "พนักงานธุรการ ประจำ สนง. ถ.พระสุเมรุ (สัญญาจ้าง)" [ref=e345] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/ULBk2GTUpjCmkwKpHQcZ
+                          - heading "พนักงานธุรการ ประจำ สนง. ถ.พระสุเมรุ (สัญญาจ้าง)" [level=3] [ref=e346]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e347] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e348]:
+                        - img [ref=e349]
+                    - generic [ref=e351]:
+                      - generic [ref=e352]:
+                        - img [ref=e353]
+                        - text: Onsite
+                      - generic [ref=e356]:
+                        - img [ref=e357]
+                        - text: Contract
+                      - generic [ref=e360]:
+                        - img [ref=e361]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e364]:
+                      - generic [ref=e365]: ฿10,890 - ฿15,000
+                      - generic [ref=e366]:
+                        - img [ref=e367]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e371]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e372] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e374]
+                  - generic [ref=e375]:
+                    - generic [ref=e376]:
+                      - generic [ref=e377]:
+                        - link "Sea Import Administration (Documentation) 1 อัตรา!!" [ref=e378] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/jkUkfwLCjXOQzgXOXeVA
+                          - heading "Sea Import Administration (Documentation) 1 อัตรา!!" [level=3] [ref=e379]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e380] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e381]:
+                        - img [ref=e382]
+                    - generic [ref=e384]:
+                      - generic [ref=e385]:
+                        - img [ref=e386]
+                        - text: Onsite
+                      - generic [ref=e389]:
+                        - img [ref=e390]
+                        - text: Contract
+                      - generic [ref=e393]:
+                        - img [ref=e394]
+                        - text: พนักงานทั่วไป
+                    - generic [ref=e397]:
+                      - generic [ref=e398]: ฿15,001 - ฿20,000
+                      - generic [ref=e399]:
+                        - img [ref=e400]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e404]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e405] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e407]
+                  - generic [ref=e408]:
+                    - generic [ref=e409]:
+                      - generic [ref=e410]:
+                        - link "พนักงานธุรการ ประจำ สนง.พระราม1 (สัญญาจ้าง)" [ref=e411] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/IQxHIcFxaDF5MknyCoz7
+                          - heading "พนักงานธุรการ ประจำ สนง.พระราม1 (สัญญาจ้าง)" [level=3] [ref=e412]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e413] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e414]:
+                        - img [ref=e415]
+                    - generic [ref=e417]:
+                      - generic [ref=e418]:
+                        - img [ref=e419]
+                        - text: Onsite
+                      - generic [ref=e422]:
+                        - img [ref=e423]
+                        - text: Contract
+                      - generic [ref=e426]:
+                        - img [ref=e427]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e430]:
+                      - generic [ref=e431]: ฿10,890 - ฿15,000
+                      - generic [ref=e432]:
+                        - img [ref=e433]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e437]:
+                  - link "Molecular Studio co.,ltd." [ref=e438] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                    - img "Molecular Studio co.,ltd." [ref=e440]
+                  - generic [ref=e441]:
+                    - generic [ref=e442]:
+                      - generic [ref=e443]:
+                        - link "งานทดสอบลำดับที่ 6" [ref=e444] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/PZthJSwrSppR7IXKRpbP
+                          - heading "งานทดสอบลำดับที่ 6" [level=3] [ref=e445]
+                        - link "Molecular Studio co.,ltd." [ref=e446] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                      - button "บันทึกงาน" [ref=e447]:
+                        - img [ref=e448]
+                    - generic [ref=e450]:
+                      - generic [ref=e451]:
+                        - img [ref=e452]
+                        - text: Onsite
+                      - generic [ref=e455]:
+                        - img [ref=e456]
+                        - text: Contract
+                      - generic [ref=e459]:
+                        - img [ref=e460]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e463]:
+                      - generic [ref=e464]: ฿10,890 - ฿15,000
+                      - generic [ref=e465]:
+                        - img [ref=e466]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e470]:
+                  - link "Bluebik Group PLC." [ref=e471] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e473]
+                  - generic [ref=e474]:
+                    - generic [ref=e475]:
+                      - generic [ref=e476]:
+                        - link "Software Tester (Senior - Manager Level)" [ref=e477] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/YanjYHoZlwyQq4ezvVOQ
+                          - heading "Software Tester (Senior - Manager Level)" [level=3] [ref=e478]
+                        - link "Bluebik Group PLC." [ref=e479] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e480]:
+                        - img [ref=e481]
+                    - generic [ref=e483]:
+                      - generic [ref=e484]:
+                        - img [ref=e485]
+                        - text: Hybrid
+                      - generic [ref=e488]:
+                        - img [ref=e489]
+                        - text: Full Time
+                      - generic [ref=e492]:
+                        - img [ref=e493]
+                        - text: พนักงานอาวุโส
+                    - generic [ref=e496]:
+                      - generic [ref=e497]: ฿30,001 - ฿50,000
+                      - generic [ref=e498]:
+                        - img [ref=e499]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e503]:
+                  - link "Molecular Studio co.,ltd." [ref=e504] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                    - img "Molecular Studio co.,ltd." [ref=e506]
+                  - generic [ref=e507]:
+                    - generic [ref=e508]:
+                      - generic [ref=e509]:
+                        - link "งานทดสอบลำดับที่ 7" [ref=e510] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/3RST2nqItbSg1sd83Q0c
+                          - heading "งานทดสอบลำดับที่ 7" [level=3] [ref=e511]
+                        - link "Molecular Studio co.,ltd." [ref=e512] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/Fxe2mi100BumBfPy80wC
+                      - button "บันทึกงาน" [ref=e513]:
+                        - img [ref=e514]
+                    - generic [ref=e516]:
+                      - generic [ref=e517]:
+                        - img [ref=e518]
+                        - text: Onsite
+                      - generic [ref=e521]:
+                        - img [ref=e522]
+                        - text: Contract
+                      - generic [ref=e525]:
+                        - img [ref=e526]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e529]:
+                      - generic [ref=e530]: ฿10,890 - ฿15,000
+                      - generic [ref=e531]:
+                        - img [ref=e532]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e536]:
+                  - link "Bluebik Group PLC." [ref=e537] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e539]
+                  - generic [ref=e540]:
+                    - generic [ref=e541]:
+                      - generic [ref=e542]:
+                        - link "System Analyst (Entry - Senior Level)" [ref=e543] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/MQykNuttwDsid9mQp3K7
+                          - heading "System Analyst (Entry - Senior Level)" [level=3] [ref=e544]
+                        - link "Bluebik Group PLC." [ref=e545] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e546]:
+                        - img [ref=e547]
+                    - generic [ref=e549]:
+                      - generic [ref=e550]:
+                        - img [ref=e551]
+                        - text: Hybrid
+                      - generic [ref=e554]:
+                        - img [ref=e555]
+                        - text: Full Time
+                      - generic [ref=e558]:
+                        - img [ref=e559]
+                        - text: พนักงานทั่วไป
+                    - generic [ref=e562]:
+                      - generic [ref=e563]: ฿30,001 - ฿50,000
+                      - generic [ref=e564]:
+                        - img [ref=e565]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e569]:
+                  - link "Bluebik Group PLC." [ref=e570] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e572]
+                  - generic [ref=e573]:
+                    - generic [ref=e574]:
+                      - generic [ref=e575]:
+                        - link "Business Analyst (Senior - Manager level)" [ref=e576] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/6RQ3V7OKx4PTv9IiDYIr
+                          - heading "Business Analyst (Senior - Manager level)" [level=3] [ref=e577]
+                        - link "Bluebik Group PLC." [ref=e578] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e579]:
+                        - img [ref=e580]
+                    - generic [ref=e582]:
+                      - generic [ref=e583]:
+                        - img [ref=e584]
+                        - text: Hybrid
+                      - generic [ref=e587]:
+                        - img [ref=e588]
+                        - text: Full Time
+                      - generic [ref=e591]:
+                        - img [ref=e592]
+                        - text: พนักงานอาวุโส
+                    - generic [ref=e595]:
+                      - generic [ref=e596]: ฿30,001 - ฿50,000
+                      - generic [ref=e597]:
+                        - img [ref=e598]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e602]:
+                  - link "Bluebik Group PLC." [ref=e603] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                    - img "Bluebik Group PLC." [ref=e605]
+                  - generic [ref=e606]:
+                    - generic [ref=e607]:
+                      - generic [ref=e608]:
+                        - link "Data Engineer (Entry - Manager)" [ref=e609] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/MjYWvcwwCu6fMhs6LE6w
+                          - heading "Data Engineer (Entry - Manager)" [level=3] [ref=e610]
+                        - link "Bluebik Group PLC." [ref=e611] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/RSZxpux5WSH47fpZDMPg
+                      - button "บันทึกงาน" [ref=e612]:
+                        - img [ref=e613]
+                    - generic [ref=e615]:
+                      - generic [ref=e616]:
+                        - img [ref=e617]
+                        - text: Hybrid
+                      - generic [ref=e620]:
+                        - img [ref=e621]
+                        - text: Full Time
+                      - generic [ref=e624]:
+                        - img [ref=e625]
+                        - text: พนักงานอาวุโส
+                    - generic [ref=e628]:
+                      - generic [ref=e629]: ฿30,001 - ฿50,000
+                      - generic [ref=e630]:
+                        - img [ref=e631]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e635]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e636] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e638]
+                  - generic [ref=e639]:
+                    - generic [ref=e640]:
+                      - generic [ref=e641]:
+                        - link "Account Delivery Executive, Service Billing (ADE Service Billing )" [ref=e642] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/zo4tB9M3Zcrv831zHWTH
+                          - heading "Account Delivery Executive, Service Billing (ADE Service Billing )" [level=3] [ref=e643]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e644] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e645]:
+                        - img [ref=e646]
+                    - generic [ref=e648]:
+                      - generic [ref=e649]:
+                        - img [ref=e650]
+                        - text: Onsite
+                      - generic [ref=e653]:
+                        - img [ref=e654]
+                        - text: Contract
+                      - generic [ref=e657]:
+                        - img [ref=e658]
+                        - text: พนักงานทั่วไป
+                    - generic [ref=e661]:
+                      - generic [ref=e662]: ฿15,001 - ฿20,000
+                      - generic [ref=e663]:
+                        - img [ref=e664]
+                        - text: โพสต์เมื่อ 8 เดือนที่แล้ว
+                - generic [ref=e668]:
+                  - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e669] [cursor=pointer]:
+                    - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                    - img "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e671]
+                  - generic [ref=e672]:
+                    - generic [ref=e673]:
+                      - generic [ref=e674]:
+                        - link "พนักงานPC ไทวัสดุ สาขาพิษณุโลก ปูนกาว ยาแนว" [ref=e675] [cursor=pointer]:
+                          - /url: /jobsmarket/jobs/8NeqF3y19g8kV8rDMHIb
+                          - heading "พนักงานPC ไทวัสดุ สาขาพิษณุโลก ปูนกาว ยาแนว" [level=3] [ref=e676]
+                        - link "บริษัท จัดหางาน พีเพิล วัน จำกัด" [ref=e677] [cursor=pointer]:
+                          - /url: /jobsmarket/companies/YT55dLJcJTVBwQOxuazu
+                      - button "บันทึกงาน" [ref=e678]:
+                        - img [ref=e679]
+                    - generic [ref=e681]:
+                      - generic [ref=e682]:
+                        - img [ref=e683]
+                        - text: Onsite
+                      - generic [ref=e686]:
+                        - img [ref=e687]
+                        - text: Contract
+                      - generic [ref=e690]:
+                        - img [ref=e691]
+                        - text: นักศึกษาจบใหม่
+                    - generic [ref=e694]:
+                      - generic [ref=e695]: ฿10,890 - ฿15,000
+                      - generic [ref=e696]:
+                        - img [ref=e697]
+                        - text: โพสต์เมื่อ 1 เดือนที่แล้ว
+              - navigation "Pagination" [ref=e700]:
+                - button "หน้าก่อนหน้า" [disabled]:
+                  - img
+                - button "1" [ref=e701]
+                - button "2" [ref=e702]
+                - button "3" [ref=e703]
+                - button "4" [ref=e704]
+                - button "5" [ref=e705]
+                - button "6" [ref=e706]
+                - button "หน้าถัดไป" [ref=e707]:
+                  - img [ref=e708]
+          - generic [ref=e712]:
+            - heading "ตัวกรอง" [level=2] [ref=e714]
+            - generic [ref=e715]:
+              - generic [ref=e716]:
+                - button "ประเภทงาน" [expanded] [ref=e717]:
+                  - generic [ref=e718]: ประเภทงาน
+                  - img [ref=e719]
+                - generic [ref=e722]:
+                  - generic [ref=e723]:
+                    - checkbox [ref=e724]
+                    - generic [ref=e725] [cursor=pointer]: งานประจำ
+                  - generic [ref=e726]:
+                    - checkbox [ref=e727]
+                    - generic [ref=e728] [cursor=pointer]: งานพาร์ทไทม์
+                  - generic [ref=e729]:
+                    - checkbox [ref=e730]
+                    - generic [ref=e731] [cursor=pointer]: สัญญาจ้าง
+                  - generic [ref=e732]:
+                    - checkbox [ref=e733]
+                    - generic [ref=e734] [cursor=pointer]: ฝึกงาน
+              - generic [ref=e735]:
+                - button "เงินเดือน" [expanded] [ref=e736]:
+                  - generic [ref=e737]: เงินเดือน
+                  - img [ref=e738]
+                - generic [ref=e742]:
+                  - button "ต่ำกว่า 15,000 บาท" [ref=e743]
+                  - button "15,000 - 30,000 บาท" [ref=e744]
+                  - button "30,000 - 50,000 บาท" [ref=e745]
+                  - button "50,000 - 100,000 บาท" [ref=e746]
+                  - button "มากกว่า 100,000 บาท" [ref=e747]
+              - button "ประสบการณ์" [ref=e749]:
+                - generic [ref=e750]: ประสบการณ์
+                - img [ref=e751]
+              - button "การศึกษา" [ref=e754]:
+                - generic [ref=e755]: การศึกษา
+                - img [ref=e756]
+              - button "รูปแบบการทำงาน" [ref=e759]:
+                - generic [ref=e760]: รูปแบบการทำงาน
+                - img [ref=e761]
+            - generic [ref=e763]:
+              - button "ล้างทั้งหมด" [ref=e764]
+              - button "ดู 105 งาน" [ref=e765]
+      - generic [ref=e767]:
+        - generic [ref=e768]:
+          - generic [ref=e769]:
+            - link "ChanceDee" [ref=e770] [cursor=pointer]:
+              - /url: /
+            - paragraph [ref=e771]: แพลตฟอร์มหางานชั้นนำของไทย
+          - generic [ref=e772]:
+            - heading "สำหรับผู้หางาน" [level=3] [ref=e773]
+            - list [ref=e774]:
+              - listitem [ref=e775]:
+                - link "ค้นหางาน" [ref=e776] [cursor=pointer]:
+                  - /url: /jobsmarket/jobs
+              - listitem [ref=e777]:
+                - link "ดูบริษัท" [ref=e778] [cursor=pointer]:
+                  - /url: /jobsmarket/companies
+          - generic [ref=e779]:
+            - heading "สำหรับผู้ประกอบการ" [level=3] [ref=e780]
+            - list [ref=e781]:
+              - listitem [ref=e782]:
+                - link "ลงประกาศงาน" [ref=e783] [cursor=pointer]:
+                  - /url: /jobsmarket/auth/register?role=company
+          - generic [ref=e784]:
+            - heading "ข้อมูลเพิ่มเติม" [level=3] [ref=e785]
+            - list [ref=e786]:
+              - listitem [ref=e787]:
+                - link "ข้อกำหนดการใช้งาน" [ref=e788] [cursor=pointer]:
+                  - /url: /jobsmarket/legal/terms
+              - listitem [ref=e789]:
+                - link "นโยบายความเป็นส่วนตัว" [ref=e790] [cursor=pointer]:
+                  - /url: /jobsmarket/privacy
+        - paragraph [ref=e792]: © 2026 ChanceDee. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e798] [cursor=pointer]:
+    - img [ref=e799]
+  - alert [ref=e802]
+```

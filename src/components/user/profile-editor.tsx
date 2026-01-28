@@ -184,14 +184,10 @@ const ProfileEditor = ({
 }: { userContext: userDataProps; candidateContext: candidateDataProps }) => {
   const { addToast } = useToast();
   const setUser = useSetAtom(userAtom);
-  const [userImage, setUserImage] = useState<string>();
+  const [userImage, setUserImage] = useState<string | undefined>(
+    userContext?.avatarURL
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (userContext?.avatarURL) {
-      setUserImage(userContext?.avatarURL);
-    }
-  }, [userContext?.avatarURL]);
 
   const form = useForm<z.infer<typeof ProfileEditorFormSchema>>({
     resolver: zodResolver(ProfileEditorFormSchema),
@@ -289,7 +285,7 @@ const ProfileEditor = ({
         }
       }
     },
-    [userContext, auth.currentUser, userImage],
+    [userContext, userImage, addToast, candidateContext, setUser],
   );
 
   const checkKeyDown = (

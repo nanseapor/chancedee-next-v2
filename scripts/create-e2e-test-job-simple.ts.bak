@@ -1,0 +1,82 @@
+#!/usr/bin/env tsx
+/**
+ * Simple script to create a test job for E2E testing using server actions
+ * Usage: npx tsx scripts/create-e2e-test-job-simple.ts
+ */
+
+import { webJobCreate } from '../src/lib/database/actions/jobs';
+import type { FirebaseJobData } from '../src/types/job.types';
+
+const TEST_COMPANY_ID = 'YT55dLJcJTVBwQOxuazu';
+const TEST_COMPANY_NAME = 'บริษัท จัดหางาน พีเพิล วัน จำกัด';
+const TEST_ACTOR_ID = 'e8nbHK1C7NeKy3WPbkajwyQ6ARf1'; // Test company user ID
+
+async function createTestJob() {
+  const jobData: Partial<FirebaseJobData> = {
+    companyId: TEST_COMPANY_ID,
+    companyName: TEST_COMPANY_NAME,
+    title: 'E2E Test Job - Software Engineer',
+
+    // Job details
+    jobDescriptionDetails: 'This is a test job for E2E testing of COMP-R07 job detail page. It includes all required fields.',
+    qualificationDetails: 'Bachelor degree in Computer Science. Experience with React, TypeScript, Next.js.',
+
+    // Employment details
+    employment: 'full-time',
+    jobType: 'hybrid',
+    workLocation: 'Bangkok, Thailand',
+    positions: 3,
+
+    // Salary
+    minSalary: 40000,
+    maxSalary: 60000,
+
+    // Status - DRAFT so edit mode works
+    jobStatus: 'draft',
+    isActive: false,
+  };
+
+  try {
+    console.log('Creating test job...');
+    console.log('Company ID:', TEST_COMPANY_ID);
+    console.log('Actor ID:', TEST_ACTOR_ID);
+
+    const jobId = await webJobCreate(jobData as FirebaseJobData, TEST_ACTOR_ID);
+
+    console.log('\n✅ Test job created successfully!');
+    console.log('\n📋 Job Details:');
+    console.log('  - Job ID:', jobId);
+    console.log('  - Title:', jobData.title);
+    console.log('  - Status:', jobData.jobStatus);
+    console.log('  - Employment:', jobData.employment);
+    console.log('  - Job Type:', jobData.jobType);
+    console.log('  - Positions:', jobData.positions);
+    console.log('  - Location:', jobData.workLocation);
+    console.log('  - Salary:', `${jobData.minSalary} - ${jobData.maxSalary} บาท`);
+
+    console.log('\n📝 Update test file:');
+    console.log('File: tests/e2e/jobsmarket/company/job-detail.spec.ts');
+    console.log(`Change line ~15 to: const TEST_JOB_ID = '${jobId}';`);
+
+    console.log('\n🧪 Run E2E tests:');
+    console.log('npx playwright test tests/e2e/jobsmarket/company/job-detail.spec.ts --project=chromium');
+
+    return jobId;
+  } catch (error) {
+    console.error('\n❌ Failed to create test job');
+    if (error instanceof Error) {
+      console.error('Error:', error.message);
+    }
+    throw error;
+  }
+}
+
+// Run
+createTestJob()
+  .then(() => {
+    console.log('\n✅ Done');
+    process.exit(0);
+  })
+  .catch(() => {
+    process.exit(1);
+  });

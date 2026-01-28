@@ -12,7 +12,7 @@ import { PersonaCheckResult } from "@/types/persona.types";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import { Button } from "../ui/button";
 import { ChatSkeleton } from "./chat-skeleton";
 import { FabChatPersonaStepper } from "./fab-chat-persona-stepper";
@@ -47,7 +47,9 @@ export function FabChatPanel() {
 
   // Set mounted state after initial render to prevent flash
   useEffect(() => {
-    setIsMounted(true);
+    startTransition(() => {
+      setIsMounted(true);
+    });
   }, []);
 
   // Escape key to close panel
@@ -65,11 +67,15 @@ export function FabChatPanel() {
   // Check persona when user is authenticated and panel opens
   useEffect(() => {
     if (isOpen && user) {
-      setIsCheckingPersona(true);
+      startTransition(() => {
+        setIsCheckingPersona(true);
+      });
       user.getIdToken().then((token) => {
         checkUserPersona(token).then((result) => {
-          setPersonaCheck(result);
-          setIsCheckingPersona(false);
+          startTransition(() => {
+            setPersonaCheck(result);
+            setIsCheckingPersona(false);
+          });
         });
       });
     }

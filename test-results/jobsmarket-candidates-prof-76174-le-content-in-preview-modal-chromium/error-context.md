@@ -1,0 +1,261 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - link [ref=e7] [cursor=pointer]:
+          - /url: /jobsmarket
+          - img [ref=e8]
+        - navigation [ref=e9]:
+          - list [ref=e10]:
+            - listitem [ref=e11]:
+              - button [disabled] [ref=e12]:
+                - img [ref=e14]
+                - generic [ref=e16]: แดชบอร์ด
+            - listitem [ref=e17]:
+              - link [ref=e18] [cursor=pointer]:
+                - /url: /jobsmarket/candidates/bywpdkLOSTWjvV8JhhQL6LNditJ3/profile
+                - img [ref=e20]
+                - generic [ref=e22]: โปรไฟล์
+            - listitem [ref=e23]:
+              - button [disabled] [ref=e24]:
+                - img [ref=e26]
+                - generic [ref=e28]: ค้นหางาน
+            - listitem [ref=e29]:
+              - button [disabled] [ref=e30]:
+                - img [ref=e32]
+                - generic [ref=e34]: ใบสมัคร
+            - listitem [ref=e35]:
+              - button [disabled] [ref=e36]:
+                - img [ref=e38]
+                - generic [ref=e40]: รายการที่บันทึก
+            - listitem [ref=e41]:
+              - button [disabled] [ref=e42]:
+                - img [ref=e44]
+                - generic [ref=e47]: การตั้งค่า
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - navigation [ref=e51]:
+            - link [ref=e52] [cursor=pointer]:
+              - /url: /
+              - img [ref=e53]
+            - generic [ref=e56]:
+              - img [ref=e57]
+              - generic [ref=e59]: โปรไฟล์
+          - generic [ref=e60]:
+            - link [ref=e61] [cursor=pointer]:
+              - /url: /jobsmarket/notifications
+              - img [ref=e62]
+            - button [ref=e66]:
+              - img [ref=e67]
+              - generic [ref=e69]: สมชาย ทดสอบ
+              - img [ref=e70]
+        - main [ref=e72]:
+          - generic [ref=e74]:
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - img [ref=e79]
+                - button [ref=e80]:
+                  - img [ref=e81]
+              - generic [ref=e84]:
+                - heading [level=1] [ref=e85]: สมชาย ทดสอบ
+                - generic [ref=e87]:
+                  - generic [ref=e88]: ความสมบูรณ์ของโปรไฟล์
+                  - generic [ref=e89]: 95%
+                - generic [ref=e92]:
+                  - switch [ref=e93] [cursor=pointer]
+                  - generic [ref=e94] [cursor=pointer]: โปรไฟล์สามารถค้นหาได้
+                - button [ref=e96]:
+                  - img [ref=e97]
+                  - text: ดูตัวอย่างโปรไฟล์
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - generic [ref=e102]:
+                  - heading [level=2] [ref=e103]: ข้อมูลส่วนตัว
+                  - button [ref=e104]:
+                    - img [ref=e105]
+                    - text: แก้ไข
+                - generic [ref=e108]:
+                  - generic [ref=e109]:
+                    - term [ref=e110]: ชื่อ-นามสกุล (ไทย)
+                    - definition [ref=e111]: สมชาย ทดสอบ
+                  - generic [ref=e112]:
+                    - term [ref=e113]: ชื่อเล่น
+                    - definition [ref=e114]: ชาย
+                  - generic [ref=e115]:
+                    - term [ref=e116]: อีเมล
+                    - definition [ref=e117]: test@example.com
+                  - generic [ref=e118]:
+                    - term [ref=e119]: เบอร์โทรศัพท์
+                    - definition [ref=e120]: "0898765432"
+                  - generic [ref=e121]:
+                    - term [ref=e122]: วันเกิด
+                    - definition [ref=e123]: 01/01/2000 (อายุ 26 ปี)
+                  - generic [ref=e124]:
+                    - term [ref=e125]: เพศ
+                    - definition [ref=e126]: ชาย
+                  - generic [ref=e127]:
+                    - term [ref=e128]: ที่อยู่
+                    - definition [ref=e129]: 123 ถนนทดสอบ หลักสี่ บางนา กรุงเทพมหานคร 10260
+              - generic [ref=e130]:
+                - generic [ref=e131]:
+                  - heading [level=2] [ref=e132]: ประสบการณ์ทำงาน
+                  - button [ref=e133]:
+                    - img [ref=e134]
+                    - text: แก้ไข
+                - generic [ref=e140]:
+                  - heading [level=3] [ref=e141]: Software Engineer
+                  - paragraph [ref=e142]: บริษัท ทดสอบ จำกัด
+                  - paragraph [ref=e143]: 01/2020 - 12/2023 (3 ปี 10 เดือน)
+                  - paragraph [ref=e144]: Full-time position
+              - generic [ref=e145]:
+                - generic [ref=e146]:
+                  - heading [level=2] [ref=e147]: ประวัติการศึกษา
+                  - button [ref=e148]:
+                    - img [ref=e149]
+                    - text: แก้ไข
+                - generic [ref=e155]:
+                  - generic [ref=e157]: ปริญญาตรี
+                  - heading [level=3] [ref=e158]: มหาวิทยาลัยทดสอบ
+                  - paragraph [ref=e159]: วิทยาศาสตร์คอมพิวเตอร์
+                  - generic [ref=e160]:
+                    - paragraph [ref=e161]: "ปีที่จบ: 2020"
+                    - paragraph [ref=e162]: "เกรดเฉลี่ย: 3.50"
+                  - paragraph [ref=e163]: เกียรตินิยมอันดับ 2
+              - generic [ref=e164]:
+                - generic [ref=e165]:
+                  - heading [level=2] [ref=e166]: ทักษะและภาษา
+                  - button [ref=e167]:
+                    - img [ref=e168]
+                    - text: แก้ไข
+                - generic [ref=e171]:
+                  - generic [ref=e172]:
+                    - heading [level=3] [ref=e173]: ทักษะ
+                    - generic [ref=e174]:
+                      - generic [ref=e175]:
+                        - text: JavaScript
+                        - generic [ref=e176]: (expert)
+                      - generic [ref=e177]:
+                        - text: React
+                        - generic [ref=e178]: (advanced)
+                  - generic [ref=e179]:
+                    - heading [level=3] [ref=e180]: ภาษา
+                    - generic [ref=e181]:
+                      - generic [ref=e182]:
+                        - generic [ref=e183]: ภาษาไทย
+                        - generic [ref=e185]: native
+                      - generic [ref=e186]:
+                        - generic [ref=e187]: English
+                        - generic [ref=e188]:
+                          - generic [ref=e189]: advanced
+                          - generic [ref=e190]:
+                            - text: TOEIC
+                            - generic [ref=e191]: (850)
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - heading [level=2] [ref=e194]: ความต้องการงาน
+                  - button [ref=e195]:
+                    - img [ref=e196]
+                    - text: แก้ไข
+                - generic [ref=e199]:
+                  - generic [ref=e200]:
+                    - heading [level=3] [ref=e201]: ประเภทงานที่สนใจ
+                    - generic [ref=e202]:
+                      - generic [ref=e203]: full-time
+                      - generic [ref=e204]: contract
+                  - generic [ref=e205]:
+                    - heading [level=3] [ref=e206]: ตำแหน่งที่สนใจ
+                    - paragraph [ref=e207]: Software Engineer, Full Stack Developer
+                  - generic [ref=e208]:
+                    - heading [level=3] [ref=e209]: เงินเดือนที่คาดหวัง
+                    - paragraph [ref=e210]: 50,000 - 50,000 บาท(ต่อรองได้)
+                  - generic [ref=e211]:
+                    - heading [level=3] [ref=e212]: สถานที่ทำงาน
+                    - paragraph [ref=e213]: กรุงเทพมหานคร, ปทุมธานี
+                  - generic [ref=e214]:
+                    - heading [level=3] [ref=e215]: ความพร้อมเริ่มงาน
+                    - paragraph [ref=e216]: immediately
+                  - generic [ref=e217]:
+                    - heading [level=3] [ref=e218]: รูปแบบการจ้างงาน
+                    - paragraph [ref=e219]: hybrid
+              - generic [ref=e220]:
+                - generic [ref=e221]:
+                  - heading [level=2] [ref=e222]: เอกสารแนบ
+                  - button [ref=e223]:
+                    - img [ref=e224]
+                    - text: อัปโหลด
+                - generic [ref=e227]:
+                  - img [ref=e228]
+                  - paragraph [ref=e231]: ยังไม่มีเอกสารแนบ
+                  - paragraph [ref=e232]: คลิกอัปโหลดเพื่อเพิ่มเอกสาร PDF, DOC, DOCX (สูงสุด 10MB)
+  - generic [ref=e237] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e238]:
+      - img [ref=e239]
+    - generic [ref=e242]:
+      - button "Open issues overlay" [ref=e243]:
+        - generic [ref=e244]:
+          - generic [ref=e245]: "0"
+          - generic [ref=e246]: "1"
+        - generic [ref=e247]: Issue
+      - button "Collapse issues badge" [ref=e248]:
+        - img [ref=e249]
+  - alert [ref=e251]
+  - dialog "ตัวอย่างโปรไฟล์" [ref=e253]:
+    - generic [ref=e255]:
+      - generic [ref=e256]:
+        - heading "ตัวอย่างโปรไฟล์" [level=2] [ref=e257]
+        - paragraph [ref=e258]: ดูตัวอย่างโปรไฟล์ของคุณก่อนส่งออกเป็น PDF
+      - generic [ref=e259]:
+        - button "ดาวน์โหลด PDF" [active] [ref=e260]:
+          - img [ref=e261]
+          - text: ดาวน์โหลด PDF
+        - button "Close" [ref=e264]:
+          - img [ref=e265]
+          - generic [ref=e268]: Close
+    - generic [ref=e269]:
+      - generic [ref=e270]:
+        - heading "ข้อมูลส่วนตัว" [level=3] [ref=e271]
+        - generic [ref=e272]:
+          - generic [ref=e273]:
+            - text: "ชื่อ-นามสกุล:"
+            - generic [ref=e274]: สมชาย ทดสอบ
+          - generic [ref=e275]: "ชื่อเล่น: ชาย"
+          - generic [ref=e276]: "อีเมล: test@example.com"
+          - generic [ref=e277]: "เบอร์โทรศัพท์: 0898765432"
+          - generic [ref=e278]: "วันเกิด: 1/1/2543"
+          - generic [ref=e279]: "เพศ: ชาย"
+      - generic [ref=e280]:
+        - heading "ประสบการณ์ทำงาน" [level=3] [ref=e281]
+        - generic [ref=e283]:
+          - generic [ref=e284]: Software Engineer ที่ บริษัท ทดสอบ จำกัด
+          - generic [ref=e285]: 2020 - 2023
+          - generic [ref=e286]: Full-time position
+      - generic [ref=e287]:
+        - heading "ประวัติการศึกษา" [level=3] [ref=e288]
+        - generic [ref=e290]:
+          - generic [ref=e291]: ปริญญาตรี
+          - generic [ref=e292]: วิทยาศาสตร์คอมพิวเตอร์ - มหาวิทยาลัยทดสอบ
+          - generic [ref=e293]: "จบปี 2020 | GPAX: 3.50"
+      - generic [ref=e294]:
+        - heading "ทักษะ" [level=3] [ref=e295]
+        - generic [ref=e296]:
+          - generic [ref=e297]: JavaScript
+          - generic [ref=e298]: React
+      - generic [ref=e299]:
+        - heading "ภาษา" [level=3] [ref=e300]
+        - generic [ref=e301]:
+          - generic [ref=e302]:
+            - generic [ref=e303]: "ภาษาไทย:"
+            - text: native
+          - generic [ref=e304]:
+            - generic [ref=e305]: "English:"
+            - text: advanced
+      - generic [ref=e306]:
+        - heading "เกี่ยวกับตัวฉัน" [level=3] [ref=e307]
+        - paragraph [ref=e308]: Passionate software engineer with 5+ years of experience in full-stack development. Specialized in React and Node.js.
+    - button "Close" [ref=e309]:
+      - img [ref=e310]
+      - generic [ref=e313]: Close
+```

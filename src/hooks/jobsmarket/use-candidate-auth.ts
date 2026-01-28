@@ -72,7 +72,7 @@ export function useCandidateAuth(
         if (sessionState === "unauthenticated" || sessionState === "expired") {
           setState("redirect_login");
           const currentPath = encodeURIComponent(window.location.pathname);
-          router.replace(`/jobsmarket/auth/login?from=${currentPath}`);
+          router.replace(`/auth/login?from=${currentPath}`);
           return;
         }
 
@@ -108,7 +108,7 @@ export function useCandidateAuth(
         // NOT_OWNER event - redirect to own resource
         setState("redirect_own");
         const pathSuffix = window.location.pathname.split(candidateId)[1] || "";
-        router.replace(`/jobsmarket/candidates/${currentUserId}${pathSuffix}`);
+        router.replace(`/candidates/${currentUserId}${pathSuffix}`);
         return;
       }
 
@@ -171,7 +171,7 @@ export function useCandidateOnboardingCheck(
 
     // NOT_ONBOARDED event
     if (!isOnboarded) {
-      router.replace(`/jobsmarket/candidates/${candidateId}/profile`);
+      router.replace(`/candidates/${candidateId}/profile`);
       return;
     }
 

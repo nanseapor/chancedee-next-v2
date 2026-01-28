@@ -1,39 +1,31 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { FabChatButton } from "./fab-chat-button";
 import { FabChatPanel } from "./fab-chat-panel";
 
 // Paths where FAB should be hidden (within the (body) route group)
 const EXCLUDED_PATHS = ["/ai-assistant", "/resume-builder-ai"];
 
+function useIsDocumentLoaded() {
+  const subscribe = useCallback((callback: () => void) => {
+    window.addEventListener("load", callback);
+    return () => window.removeEventListener("load", callback);
+  }, []);
+
+  const getSnapshot = useCallback(() => {
+    return typeof document !== "undefined" && document.readyState === "complete";
+  }, []);
+
+  const getServerSnapshot = useCallback(() => false, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
 export function FabChat() {
   const pathname = usePathname();
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-
-  useEffect(() => {
-    // Reset and check if document is already loaded
-    setIsPageLoaded(false);
-
-    if (document.readyState === "complete") {
-      setIsPageLoaded(true);
-      return;
-    } else {
-      // Wait for the page to fully load
-      // Use 'load' event which fires after all resources (images, styles, etc.) are loaded
-      // This excludes async scripts like Google Analytics that continue loading
-      const handleLoad = () => {
-        setIsPageLoaded(true);
-      };
-
-      window.addEventListener("load", handleLoad);
-
-      return () => {
-        window.removeEventListener("load", handleLoad);
-      };
-    }
-  }, [pathname]);
+  const isPageLoaded = useIsDocumentLoaded();
 
   // Don't show FAB on specifically excluded pages within (body)
   if (EXCLUDED_PATHS.some((path) => pathname?.startsWith(path))) {

@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast-notification";
 import { subscribeNewsletter } from "@/lib/subscription";
 import { userAtom } from "@/store/atom-store";
 import { useAtomValue } from "jotai";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -95,10 +95,12 @@ export default function NewsletterSubscription() {
         addToast(state.errors?.email?.join() || "", "error");
       }
     }
-  }, [state.time]);
+  }, [state.time, state.message, state.success, state.errors, addToast]);
 
   useEffect(() => {
-    setEmail(user?.email || "");
+    startTransition(() => {
+      setEmail(user?.email || "");
+    });
   }, [user]);
 
   const isNotSubscribed = !(

@@ -127,8 +127,8 @@ test.describe("Profile Section Editing", () => {
     await waitForDrawerOpen(page, "แก้ไขประสบการณ์ทำงาน");
   });
 
-  test.skip("should add a work experience entry", async ({ page }) => {
-    // SKIP REASON: Test is flaky - drawer sometimes doesn't close after save
+  test.fixme("should add a work experience entry", async ({ page }) => {
+    // FIXME: Test is flaky - drawer sometimes doesn't close after save
     // - Work entry form save works (inner บันทึก button)
     // - Main drawer save button becomes enabled
     // - But drawer doesn't close consistently (may be validation or timing issue)

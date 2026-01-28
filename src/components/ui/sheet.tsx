@@ -11,6 +11,7 @@ interface SheetProps {
 interface SheetContentProps {
   className?: string;
   children: React.ReactNode;
+  side?: 'right' | 'bottom';
 }
 
 interface SheetHeaderProps {
@@ -41,10 +42,14 @@ export function Sheet({ open, onOpenChange, children }: SheetProps) {
   );
 }
 
-export function SheetContent({ className = "", children }: SheetContentProps) {
+export function SheetContent({ className = "", children, side = 'right' }: SheetContentProps) {
+  const sideStyles = side === 'bottom'
+    ? 'bottom-0 left-0 right-0 border-t'
+    : 'right-0 top-0 h-full border-l';
+
   return (
     <div
-      className={`fixed right-0 top-0 h-full bg-background border-l shadow-lg ${className}`}
+      className={`fixed bg-background shadow-lg ${sideStyles} ${className}`}
     >
       {children}
     </div>
@@ -61,4 +66,13 @@ export function SheetTitle({ className = "", children }: SheetTitleProps) {
 
 export function SheetDescription({ children }: SheetDescriptionProps) {
   return <p className="text-sm text-muted-foreground mt-1">{children}</p>;
+}
+
+interface SheetFooterProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export function SheetFooter({ className = "", children }: SheetFooterProps) {
+  return <div className={`border-t p-4 flex gap-2 ${className}`}>{children}</div>;
 }

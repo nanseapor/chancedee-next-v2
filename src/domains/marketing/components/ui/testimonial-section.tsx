@@ -11,7 +11,7 @@ import { jobDataProps } from "@/types/job.types";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 
 type featuredSectionType = {
   id: string;
@@ -31,11 +31,15 @@ const TestimonialSection = ({ featuredJobs }: { featuredJobs: jobDataProps[] }) 
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
+    startTransition(() => {
+      setCount(api.scrollSnapList().length);
+      setCurrent(api.selectedScrollSnap());
+    });
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
+      startTransition(() => {
+        setCurrent(api.selectedScrollSnap());
+      });
     });
   }, [api]);
 
