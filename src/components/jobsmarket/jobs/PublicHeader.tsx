@@ -1,18 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { useAtomValue, useSetAtom } from 'jotai';
 import useSWR from 'swr';
 import { sessionStateAtom } from '@/store/jobsmarket/global-atoms';
 import { userAtom } from '@/store/atom-store';
+import { User, Settings, LogOut } from 'lucide-react';
 import { UserMenu } from '@/components/jobsmarket/global/UserMenu';
 import { getUserDataWithToken } from '@/domains/authentication/services/server/actions/user-data';
 import { logout } from '@/domains/authentication/services/server/actions/session';
 import { getFirebaseAuth } from '@/lib/firebase';
 import { swrKeys, userDataSWRConfig } from '@/lib/swr-config';
+import ChancedeeLogo from '@/components/media/chancedee-logo';
+import { MobileNavbar } from '@/components/layout/mobile-navbar';
 
 export function PublicHeader() {
   const sessionState = useAtomValue(sessionStateAtom);
@@ -62,50 +65,95 @@ export function PublicHeader() {
     }
   }, [setUser]);
 
+  const navLinks = (
+    <>
+      <Link
+        href="/jobs"
+        className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
+      >
+        หางาน
+      </Link>
+      <Link
+        href="/companies"
+        className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
+      >
+        บริษัท
+      </Link>
+    </>
+  );
+
+  const authSection = isAuthenticated && currentUser ? (
+    <AuthenticatedMenu
+      userId={currentUser.uid}
+      userName={getUserName(userData, currentUser)}
+      avatarUrl={userData?.avatarURL || currentUser?.photoURL || undefined}
+      onLogout={handleLogout}
+    />
+  ) : (
+    <GuestButtons />
+  );
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/brand/horizontal-logo.svg"
-            alt="ChanceDee"
-            width={140}
-            height={32}
-            priority
-            className="h-8 w-auto"
-          />
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link
-            href="/jobs"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            หางาน
+    <header className="flex items-center justify-between py-2 bg-white shadow-lg z-50 relative">
+      <div className="px-4 2xl:px-[12rem] flex items-center justify-around w-full">
+        <div className="flex w-full items-center justify-center">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 shrink-0">
+            <ChancedeeLogo />
           </Link>
-          <Link
-            href="/companies"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            บริษัท
-          </Link>
-        </nav>
 
-        {/* Auth Section */}
-        <div className="flex items-center space-x-2 sm:space-x-4">
-          {isAuthenticated && currentUser ? (
-            <AuthenticatedMenu
-              userId={currentUser.uid}
-              userName={getUserName(userData, currentUser)}
-              avatarUrl={userData?.avatarURL || currentUser?.photoURL || undefined}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <GuestButtons />
-          )}
+          {/* Desktop Navigation */}
+          <nav className="pl-2 hidden xl:flex items-center gap-1.5 mx-auto">
+            {navLinks}
+          </nav>
         </div>
+
+        {/* Desktop Auth Section */}
+        <div className="hidden xl:flex justify-around shrink-0 items-center gap-4 ml-6">
+          {authSection}
+        </div>
+
+        {/* Mobile Menu */}
+        <MobileNavbar>
+          <div className="rounded-b-lg bg-background px-4 text-foreground shadow-xl py-8 border-t">
+            <nav className="flex flex-col">
+              <Link
+                href="/jobs"
+                className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
+              >
+                หางาน
+              </Link>
+              <Link
+                href="/companies"
+                className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
+              >
+                บริษัท
+              </Link>
+            </nav>
+            <Separator orientation="horizontal" className="my-4" />
+            {isAuthenticated && currentUser ? (
+              <MobileAuthMenu
+                userId={currentUser.uid}
+                userName={getUserName(userData, currentUser)}
+                avatarUrl={userData?.avatarURL || currentUser?.photoURL || undefined}
+                onLogout={handleLogout}
+              />
+            ) : (
+              <div className="flex flex-col gap-2 px-4">
+                <Link href="/auth/login">
+                  <Button variant="ghost" className="w-full justify-start">
+                    เข้าสู่ระบบ
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button className="w-full">
+                    ลงทะเบียน
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </MobileNavbar>
       </div>
     </header>
   );
@@ -120,7 +168,7 @@ function GuestButtons() {
         </Button>
       </Link>
       <Link href="/auth/register">
-        <Button size="sm" className="hidden sm:inline-flex">
+        <Button size="sm">
           ลงทะเบียน
         </Button>
       </Link>
@@ -130,30 +178,21 @@ function GuestButtons() {
 
 /**
  * Get user display name for header - uses FIRST NAME ONLY to handle long Thai names
- * Thai names can be very long (e.g., "Suthida Bajrasudhabimalalakshana" = 226px)
- * First name only reduces this significantly (e.g., "Suthida" = 49px)
  */
 function getUserName(
   userData: { firstnameTH?: string; firstnameEN?: string; nicknameTH?: string } | null | undefined,
   firebaseUser: { displayName?: string | null } | null
 ): string {
-  // Priority 1: Thai first name only (most common case)
   if (userData?.firstnameTH) {
     return userData.firstnameTH;
   }
-
-  // Priority 2: English first name
   if (userData?.firstnameEN) {
     return userData.firstnameEN;
   }
-
-  // Priority 3: Firebase display name - extract first name only
   if (firebaseUser?.displayName) {
     const firstName = firebaseUser.displayName.split(' ')[0];
     return firstName || firebaseUser.displayName;
   }
-
-  // Default fallback
   return 'บัญชีของฉัน';
 }
 
@@ -162,6 +201,52 @@ interface AuthenticatedMenuProps {
   userName: string;
   avatarUrl?: string;
   onLogout: () => void;
+}
+
+function MobileAuthMenu({ userId, userName, avatarUrl, onLogout }: AuthenticatedMenuProps) {
+  const getInitials = (name: string) => {
+    const parts = name.split(' ');
+    if (parts.length >= 2 && parts[0]?.[0] && parts[parts.length - 1]?.[0]) {
+      return `${parts[0][0]}${parts[parts.length - 1]![0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  return (
+    <div className="flex flex-col px-4">
+      <div className="flex items-center gap-3 py-2 pl-4">
+        {avatarUrl ? (
+          <img src={avatarUrl} alt={userName} className="w-8 h-8 rounded-full object-cover" />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center">
+            <span className="text-xs font-semibold text-white">{getInitials(userName)}</span>
+          </div>
+        )}
+        <span className="text-sm font-medium text-gray-900">{userName}</span>
+      </div>
+      <Link
+        href={`/candidates/${userId}`}
+        className="flex cursor-pointer pl-4 py-2 items-center gap-3 text-lg text-secondary-900 transition-colors hover:text-foreground"
+      >
+        <User className="w-4 h-4" />
+        โปรไฟล์
+      </Link>
+      <Link
+        href="/auth/settings"
+        className="flex cursor-pointer pl-4 py-2 items-center gap-3 text-lg text-secondary-900 transition-colors hover:text-foreground"
+      >
+        <Settings className="w-4 h-4" />
+        การตั้งค่า
+      </Link>
+      <button
+        onClick={onLogout}
+        className="flex cursor-pointer pl-4 py-2 items-center gap-3 text-lg text-red-600 transition-colors hover:text-red-800"
+      >
+        <LogOut className="w-4 h-4" />
+        ออกจากระบบ
+      </button>
+    </div>
+  );
 }
 
 function AuthenticatedMenu({ userId, userName, avatarUrl, onLogout }: AuthenticatedMenuProps) {
