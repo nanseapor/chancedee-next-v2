@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { Step1BasicForm } from "@/app/companies/[id]/dashboard/jobs/new/_components/Step1BasicForm";
+import { Step1BasicForm } from "@/app/jobsmarket/(company)/companies/[id]/dashboard/jobs/new/_components/Step1BasicForm";
 
 describe("Step1BasicForm", () => {
   const defaultProps = {
