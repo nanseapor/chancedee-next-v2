@@ -67,7 +67,7 @@ export function AdminHeader({ pageTitle, breadcrumb, onSearch }: AdminHeaderProp
   return (
     <header
       data-testid="admin-header"
-      className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6"
+      className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-6"
     >
       {/* Left: Title and Breadcrumb */}
       <div className="flex items-center gap-2">

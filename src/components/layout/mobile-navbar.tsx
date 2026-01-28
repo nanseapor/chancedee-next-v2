@@ -4,7 +4,19 @@ import { Menu, X } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
-export function MobileNavbar({ children }: { children: ReactNode }) {
+interface MobileNavbarProps {
+  children: ReactNode;
+  /** CSS class to control breakpoint visibility of the button (default: "xl:hidden") */
+  breakpointClass?: string;
+  /** CSS top offset for the overlay panel (default: "top-[68px]") */
+  topOffset?: string;
+}
+
+export function MobileNavbar({
+  children,
+  breakpointClass = "xl:hidden",
+  topOffset = "top-[68px]",
+}: MobileNavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -29,14 +41,14 @@ export function MobileNavbar({ children }: { children: ReactNode }) {
         variant={"ghost"}
         id="hamburger_menu"
         aria-label="Hamburger Menu"
-        className="xl:hidden hover:bg-transparent"
+        className={`${breakpointClass} hover:bg-transparent`}
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X /> : <Menu />}
       </Button>
       {isOpen && (
         <div
-          className="fixed inset-0 top-[68px] z-40 size-full overflow-auto bg-black/40 animate-in slide-in-from-top-24 xl:hidden"
+          className={`fixed inset-0 ${topOffset} z-40 size-full overflow-auto bg-black/40 animate-in slide-in-from-top-24 ${breakpointClass}`}
           onClick={() => setIsOpen(false)}
         >
           {children}

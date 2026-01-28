@@ -2,13 +2,13 @@
  * COMP-R00: Company Shell Component
  *
  * Full layout shell for approved companies
- * Includes header, sidebar, mobile bottom nav, and main content area
+ * Includes header, sidebar (desktop), mobile bottom nav, and main content area
  * Per COMP-R00 implementation plan Phase 3
  */
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/store/atom-store";
@@ -38,19 +38,9 @@ export default function CompanyShell({
 }: CompanyShellProps) {
   const router = useRouter();
   const user = useAtomValue(userAtom);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const handleMenuToggle = useCallback(() => {
-    setSidebarOpen((prev) => !prev);
-  }, []);
-
-  const handleCloseSidebar = useCallback(() => {
-    setSidebarOpen(false);
-  }, []);
 
   const handleLogout = useCallback(async () => {
     // TODO: Implement logout logic
-    // await signOut();
     router.push("/auth/login");
   }, [router]);
 
@@ -61,22 +51,23 @@ export default function CompanyShell({
         company={company}
         userName={user?.displayName || user?.email || undefined}
         userAvatar={user?.photoURL || undefined}
-        onMenuToggle={handleMenuToggle}
         onLogout={handleLogout}
+        hasPermission={hasPermission}
+        badgeCounts={badgeCounts}
       />
 
       <div className="flex">
-        {/* Sidebar - Desktop */}
-        <CompanySidebar
-          companyId={company.uid}
-          hasPermission={hasPermission}
-          badgeCounts={badgeCounts}
-          isOpen={sidebarOpen}
-          onClose={handleCloseSidebar}
-        />
+        {/* Sidebar - Desktop only */}
+        <div className="hidden lg:block">
+          <CompanySidebar
+            companyId={company.uid}
+            hasPermission={hasPermission}
+            badgeCounts={badgeCounts}
+          />
+        </div>
 
         {/* Main content */}
-        <main className="flex-1 min-h-[calc(100vh-3.5rem)] pb-20 md:pb-0">
+        <main className="flex-1 min-w-0 min-h-[calc(100vh-3.5rem)] pb-20 lg:pb-0">
           {children}
         </main>
       </div>
