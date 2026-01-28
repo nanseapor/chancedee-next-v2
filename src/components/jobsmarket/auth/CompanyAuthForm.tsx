@@ -180,7 +180,7 @@ export function CompanyAuthForm({
               <a
                 href="/legal/terms-of-service"
                 target="_blank"
-                className="text-primary hover:underline"
+                className="text-secondary-500 hover:text-secondary-600 hover:underline"
               >
                 ข้อกำหนดและเงื่อนไข
               </a>{" "}
@@ -188,7 +188,7 @@ export function CompanyAuthForm({
               <a
                 href="/privacy"
                 target="_blank"
-                className="text-primary hover:underline"
+                className="text-secondary-500 hover:text-secondary-600 hover:underline"
               >
                 นโยบายความเป็นส่วนตัว
               </a>
@@ -212,7 +212,7 @@ export function CompanyAuthForm({
               <a
                 href="/legal/employer-terms"
                 target="_blank"
-                className="text-primary hover:underline"
+                className="text-secondary-500 hover:text-secondary-600 hover:underline"
               >
                 ข้อกำหนดสำหรับผู้ประกอบการ
               </a>

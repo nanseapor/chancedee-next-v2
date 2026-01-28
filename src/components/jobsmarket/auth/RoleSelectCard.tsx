@@ -39,12 +39,12 @@ export function RoleSelectCard({
       <div className="grid gap-4 md:grid-cols-2">
         {/* Candidate Card */}
         <Card
-          className="cursor-pointer border-2 hover:border-primary hover:shadow-lg transition-all"
+          className="cursor-pointer border-2 hover:border-secondary-500 hover:shadow-lg transition-all"
           onClick={() => onSelectRole("candidate")}
         >
           <CardContent className="flex flex-col items-center gap-4 p-6">
-            <div className="rounded-full bg-blue-100 p-4">
-              <UserCircle className="h-12 w-12 text-blue-600" />
+            <div className="rounded-full bg-secondary-100 p-4">
+              <UserCircle className="h-12 w-12 text-secondary-700" />
             </div>
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold">ผู้หางาน</h2>
@@ -58,12 +58,12 @@ export function RoleSelectCard({
 
         {/* Company Card */}
         <Card
-          className="cursor-pointer border-2 hover:border-primary hover:shadow-lg transition-all"
+          className="cursor-pointer border-2 hover:border-secondary-500 hover:shadow-lg transition-all"
           onClick={() => onSelectRole("company")}
         >
           <CardContent className="flex flex-col items-center gap-4 p-6">
-            <div className="rounded-full bg-purple-100 p-4">
-              <Briefcase className="h-12 w-12 text-purple-600" />
+            <div className="rounded-full bg-secondary-100 p-4">
+              <Briefcase className="h-12 w-12 text-secondary-700" />
             </div>
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold">บริษัท</h2>
@@ -71,7 +71,7 @@ export function RoleSelectCard({
                 ประกาศตำแหน่งงาน และหาผู้สมัครที่เหมาะสม
               </p>
             </div>
-            <Button className="w-full">เลือกบริษัท</Button>
+            <Button variant="secondary" className="w-full">เลือกบริษัท</Button>
           </CardContent>
         </Card>
       </div>
@@ -79,7 +79,7 @@ export function RoleSelectCard({
       {/* Login Link */}
       <p className="text-center text-sm text-gray-600">
         มีบัญชีอยู่แล้ว?{" "}
-        <a href="/auth/login" className="text-primary hover:underline font-medium">
+        <a href="/auth/login" className="text-secondary-500 hover:text-secondary-600 hover:underline font-medium">
           เข้าสู่ระบบ
         </a>
       </p>

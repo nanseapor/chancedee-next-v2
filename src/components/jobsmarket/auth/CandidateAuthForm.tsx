@@ -202,7 +202,7 @@ export function CandidateAuthForm({
             <a
               href="/legal/terms-of-service"
               target="_blank"
-              className="text-primary hover:underline"
+              className="text-secondary-500 hover:text-secondary-600 hover:underline"
             >
               ข้อกำหนดและเงื่อนไข
             </a>{" "}
@@ -210,7 +210,7 @@ export function CandidateAuthForm({
             <a
               href="/privacy"
               target="_blank"
-              className="text-primary hover:underline"
+              className="text-secondary-500 hover:text-secondary-600 hover:underline"
             >
               นโยบายความเป็นส่วนตัว
             </a>

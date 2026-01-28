@@ -160,7 +160,7 @@ export function LoginCard() {
           ยังไม่มีบัญชี?{" "}
           <Link
             href="/auth/register"
-            className="text-primary hover:underline font-medium"
+            className="text-secondary-500 hover:text-secondary-600 hover:underline font-medium"
           >
             สมัครสมาชิก
           </Link>

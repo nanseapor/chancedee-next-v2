@@ -27,17 +27,7 @@ export default function SessionExpiredPage() {
     : "/jobsmarket/auth/login";
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      {/* Logo */}
-      <div className="mb-8">
-        <Link
-          href="/"
-          className="text-2xl font-bold text-primary hover:opacity-80 transition-opacity"
-        >
-          ChanceDee
-        </Link>
-      </div>
-
+    <div className="w-full max-w-md">
       {/* Main Card */}
       <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8 max-w-md w-full">
         {/* Icon */}
@@ -83,7 +73,7 @@ export default function SessionExpiredPage() {
       </div>
 
       {/* Footer */}
-      <div className="mt-8 text-sm text-gray-500">
+      <div className="mt-8 text-sm text-gray-500 text-center">
         <Link
           href="/legal/terms"
           className="hover:text-gray-700 transition-colors"

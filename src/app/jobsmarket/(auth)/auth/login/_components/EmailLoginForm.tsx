@@ -108,7 +108,7 @@ export function EmailLoginForm({
                 <FormLabel>รหัสผ่าน</FormLabel>
                 <Link
                   href="/auth/reset"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-secondary-500 hover:text-secondary-600 hover:underline"
                   tabIndex={-1}
                 >
                   ลืมรหัสผ่าน?
@@ -161,7 +161,7 @@ export function EmailLoginForm({
             ยอมรับ{" "}
             <Link
               href="/legal/terms"
-              className="text-primary hover:underline"
+              className="text-secondary-500 hover:text-secondary-600 hover:underline"
               target="_blank"
             >
               ข้อกำหนดการใช้งาน
@@ -169,7 +169,7 @@ export function EmailLoginForm({
             และ{" "}
             <Link
               href="/privacy"
-              className="text-primary hover:underline"
+              className="text-secondary-500 hover:text-secondary-600 hover:underline"
               target="_blank"
             >
               นโยบายความเป็นส่วนตัว

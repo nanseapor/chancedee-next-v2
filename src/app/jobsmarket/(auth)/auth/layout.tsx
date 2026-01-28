@@ -7,6 +7,7 @@
  */
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: {
@@ -26,8 +27,14 @@ export default function AuthLayout({
       <header className="py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto">
           <a href="/" className="inline-block">
-            <span className="text-2xl font-bold text-primary">ChanceDee</span>
-            <span className="text-sm text-muted-foreground ml-2">Jobs</span>
+            <Image
+              src="/images/brand/horizontal-logo.svg"
+              alt="ChanceDee Jobs"
+              width={141}
+              height={25}
+              className="h-8 w-auto"
+              priority
+            />
           </a>
         </div>
       </header>
