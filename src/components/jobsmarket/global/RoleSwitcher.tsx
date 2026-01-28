@@ -117,12 +117,12 @@ export function RoleSwitcher({
                       onClick={() => handleRoleClick(role)}
                       className={`
                         w-full flex items-center gap-3 px-4 py-2 text-sm
-                        ${isCurrent ? "bg-teal-50 text-teal-700" : "text-gray-700 hover:bg-gray-50"}
+                        ${isCurrent ? "bg-secondary-50 text-secondary-700" : "text-gray-700 hover:bg-gray-50"}
                       `}
                     >
                       {/* Check Mark (current role) */}
                       <div className="w-4 h-4 flex items-center justify-center">
-                        {isCurrent && <Check className="w-4 h-4 text-teal-600" />}
+                        {isCurrent && <Check className="w-4 h-4 text-secondary-600" />}
                       </div>
 
                       {/* Role Icon */}

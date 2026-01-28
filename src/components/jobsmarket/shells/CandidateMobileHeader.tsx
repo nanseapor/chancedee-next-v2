@@ -14,7 +14,6 @@ import { Role } from "@/components/jobsmarket/global/RoleSwitcher";
  * - Notification bell (right)
  * - User avatar/menu (right)
  *
- * Theme: Teal (#3593a5) accent
  * Note: Role switcher appears inside user menu on mobile
  */
 
@@ -64,8 +63,6 @@ export function CandidateMobileHeader({
         />
       </div>
 
-      {/* Teal Accent Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600" />
     </header>
   );
 }

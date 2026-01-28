@@ -218,7 +218,7 @@ function MobileAuthMenu({ userId, userName, avatarUrl, onLogout }: Authenticated
         {avatarUrl ? (
           <img src={avatarUrl} alt={userName} className="w-8 h-8 rounded-full object-cover" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-secondary-600 flex items-center justify-center">
             <span className="text-xs font-semibold text-white">{getInitials(userName)}</span>
           </div>
         )}

@@ -28,7 +28,7 @@ import { CandidateMobileHeader } from "./CandidateMobileHeader";
  * - Sets activeRoleAtom to 'candidate' on mount
  * - Restricts navigation if user not onboarded (is_onboarded=false)
  * - Responsive: sidebar (desktop) → bottom tabs (mobile)
- * - Theme: Teal (#3593a5) accent
+ * - Theme: secondary (teal) accent via design tokens
  */
 
 export interface CandidateShellProps {
@@ -230,7 +230,7 @@ function MobileTabItem({
       className={`
         flex flex-col items-center justify-center flex-1 h-full relative
         ${disabled ? "opacity-40 cursor-not-allowed" : ""}
-        ${isActive ? "text-teal-600" : "text-gray-400"}
+        ${isActive ? "text-secondary-600" : "text-gray-400"}
       `}
       aria-label={label}
     >

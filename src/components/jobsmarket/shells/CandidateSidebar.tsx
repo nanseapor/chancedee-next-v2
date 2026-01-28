@@ -130,7 +130,7 @@ export function CandidateSidebar({
                       flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors
                       ${
                         active
-                          ? "bg-teal-50 text-teal-700 font-medium"
+                          ? "bg-secondary-50 text-secondary-700 font-medium"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }
                     `}

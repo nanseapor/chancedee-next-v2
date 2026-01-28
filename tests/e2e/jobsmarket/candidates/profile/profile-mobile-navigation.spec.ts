@@ -169,7 +169,7 @@ test.describe("Mobile Navigation", () => {
 
     // Check for active styling (teal color indicates active)
     const hasActiveColor = await profileTab.evaluate((el) => {
-      return el.classList.contains("text-teal-600");
+      return el.classList.contains("text-secondary-600");
     });
 
     expect(hasActiveColor).toBeTruthy();
