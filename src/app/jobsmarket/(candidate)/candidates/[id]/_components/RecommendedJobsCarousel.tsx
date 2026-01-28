@@ -73,7 +73,7 @@ export function RecommendedJobsCarousel({
   }, [profile]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">
@@ -92,7 +92,7 @@ export function RecommendedJobsCarousel({
       {isLoading ? (
         <div className="flex gap-4 overflow-x-hidden">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-72 animate-pulse">
+            <div key={i} className="flex-shrink-0 w-[calc(100vw-4rem)] sm:w-72 animate-pulse">
               <div className="h-48 bg-gray-200 rounded-lg"></div>
             </div>
           ))}
@@ -120,7 +120,7 @@ export function RecommendedJobsCarousel({
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto -mx-6 px-6">
+        <div className="overflow-x-auto -mx-4 px-4 sm:-mx-6 sm:px-6">
           <div className="flex gap-4 pb-4">
             {recommendedJobs.map((job) => (
               <JobCard key={job.uid} job={job} />
@@ -145,7 +145,7 @@ function JobCard({ job }: { job: FirebaseJobData }) {
   return (
     <Link
       href={`/jobs/${job.uid}`}
-      className="flex-shrink-0 w-72 bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
+      className="flex-shrink-0 w-[calc(100vw-4rem)] sm:w-72 bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
     >
       {/* Company Logo or Icon */}
       <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center mb-3">

@@ -30,7 +30,7 @@ export function CoinBalanceCard({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
@@ -67,7 +67,7 @@ export function CoinBalanceCard({
             </div>
           ) : (
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-gray-900">
+              <span className="text-2xl sm:text-4xl font-bold text-gray-900">
                 {balance.toLocaleString()}
               </span>
               <span className="text-lg text-gray-500">เหรียญ</span>

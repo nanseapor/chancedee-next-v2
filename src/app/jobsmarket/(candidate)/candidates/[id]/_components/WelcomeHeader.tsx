@@ -33,8 +33,8 @@ export function WelcomeHeader({ firstName, lastName }: WelcomeHeaderProps) {
   const thaiDate = formatThaiDate(now, "medium");
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h1 className="text-2xl font-bold text-gray-900">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+      <h1 className="text-lg sm:text-2xl font-bold text-gray-900 break-words">
         {greeting}, {firstName} {lastName}
       </h1>
       <p className="text-sm text-gray-500 mt-1">{thaiDate}</p>

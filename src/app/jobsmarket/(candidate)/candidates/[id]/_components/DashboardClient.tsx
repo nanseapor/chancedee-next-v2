@@ -142,7 +142,7 @@ export function DashboardClient({ candidateId }: DashboardClientProps) {
   if (authResult.state === "ready" && profile) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
           {/* Welcome Header */}
           <WelcomeHeader
             firstName={profile.firstnameTH || ""}
@@ -150,7 +150,7 @@ export function DashboardClient({ candidateId }: DashboardClientProps) {
           />
 
           {/* Top Row: Profile Completion + Coin Balance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <ProfileCompletionCard profile={profile as unknown as CandidateProfileData} />
             <CoinBalanceCard
               balance={coinBalance?.balance ?? 0}

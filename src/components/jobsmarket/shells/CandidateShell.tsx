@@ -131,7 +131,7 @@ export function CandidateShell({
           />
         </div>
 
-        <div className="flex-1 flex flex-col lg:ml-64">
+        <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
           {/* Top Bar (hidden on mobile) */}
           <CandidateTopBar
             breadcrumbItems={getBreadcrumbItems()}

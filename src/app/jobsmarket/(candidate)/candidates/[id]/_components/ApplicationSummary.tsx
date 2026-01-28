@@ -105,7 +105,7 @@ export function ApplicationSummary({
         <p className="text-sm text-gray-500">Application Status</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {STATUS_CARDS.map((card) => (
           <StatusCard
             key={card.key}
@@ -129,7 +129,7 @@ function StatusCard({ card, count, isLoading }: StatusCardProps) {
   return (
     <Link
       href={`/candidates/applications?status=${card.key}`}
-      className="block bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+      className="block bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex items-center gap-3 mb-3">
         <div
@@ -143,7 +143,7 @@ function StatusCard({ card, count, isLoading }: StatusCardProps) {
         {isLoading ? (
           <div className="h-8 w-16 bg-gray-200 rounded animate-pulse mb-2"></div>
         ) : (
-          <p className={`text-3xl font-bold ${card.color} mb-1`}>{count}</p>
+          <p className={`text-2xl sm:text-3xl font-bold ${card.color} mb-1`}>{count}</p>
         )}
         <p className="text-sm font-medium text-gray-900">{card.titleTh}</p>
         <p className="text-xs text-gray-500">{card.titleEn}</p>

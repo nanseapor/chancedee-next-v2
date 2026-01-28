@@ -40,7 +40,7 @@ export function ProfileCompletionCard({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
@@ -50,10 +50,10 @@ export function ProfileCompletionCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-4 sm:p-6">
           {/* Circular Progress Ring */}
           <div className="relative flex-shrink-0">
-            <svg width="100" height="100" className="transform -rotate-90">
+            <svg width="100" height="100" className="w-[72px] h-[72px] sm:w-[100px] sm:h-[100px] transform -rotate-90">
               {/* Background circle */}
               <circle
                 cx="50"
@@ -78,7 +78,7 @@ export function ProfileCompletionCard({
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-lg sm:text-2xl font-bold text-gray-900">
                 {percentage}%
               </span>
             </div>
