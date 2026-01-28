@@ -1,84 +1,42 @@
 /**
  * E2E Tests for CHAT-R01: Chat List Page
  * Per CHAT-R01 RIS
- *
- * RED Phase: These tests should FAIL because the page doesn't exist yet.
  */
 
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  createTestCompany,
+  type TestCandidate,
+  type TestCompany,
+} from "../../helpers/factories";
+import { signInAsCandidate, signInAsCompany } from "../../helpers/auth-helper";
 
-// Test configuration
-const BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || "http://localhost:3000";
-
-// Test credentials from .env.playwright
-const CANDIDATE_EMAIL = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-const CANDIDATE_PASSWORD = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-const CANDIDATE_UID = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
-
-const COMPANY_EMAIL = process.env.PLAYWRIGHT_TEST_COMPANY_EMAIL;
-const COMPANY_PASSWORD = process.env.PLAYWRIGHT_TEST_COMPANY_PASSWORD;
-const COMPANY_UID = process.env.PLAYWRIGHT_TEST_COMPANY_UID;
-
-/**
- * Helper to login as candidate
- */
-async function loginAsCandidate(page: import("@playwright/test").Page) {
-  await page.goto(`${BASE_URL}/jobsmarket/auth/login`);
-
-  // Fill login form
-  await page.getByLabel(/อีเมล/).fill(CANDIDATE_EMAIL!);
-  await page.getByPlaceholder(/กรอกรหัสผ่าน/).fill(CANDIDATE_PASSWORD!);
-
-  // Accept terms if checkbox exists
-  const termsCheckbox = page.getByRole("checkbox");
-  if (await termsCheckbox.isVisible()) {
-    await termsCheckbox.check();
-  }
-
-  // Click login button (the submit button, not Google sign-in)
-  await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-  // Wait for navigation
-  await page.waitForURL(/\/candidates/);
-}
-
-/**
- * Helper to login as company
- */
-async function loginAsCompany(page: import("@playwright/test").Page) {
-  await page.goto(`${BASE_URL}/jobsmarket/auth/login`);
-
-  // Fill login form
-  await page.getByLabel(/อีเมล/).fill(COMPANY_EMAIL!);
-  await page.getByPlaceholder(/กรอกรหัสผ่าน/).fill(COMPANY_PASSWORD!);
-
-  // Accept terms if checkbox exists
-  const termsCheckbox = page.getByRole("checkbox");
-  if (await termsCheckbox.isVisible()) {
-    await termsCheckbox.check();
-  }
-
-  // Click login button (the submit button, not Google sign-in)
-  await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-  // Wait for navigation - company might go to companies or role selection
-  await page.waitForURL(/\/(companies|candidates)/);
-}
+// Shared test data
+let candidate: TestCandidate;
+let company: TestCompany;
 
 test.describe("CHAT-R01: Chat List", () => {
-  test.describe("Candidate View", () => {
-    // Skip tests if credentials not available
-    test.skip(
-      !CANDIDATE_EMAIL || !CANDIDATE_PASSWORD,
-      "Candidate test credentials not configured"
-    );
+  test.beforeAll(async () => {
+    // Create test candidate and company
+    candidate = await createTestCandidate({
+      testName: "chat-list",
+      withCompleteProfile: true,
+    });
 
+    company = await createTestCompany({
+      testName: "chat-list",
+      withPublishedJobs: 1,
+    });
+  });
+
+  test.describe("Candidate View", () => {
     test.beforeEach(async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
     });
 
     test("should display chat list page", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Should see page heading
       await expect(
@@ -87,7 +45,7 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should show search bar", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       await expect(
         page.getByPlaceholder("ค้นหาการสนทนา...")
@@ -95,7 +53,7 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should show room cards with company names", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for rooms to load
       await page.waitForSelector('[data-testid="chat-room-card"]', {
@@ -120,7 +78,7 @@ test.describe("CHAT-R01: Chat List", () => {
     test("should show unread badge on rooms with unread messages", async ({
       page,
     }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for page to load
       await page.waitForLoadState("networkidle");
@@ -141,7 +99,7 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should filter rooms when searching", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for rooms to load
       await page.waitForLoadState("networkidle");
@@ -166,7 +124,7 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should navigate to chat room on click", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for rooms to load
       await page.waitForLoadState("networkidle");
@@ -188,7 +146,7 @@ test.describe("CHAT-R01: Chat List", () => {
       // This test assumes we have a candidate with no chat rooms
       // Using a new candidate without chats would be ideal
 
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for page to load
       await page.waitForLoadState("networkidle");
@@ -208,7 +166,7 @@ test.describe("CHAT-R01: Chat List", () => {
       // This test requires mobile navigation component implementation
 
       // Start from candidate dashboard
-      await page.goto(`${BASE_URL}/jobsmarket/candidates/${CANDIDATE_UID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Click chat tab in bottom navigation (mobile)
       await page.setViewportSize({ width: 375, height: 667 });
@@ -222,17 +180,12 @@ test.describe("CHAT-R01: Chat List", () => {
   });
 
   test.describe("Company View", () => {
-    test.skip(
-      !COMPANY_EMAIL || !COMPANY_PASSWORD,
-      "Company test credentials not configured"
-    );
-
     test.beforeEach(async ({ page }) => {
-      await loginAsCompany(page);
+      await signInAsCompany(page, company);
     });
 
     test("should show room cards with candidate names", async ({ page }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for rooms to load
       await page.waitForLoadState("networkidle");
@@ -250,7 +203,7 @@ test.describe("CHAT-R01: Chat List", () => {
     test("should show appointment indicator for pending interviews", async ({
       page,
     }) => {
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Wait for page to load
       await page.waitForLoadState("networkidle");
@@ -267,16 +220,11 @@ test.describe("CHAT-R01: Chat List", () => {
   });
 
   test.describe("Responsive Layout", () => {
-    test.skip(
-      !CANDIDATE_EMAIL || !CANDIDATE_PASSWORD,
-      "Test credentials not configured"
-    );
-
     test("should show two-panel layout on desktop", async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       await page.setViewportSize({ width: 1280, height: 800 });
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Should have both list panel and detail panel
       await expect(page.getByTestId("chat-list-panel")).toBeVisible();
@@ -287,10 +235,10 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should show single-column on mobile", async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Should show list panel
       await expect(page.getByTestId("chat-list-panel")).toBeVisible();
@@ -301,10 +249,10 @@ test.describe("CHAT-R01: Chat List", () => {
     });
 
     test("should show bottom navigation on mobile", async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Bottom tab bar should be visible
       await expect(page.getByTestId("bottom-tab-bar")).toBeVisible();
@@ -318,7 +266,7 @@ test.describe("CHAT-R01: Chat List", () => {
       // Clear any existing session
       await page.context().clearCookies();
 
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Should redirect to login
       await expect(page).toHaveURL(/\/auth\/login/);
@@ -327,7 +275,7 @@ test.describe("CHAT-R01: Chat List", () => {
     test("should redirect to login with redirect param", async ({ page }) => {
       await page.context().clearCookies();
 
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // URL should contain redirect parameter
       await expect(page).toHaveURL(/redirect=/);
@@ -335,15 +283,10 @@ test.describe("CHAT-R01: Chat List", () => {
   });
 
   test.describe("Real-time Updates", () => {
-    test.skip(
-      !CANDIDATE_EMAIL || !CANDIDATE_PASSWORD,
-      "Test credentials not configured"
-    );
-
     test("should refresh room list periodically", async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Record initial state
       const roomCards = page.getByTestId("chat-room-card");
@@ -364,10 +307,10 @@ test.describe("CHAT-R01: Chat List", () => {
       // The offline mode needs to be set after navigation, but SWR fetches on mount
       // This requires mocking the network layer at a different level
 
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       // Navigate first while online
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
       await page.waitForLoadState("networkidle");
 
       // Then simulate offline for subsequent requests
@@ -389,9 +332,9 @@ test.describe("CHAT-R01: Chat List", () => {
       // TODO: Error handling test is flaky due to offline mode issues with page navigation
       // Skipping until a more reliable approach is implemented
 
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
       await page.waitForLoadState("networkidle");
 
       await page.context().setOffline(true);
@@ -412,29 +355,24 @@ test.describe("CHAT-R01: Chat List", () => {
   });
 
   test.describe("Shell Integration", () => {
-    test.skip(
-      !CANDIDATE_EMAIL || !CANDIDATE_PASSWORD,
-      "Test credentials not configured"
-    );
-
     test("should display within CandidateShell for candidates", async ({
       page,
     }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       // On mobile, should show bottom tab bar
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Should have bottom tab bar on mobile
       await expect(page.getByTestId("bottom-tab-bar")).toBeVisible();
     });
 
     test("should show page title", async ({ page }) => {
-      await loginAsCandidate(page);
+      await signInAsCandidate(page, candidate);
 
       await page.setViewportSize({ width: 1280, height: 800 });
-      await page.goto(`${BASE_URL}/jobsmarket/chat`);
+      await page.goto(`/jobsmarket/chat`);
 
       // Page should show "ข้อความ" heading
       await expect(page.getByRole("heading", { name: "ข้อความ" })).toBeVisible();

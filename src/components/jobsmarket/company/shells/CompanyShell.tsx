@@ -51,7 +51,7 @@ export default function CompanyShell({
   const handleLogout = useCallback(async () => {
     // TODO: Implement logout logic
     // await signOut();
-    router.push("/jobsmarket/auth/login");
+    router.push("/auth/login");
   }, [router]);
 
   return (

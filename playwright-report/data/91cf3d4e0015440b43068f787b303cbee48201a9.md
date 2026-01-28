@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "ChanceDee" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "ChanceDee" [ref=e6]
+        - generic [ref=e7]:
+          - link "การแจ้งเตือน" [ref=e8] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e9]
+          - button "เมนูผู้ใช้" [ref=e13]:
+            - generic [ref=e15]: ทผ
+      - main [ref=e19]:
+        - generic [ref=e21]:
+          - generic [ref=e23]:
+            - generic [ref=e24]:
+              - img [ref=e26]
+              - button [ref=e29]:
+                - img [ref=e30]
+            - generic [ref=e33]:
+              - heading "ทดสอบ ผู้สมัคร" [level=1] [ref=e34]
+              - generic [ref=e36]:
+                - generic [ref=e37]: ความสมบูรณ์ของโปรไฟล์
+                - generic [ref=e38]: 70%
+              - generic [ref=e41]:
+                - switch "โปรไฟล์สามารถค้นหาได้" [checked] [ref=e42] [cursor=pointer]
+                - generic [ref=e43] [cursor=pointer]: โปรไฟล์สามารถค้นหาได้
+              - button "ดูตัวอย่างโปรไฟล์" [ref=e45]:
+                - img [ref=e46]
+                - text: ดูตัวอย่างโปรไฟล์
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - heading "ข้อมูลส่วนตัว" [level=2] [ref=e52]
+                - button "แก้ไข" [ref=e53]:
+                  - img [ref=e54]
+                  - text: แก้ไข
+              - generic [ref=e57]:
+                - generic [ref=e58]:
+                  - term [ref=e59]: ชื่อ-นามสกุล (ไทย)
+                  - definition [ref=e60]: ทดสอบ ผู้สมัคร
+                - generic [ref=e61]:
+                  - term [ref=e62]: อีเมล
+                  - definition [ref=e63]: candidate-1768563124629-2rpcahmeac@test.chancedee.com
+                - generic [ref=e64]:
+                  - term [ref=e65]: เบอร์โทรศัพท์
+                  - definition [ref=e66]: "0891234567"
+                - generic [ref=e67]:
+                  - term [ref=e68]: วันเกิด
+                  - definition [ref=e69]: 29/02/27008 (อายุ -24983 ปี)
+                - generic [ref=e70]:
+                  - term [ref=e71]: เพศ
+                  - definition [ref=e72]: ชาย
+                - generic [ref=e73]:
+                  - term [ref=e74]: ที่อยู่
+                  - definition [ref=e75]: 123 Test Street คลองตันเหนือ วัฒนา กรุงเทพมหานคร 10110
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - heading "ประสบการณ์ทำงาน" [level=2] [ref=e78]
+                - button "แก้ไข" [ref=e79]:
+                  - img [ref=e80]
+                  - text: แก้ไข
+              - generic [ref=e86]:
+                - heading "Software Developer" [level=3] [ref=e87]
+                - paragraph [ref=e88]: Test Company 1
+                - paragraph [ref=e89]: 01/2018 - ปัจจุบัน (8 ปี)
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - heading "ประวัติการศึกษา" [level=2] [ref=e92]
+                - button "แก้ไข" [ref=e93]:
+                  - img [ref=e94]
+                  - text: แก้ไข
+              - generic [ref=e100]:
+                - generic [ref=e102]: ปริญญาตรี
+                - heading "Test University 1" [level=3] [ref=e103]
+                - paragraph [ref=e104]: Computer Science
+                - generic [ref=e105]:
+                  - paragraph [ref=e106]: "ปีที่จบ: 2017"
+                  - paragraph [ref=e107]: "เกรดเฉลี่ย: 3.50"
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - heading "ทักษะและภาษา" [level=2] [ref=e110]
+                - button "แก้ไข" [ref=e111]:
+                  - img [ref=e112]
+                  - text: แก้ไข
+              - generic [ref=e115]:
+                - img [ref=e116]
+                - paragraph [ref=e119]: ยังไม่มีทักษะ
+                - paragraph [ref=e120]: คลิกแก้ไขเพื่อเพิ่มทักษะและภาษา
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - heading "ความต้องการงาน" [level=2] [ref=e123]
+                - button "แก้ไข" [ref=e124]:
+                  - img [ref=e125]
+                  - text: แก้ไข
+              - generic [ref=e128]:
+                - img [ref=e129]
+                - paragraph [ref=e133]: ยังไม่ได้ตั้งค่าความต้องการงาน
+                - paragraph [ref=e134]: คลิกแก้ไขเพื่อตั้งค่าความต้องการงาน
+            - generic [ref=e135]:
+              - generic [ref=e136]:
+                - heading "เอกสารแนบ" [level=2] [ref=e137]
+                - button "อัปโหลด" [ref=e138]:
+                  - img [ref=e139]
+                  - text: อัปโหลด
+              - generic [ref=e142]:
+                - img [ref=e143]
+                - paragraph [ref=e146]: ยังไม่มีเอกสารแนบ
+                - paragraph [ref=e147]: คลิกอัปโหลดเพื่อเพิ่มเอกสาร PDF, DOC, DOCX (สูงสุด 10MB)
+      - navigation [ref=e148]:
+        - generic [ref=e149]:
+          - link "หน้าหลัก" [ref=e150]:
+            - /url: "#"
+            - img [ref=e152]
+            - generic [ref=e154]: หน้าหลัก
+          - link "งาน" [ref=e155]:
+            - /url: "#"
+            - img [ref=e157]
+            - generic [ref=e159]: งาน
+          - link "ใบสมัคร" [ref=e160]:
+            - /url: "#"
+            - img [ref=e162]
+            - generic [ref=e164]: ใบสมัคร
+          - link "ข้อความ" [active] [ref=e165]:
+            - /url: "#"
+            - img [ref=e167]
+            - generic [ref=e169]: ข้อความ
+          - link "โปรไฟล์" [ref=e170] [cursor=pointer]:
+            - /url: /candidates/M4skuVoUzegY46ZdUzzR7ABoJ3q2/profile
+            - img [ref=e172]
+            - generic [ref=e174]: โปรไฟล์
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e180] [cursor=pointer]:
+    - img [ref=e181]
+  - alert [ref=e184]
+```

@@ -1,36 +1,11 @@
 "use server";
 
 import { webUserDataPropsUpdate } from "@/lib/database/actions/user-data-props";
+import type { NotificationPreferences } from "./notification-preferences.types";
 
-export interface NotificationPreferences {
-  email: {
-    newJobs: boolean;
-    applicationUpdates: boolean;
-    interviewReminders: boolean;
-    weeklyDigest: boolean;
-    marketing: boolean;
-  };
-  push: {
-    newMessages: boolean;
-    applicationUpdates: boolean;
-    interviewReminders: boolean;
-  };
-}
-
-export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
-  email: {
-    newJobs: true,
-    applicationUpdates: true,
-    interviewReminders: true,
-    weeklyDigest: false,
-    marketing: false,
-  },
-  push: {
-    newMessages: true,
-    applicationUpdates: true,
-    interviewReminders: true,
-  },
-};
+// Re-export types for consumers (only type exports allowed in "use server" files)
+export type { NotificationPreferences } from "./notification-preferences.types";
+// Note: DEFAULT_NOTIFICATION_PREFERENCES must be imported directly from ./notification-preferences.types
 
 export async function updateUserNotificationPreferences(
   uid: string,

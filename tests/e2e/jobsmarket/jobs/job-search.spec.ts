@@ -305,7 +305,7 @@ test.describe('JOB-R01: Job Search Page', () => {
       // Loading state may or may not be visible depending on network speed
       // This is informational, not a hard requirement
       if (hasLoadingState) {
-        console.log('✓ Loading state detected');
+        // console.log('✓ Loading state detected');
       }
     });
 

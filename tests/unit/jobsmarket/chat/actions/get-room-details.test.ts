@@ -229,13 +229,12 @@ describe("getRoomDetails", () => {
     );
   });
 
-  it("should include job context (null for now - could be enhanced)", async () => {
+  it("should include job context from room", async () => {
     const result = await getRoomDetails({
       roomId: "room-123",
     });
 
-    // Note: Current implementation returns null for jobId
-    // Could be enhanced to return jobId from room or interview
-    expect(result.jobId).toBeNull();
+    // Implementation returns jobId from room data
+    expect(result.jobId).toBe("job-789");
   });
 });

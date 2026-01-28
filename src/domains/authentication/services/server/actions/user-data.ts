@@ -9,7 +9,7 @@ import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedUserData } from "@/lib/utils/shared/utils";
 import { userDataProps } from "@/types/auth.types";
 
-const getUserDataWithToken = async (idToken: string) => {
+export async function getUserDataWithToken(idToken: string) {
   return PerformanceMonitor.measure("getUserDataWithToken", async () => {
     const user = await getFirebaseAdminAuth().verifyIdToken(idToken);
     if (!user) {
@@ -34,9 +34,7 @@ const getUserDataWithToken = async (idToken: string) => {
     }
     return userData;
   });
-};
-
-export default getUserDataWithToken;
+}
 
 export async function updateUserDataProps(
   uid: string,

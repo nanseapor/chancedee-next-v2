@@ -16,15 +16,21 @@ export const FirebaseChatSchema = BaseFirebaseSchema.extend({
   /** Candidate information */
   candidate_id: z.custom<DocumentReference>().optional(),
   candidate_name: z.string().optional(),
-  
+
   /** Company information */
   company_id: z.custom<DocumentReference>().optional(),
   company_name: z.string().optional(),
-  
+
   /** HR representative */
   responsible_hr_id: z.custom<DocumentReference>().optional(),
   responsible_hr_name: z.string().optional(),
-  
+
+  /** Application reference */
+  application_id: z.custom<DocumentReference>().optional(),
+
+  /** Job reference */
+  job_id: z.custom<DocumentReference>().optional(),
+
   /** Interview reference */
   interview_id: z.custom<DocumentReference>().optional(),
   
@@ -47,15 +53,21 @@ export const ChatDataSchema = BaseAppSchema.extend({
   /** Candidate information */
   candidateId: z.string().optional(),
   candidateName: z.string().optional(),
-  
+
   /** Company information */
   companyId: z.string().optional(),
   companyName: z.string().optional(),
-  
+
   /** HR representative */
   responsibleHrId: z.string().optional(),
   responsibleHrName: z.string().optional(),
-  
+
+  /** Application reference */
+  applicationId: z.string().optional(),
+
+  /** Job reference */
+  jobId: z.string().optional(),
+
   /** Interview reference */
   interviewId: z.string().optional(),
   

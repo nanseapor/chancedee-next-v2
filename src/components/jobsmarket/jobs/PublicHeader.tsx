@@ -53,7 +53,7 @@ export function PublicHeader() {
       if (success) {
         await getFirebaseAuth().signOut();
         setUser(null);
-        window.location.href = '/jobsmarket/auth/login';
+        window.location.href = '/auth/login';
       } else {
         console.error('Logout failed:', error);
       }
@@ -80,13 +80,13 @@ export function PublicHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           <Link
-            href="/jobsmarket/jobs"
+            href="/jobs"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
           >
             หางาน
           </Link>
           <Link
-            href="/jobsmarket/companies"
+            href="/companies"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
           >
             บริษัท
@@ -95,8 +95,9 @@ export function PublicHeader() {
 
         {/* Auth Section */}
         <div className="flex items-center space-x-2 sm:space-x-4">
-          {isAuthenticated ? (
+          {isAuthenticated && currentUser ? (
             <AuthenticatedMenu
+              userId={currentUser.uid}
               userName={getUserName(userData, currentUser)}
               avatarUrl={userData?.avatarURL || currentUser?.photoURL || undefined}
               onLogout={handleLogout}
@@ -113,12 +114,12 @@ export function PublicHeader() {
 function GuestButtons() {
   return (
     <>
-      <Link href="/jobsmarket/auth/login">
+      <Link href="/auth/login">
         <Button variant="ghost" size="sm">
           เข้าสู่ระบบ
         </Button>
       </Link>
-      <Link href="/jobsmarket/auth/register">
+      <Link href="/auth/register">
         <Button size="sm" className="hidden sm:inline-flex">
           ลงทะเบียน
         </Button>
@@ -128,22 +129,28 @@ function GuestButtons() {
 }
 
 /**
- * Get user display name from system user data, falling back to Firebase user
+ * Get user display name for header - uses FIRST NAME ONLY to handle long Thai names
+ * Thai names can be very long (e.g., "Suthida Bajrasudhabimalalakshana" = 226px)
+ * First name only reduces this significantly (e.g., "Suthida" = 49px)
  */
 function getUserName(
-  userData: { firstnameTH?: string; lastnameTH?: string; nicknameTH?: string } | null | undefined,
+  userData: { firstnameTH?: string; firstnameEN?: string; nicknameTH?: string } | null | undefined,
   firebaseUser: { displayName?: string | null } | null
 ): string {
-  // Try system user data first
+  // Priority 1: Thai first name only (most common case)
   if (userData?.firstnameTH) {
-    const firstName = userData.firstnameTH;
-    const lastName = userData.lastnameTH || '';
-    return `${firstName} ${lastName}`.trim();
+    return userData.firstnameTH;
   }
 
-  // Fallback to Firebase display name
+  // Priority 2: English first name
+  if (userData?.firstnameEN) {
+    return userData.firstnameEN;
+  }
+
+  // Priority 3: Firebase display name - extract first name only
   if (firebaseUser?.displayName) {
-    return firebaseUser.displayName;
+    const firstName = firebaseUser.displayName.split(' ')[0];
+    return firstName || firebaseUser.displayName;
   }
 
   // Default fallback
@@ -151,18 +158,19 @@ function getUserName(
 }
 
 interface AuthenticatedMenuProps {
+  userId: string;
   userName: string;
   avatarUrl?: string;
   onLogout: () => void;
 }
 
-function AuthenticatedMenu({ userName, avatarUrl, onLogout }: AuthenticatedMenuProps) {
+function AuthenticatedMenu({ userId, userName, avatarUrl, onLogout }: AuthenticatedMenuProps) {
   return (
     <UserMenu
       userName={userName}
       avatarUrl={avatarUrl}
-      profileHref="/jobsmarket/candidates/dashboard"
-      settingsHref="/jobsmarket/auth/settings"
+      profileHref={`/candidates/${userId}`}
+      settingsHref="/auth/settings"
       onLogout={onLogout}
     />
   );

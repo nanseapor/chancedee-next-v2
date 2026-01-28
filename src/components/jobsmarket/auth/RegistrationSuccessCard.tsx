@@ -39,7 +39,7 @@ export function RegistrationSuccessCard({
   const handleContinue = () => {
     if (role === "candidate" && uid) {
       // Candidate: Redirect to profile with onboarding tab
-      router.push(`/jobsmarket/candidates/${uid}?tab=onboarding`);
+      router.push(`/candidates/${uid}?tab=onboarding`);
     } else if (role === "company") {
       // Company: Stay on page (per Section 15 deviation from BLS-01)
       // Success card is already shown
@@ -126,7 +126,7 @@ export function RegistrationSuccessCard({
           {role === "company" && mode === "new" && (
             <Button
               variant="outline"
-              onClick={() => router.push("/jobsmarket")}
+              onClick={() => router.push("/")}
               className="w-full"
             >
               กลับหน้าหลัก
@@ -136,7 +136,7 @@ export function RegistrationSuccessCard({
           {role === "company" && mode === "join" && (
             <>
               <Button
-                onClick={() => router.push("/jobsmarket/jobs")}
+                onClick={() => router.push("/jobs")}
                 className="w-full"
                 size="lg"
               >
@@ -145,7 +145,7 @@ export function RegistrationSuccessCard({
               </Button>
               <Button
                 variant="outline"
-                onClick={() => router.push("/jobsmarket")}
+                onClick={() => router.push("/")}
                 className="w-full"
               >
                 กลับหน้าหลัก

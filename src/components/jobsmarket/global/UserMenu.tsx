@@ -34,8 +34,8 @@ export function UserMenu({
   userName,
   avatarUrl,
   roleBadge,
-  profileHref = "/jobsmarket/auth/settings",
-  settingsHref = "/jobsmarket/auth/settings",
+  profileHref = "/auth/settings",
+  settingsHref = "/auth/settings",
   onLogout,
   className = "",
 }: UserMenuProps) {
@@ -47,7 +47,7 @@ export function UserMenu({
       onLogout();
     } else {
       // Default logout behavior
-      window.location.href = "/jobsmarket/auth/login";
+      window.location.href = "/auth/login";
     }
   };
 
@@ -85,11 +85,13 @@ export function UserMenu({
           </div>
         )}
 
-        {/* Name + Role Badge (Desktop only) */}
-        <div className="hidden md:block text-left">
-          <div className="text-sm font-medium text-gray-900">{userName}</div>
+        {/* Name + Role Badge (Desktop only) - max-width prevents long Thai names from breaking layout */}
+        <div className="hidden md:block text-left max-w-[150px]">
+          <div className="text-sm font-medium text-gray-900 truncate" title={userName}>
+            {userName}
+          </div>
           {roleBadge && (
-            <div className="text-xs text-gray-500">{roleBadge}</div>
+            <div className="text-xs text-gray-500 truncate">{roleBadge}</div>
           )}
         </div>
 

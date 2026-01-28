@@ -29,7 +29,7 @@ test.describe("E2E Test Facility - Verification", () => {
       expect(candidate.candidateId).toBeTruthy();
       expect(candidate.customToken).toBeTruthy();
 
-      console.log("Test candidate created:", {
+      // console.log("Test candidate created:", {
         uid: candidate.uid,
         email: candidate.email,
         candidateId: candidate.candidateId,
@@ -48,7 +48,7 @@ test.describe("E2E Test Facility - Verification", () => {
       expect(company.companyId).toBeTruthy();
       expect(company.customToken).toBeTruthy();
 
-      console.log("Test company created:", {
+      // console.log("Test company created:", {
         uid: company.uid,
         email: company.email,
         companyId: company.companyId,
@@ -79,7 +79,7 @@ test.describe("E2E Test Facility - Verification", () => {
       const currentUrl = page.url();
       expect(currentUrl).not.toContain("/auth/login");
 
-      console.log("Signed in successfully, current URL:", currentUrl);
+      // console.log("Signed in successfully, current URL:", currentUrl);
     });
 
     test("signInAsCandidate navigates to candidate dashboard", async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe("E2E Test Facility - Verification", () => {
       // Verify we're on the candidate dashboard
       await expect(page).toHaveURL(new RegExp(`/candidates/${candidate.candidateId}`));
 
-      console.log("Signed in as candidate:", candidate.candidateId);
+      // console.log("Signed in as candidate:", candidate.candidateId);
     });
 
     test("signInAsCompany navigates to company dashboard", async ({ page }) => {
@@ -109,7 +109,7 @@ test.describe("E2E Test Facility - Verification", () => {
       // Verify we're on the company dashboard
       await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}`));
 
-      console.log("Signed in as company:", company.companyId);
+      // console.log("Signed in as company:", company.companyId);
     });
   });
 
@@ -123,7 +123,7 @@ test.describe("E2E Test Facility - Verification", () => {
       expect(candidate1.email).not.toBe(candidate2.email);
       expect(candidate1.candidateId).not.toBe(candidate2.candidateId);
 
-      console.log("Unique users verified:", {
+      // console.log("Unique users verified:", {
         user1: candidate1.email,
         user2: candidate2.email,
       });

@@ -21,7 +21,7 @@ export interface NotificationBellProps {
 export function NotificationBell({ unreadCount = 0, className = "" }: NotificationBellProps) {
   return (
     <Link
-      href="/jobsmarket/notifications"
+      href="/notifications"
       className={`relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors ${className}`}
       aria-label={`การแจ้งเตือน${unreadCount > 0 ? ` (${unreadCount} ใหม่)` : ""}`}
     >

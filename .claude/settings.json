@@ -89,7 +89,8 @@
       "Bash(xargs:*)",
       "Bash(timeout 15 npm run dev:*)",
       "Bash(else echo \".env.playwright not found\")",
-      "Bash(paste:*)"
+      "Bash(paste:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

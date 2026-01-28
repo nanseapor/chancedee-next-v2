@@ -54,6 +54,11 @@ vi.mock("@/lib/database/actions/wallet-transactions", () => ({
   webWalletTransactionCreate: vi.fn(),
 }));
 
+vi.mock("@/lib/database/actions/pockets", () => ({
+  webPocketsUpdate: vi.fn(),
+  webPocketsGetById: vi.fn(),
+}));
+
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
   revalidateTag: vi.fn(),
@@ -64,6 +69,7 @@ import { webJobInterviewGetById, webJobInterviewUpdate } from "@/lib/database/ac
 import { webJobApplicationGetById, webJobApplicationUpdate } from "@/lib/database/actions/job-applications";
 import { webCandidateInformationGetById, webCandidateInformationUpdate } from "@/lib/database/actions/candidate-information";
 import { webWalletTransactionCreate } from "@/lib/database/actions/wallet-transactions";
+import { webPocketsUpdate, webPocketsGetById } from "@/lib/database/actions/pockets";
 
 // Import the action to test
 import { confirmInterview } from "@/lib/database/actions/interview-management";
@@ -126,12 +132,20 @@ describe("confirmInterview", () => {
     interviewId: "interview-123",
   };
 
+  const mockPocket = {
+    uid: "candidate-123",
+    currency: "coin" as const,
+    balance: 0,
+    latest: [],
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(getSessionUser).mockResolvedValue(mockCandidateUser);
     vi.mocked(webJobInterviewGetById).mockResolvedValue(mockInterview);
     vi.mocked(webJobApplicationGetById).mockResolvedValue(mockApplication);
     vi.mocked(webCandidateInformationGetById).mockResolvedValue(mockCandidateInfo);
+    vi.mocked(webPocketsGetById).mockResolvedValue(mockPocket);
   });
 
   afterEach(() => {
@@ -325,6 +339,77 @@ describe("confirmInterview", () => {
 
   describe("First Interview Reward", () => {
     /**
+     * Requirement: BLS-05-04.reward + BLS-10 field semantics
+     * "Award 100 coins for first interview with correct field values"
+     */
+    it("should create transaction with transactionOrigin=first_interview_reward", async () => {
+      vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+        ...mockCandidateInfo,
+        isFirstInterviewerRewarded: false,
+      });
+      vi.mocked(webJobInterviewUpdate).mockResolvedValue("interview-123");
+
+      await confirmInterview(validInput);
+
+      expect(webWalletTransactionCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactionOrigin: "first_interview_reward",
+        }),
+        "candidate-123",
+        "coin"
+      );
+    });
+
+    /**
+     * Requirement: BLS-10 field semantics
+     * "transactionType should be 'deposit' (not 'first_interview_reward')"
+     */
+    it("should create transaction with transactionType=deposit", async () => {
+      vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+        ...mockCandidateInfo,
+        isFirstInterviewerRewarded: false,
+      });
+      vi.mocked(webJobInterviewUpdate).mockResolvedValue("interview-123");
+
+      await confirmInterview(validInput);
+
+      expect(webWalletTransactionCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactionType: "deposit",
+        }),
+        "candidate-123",
+        "coin"
+      );
+    });
+
+    /**
+     * Requirement: BLS-05-04.reward + CRITICAL BUG FIX
+     * "Must update pocket balance when awarding coins"
+     */
+    it("should update pocket balance by +100 coins", async () => {
+      vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+        ...mockCandidateInfo,
+        isFirstInterviewerRewarded: false,
+      });
+      vi.mocked(webJobInterviewUpdate).mockResolvedValue("interview-123");
+      vi.mocked(webPocketsGetById).mockResolvedValue({ ...mockPocket, balance: 50 });
+
+      await confirmInterview(validInput);
+
+      expect(webPocketsGetById).toHaveBeenCalledWith("candidate-123", "coin");
+      expect(webPocketsUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          uid: "candidate-123",
+          currency: "coin",
+          balance: 150, // 50 + 100
+        }),
+        "candidate-123",
+        "candidate-123",
+        "coin"
+      );
+    });
+
+    /**
      * Requirement: BLS-05-04.reward
      * "Award 100 coins for first interview"
      */
@@ -340,7 +425,6 @@ describe("confirmInterview", () => {
       expect(webWalletTransactionCreate).toHaveBeenCalledWith(
         expect.objectContaining({
           transactionAmount: 100,
-          transactionType: "first_interview_reward",
         }),
         "candidate-123",
         "coin"
@@ -385,6 +469,22 @@ describe("confirmInterview", () => {
 
       expect(webWalletTransactionCreate).not.toHaveBeenCalled();
       expect(result.rewardAwarded).toBe(false);
+    });
+
+    /**
+     * Requirement: BLS-05-04.reward.flag
+     * "Do not update balance if already received first interview reward"
+     */
+    it("should not update balance if already received first interview reward", async () => {
+      vi.mocked(webCandidateInformationGetById).mockResolvedValue({
+        ...mockCandidateInfo,
+        isFirstInterviewerRewarded: true,
+      });
+      vi.mocked(webJobInterviewUpdate).mockResolvedValue("interview-123");
+
+      await confirmInterview(validInput);
+
+      expect(webPocketsUpdate).not.toHaveBeenCalled();
     });
 
     /**

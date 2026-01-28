@@ -118,6 +118,8 @@ export interface RoomData {
   companyId: string;
   candidateId: string;
   hrId: string;
+  applicationId?: string;
+  jobId?: string;
   candidateName: string;
   companyName: string;
   hrName: string;
@@ -180,10 +182,15 @@ export interface RoomListItem {
 
 /**
  * Current user context for chat
+ * Extended to include entity IDs needed for shell integration
  */
 export interface ChatCurrentUser {
   id: string;
   role: "candidate" | "company";
+  /** Candidate ID when role is candidate (used for CandidateShell) */
+  candidateId?: string;
+  /** Company ID when role is company (used for CompanyShell) */
+  companyId?: string;
 }
 
 /**
@@ -214,6 +221,7 @@ export interface ChatEmptyStateProps {
 export type InterviewStatus =
   | "pending"
   | "confirmed"
+  | "declined"
   | "cancelled"
   | "rescheduled"
   | "completed";
@@ -286,6 +294,7 @@ export interface RoomDetails {
     id: string;
     candidateId: string;
     companyId: string;
+    applicationId?: string | null;
     jobId?: string | null;
   };
   otherParty: {

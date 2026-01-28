@@ -9,11 +9,14 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import {
+  createTestCompany,
+  type TestCompany,
+} from "../../helpers/factories";
+import { signInAsCompany } from "../../helpers/auth-helper";
 
-// Test credentials
-const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_EMAIL;
-const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_PASSWORD;
-const COMPANY_ID = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_COMPANY_ID;
+// Shared test data
+let company: TestCompany;
 
 /**
  * Wait for page load using domcontentloaded + visible element check
@@ -27,48 +30,31 @@ async function waitForPageLoad(page: Page) {
   ).toBeVisible({ timeout: 10000 });
 }
 
-/**
- * Login helper function
- */
-async function loginAsCompanyAdmin(page: Page) {
-  await page.goto("/jobsmarket/auth/login");
-  await page.getByPlaceholder("you@example.com").fill(TEST_EMAIL!);
-  await page.locator('input[type="password"]').fill(TEST_PASSWORD!);
-  await page.getByRole("checkbox", { name: /ยอมรับ/ }).check({ force: true });
-  await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-  // Wait for navigation to either dashboard or select-role
-  await page.waitForURL(/dashboard|select-role/, { timeout: 10000 });
-
-  // Select employer role if needed
-  if (page.url().includes("select-role")) {
-    const roleButton = page.getByLabel("เลือกบทบาท นายจ้าง");
-    if (await roleButton.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await roleButton.getByRole("button", { name: "เข้าใช้งาน" }).click();
-      await page.waitForURL(/dashboard|companies/, { timeout: 10000 });
-    }
-  }
-}
-
 test.describe("Applications Page - COMP-R08", () => {
-  test.skip(!TEST_EMAIL || !TEST_PASSWORD || !COMPANY_ID, "Test credentials not configured");
+  test.beforeAll(async () => {
+    // Create test company with published jobs
+    company = await createTestCompany({
+      testName: "applications-page",
+      withPublishedJobs: 1,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    await loginAsCompanyAdmin(page);
+    await signInAsCompany(page, company);
   });
 
   test.describe("Page Load", () => {
     test("should load applications page successfully", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Verify page loaded with correct title
       await expect(page).toHaveTitle(/จัดการใบสมัครงาน/);
-      await expect(page).toHaveURL(new RegExp(`/companies/${COMPANY_ID}/dashboard/applications`));
+      await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}/dashboard/applications`));
     });
 
     test("should display company shell with navigation", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Verify navigation links are present
@@ -82,7 +68,7 @@ test.describe("Applications Page - COMP-R08", () => {
     test("should show three-panel layout on desktop (≥1024px)", async ({ page }) => {
       // Set desktop viewport
       await page.setViewportSize({ width: 1280, height: 800 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Wait for content to load
@@ -101,7 +87,7 @@ test.describe("Applications Page - COMP-R08", () => {
     test("should show list-only layout on mobile (<768px)", async ({ page }) => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Wait for content to load
@@ -124,7 +110,7 @@ test.describe("Applications Page - COMP-R08", () => {
     test("should show list + detail layout on tablet (768-1023px)", async ({ page }) => {
       // Set tablet viewport
       await page.setViewportSize({ width: 768, height: 1024 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Wait for content to load
@@ -144,7 +130,7 @@ test.describe("Applications Page - COMP-R08", () => {
 
   test.describe("Empty State", () => {
     test("should show empty state when no applications exist", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Check for empty state message
@@ -166,7 +152,7 @@ test.describe("Applications Page - COMP-R08", () => {
     });
 
     test("should show empty detail panel when no application selected", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Set desktop viewport to see detail panel
@@ -182,25 +168,25 @@ test.describe("Applications Page - COMP-R08", () => {
   test.describe("Navigation", () => {
     test("should navigate to applications page from dashboard", async ({ page }) => {
       // Go to dashboard first
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard`);
       await waitForPageLoad(page);
 
       // Click on applications link in navigation
       await page.getByRole("link", { name: "ใบสมัคร" }).click();
 
       // Wait for URL to change
-      await page.waitForURL(new RegExp(`/companies/${COMPANY_ID}/(dashboard/)?applications`), { timeout: 10000 });
+      await page.waitForURL(new RegExp(`/companies/${company.companyId}/(dashboard/)?applications`), { timeout: 10000 });
       await waitForPageLoad(page);
       await page.waitForTimeout(1000); // Give content time to render
 
       // Verify we're on applications page
-      await expect(page).toHaveURL(new RegExp(`/companies/${COMPANY_ID}/(dashboard/)?applications`));
+      await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}/(dashboard/)?applications`));
       await expect(page.getByRole("heading", { name: "ใบสมัครงาน" })).toBeVisible({ timeout: 5000 });
     });
 
     test("should navigate to applications page from dashboard metrics card", async ({ page }) => {
       // Go to dashboard
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard`);
       await waitForPageLoad(page);
 
       // Click on "ใบสมัครทั้งหมด" card
@@ -210,14 +196,14 @@ test.describe("Applications Page - COMP-R08", () => {
         await waitForPageLoad(page);
 
         // Verify we're on applications page
-        await expect(page).toHaveURL(new RegExp(`/companies/${COMPANY_ID}/(dashboard/)?applications`));
+        await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}/(dashboard/)?applications`));
       } else {
         test.skip(true, "Dashboard metrics card not found");
       }
     });
 
     test("should maintain active state in sidebar navigation", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
 
       // Applications link should have active styling (bg-secondary-900 or similar)
@@ -233,7 +219,7 @@ test.describe("Applications Page - COMP-R08", () => {
   test.describe("Filter Panel Visibility", () => {
     test("should show filter panel on desktop", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(500);
 
@@ -248,7 +234,7 @@ test.describe("Applications Page - COMP-R08", () => {
 
     test("should hide filter panel on mobile and show filter button", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(500);
 

@@ -22,15 +22,15 @@ test.describe("AUTH-R07: Select Role Page - Basic Rendering", () => {
     if (url.includes("/auth/login")) {
       // Expected - not authenticated, redirected to login
       expect(url).toContain("/auth/login");
-      console.log("✓ Not authenticated - correctly redirected to login");
+      // console.log("✓ Not authenticated - correctly redirected to login");
     } else if (url.includes("/auth/select-role")) {
       // On select-role page - verify UI elements
       await expect(page.getByText("เลือกบทบาทที่ต้องการใช้งาน")).toBeVisible();
       await expect(page.getByText("Select your role")).toBeVisible();
-      console.log("✓ Page rendered successfully");
+      // console.log("✓ Page rendered successfully");
     } else {
       // Redirected elsewhere (e.g., already has role selected)
-      console.log(`✓ Redirected to: ${url}`);
+      // console.log(`✓ Redirected to: ${url}`);
     }
   });
 
@@ -41,7 +41,7 @@ test.describe("AUTH-R07: Select Role Page - Basic Rendering", () => {
     const title = await page.title();
     if (title.includes("เลือกบทบาท") || title.includes("ChanceDee")) {
       expect(title).toBeTruthy();
-      console.log(`✓ Page title: ${title}`);
+      // console.log(`✓ Page title: ${title}`);
     }
   });
 
@@ -50,7 +50,7 @@ test.describe("AUTH-R07: Select Role Page - Basic Rendering", () => {
 
     // Should not be 404
     expect(response?.status()).not.toBe(404);
-    console.log(`✓ HTTP ${response?.status()} - Route exists`);
+    // console.log(`✓ HTTP ${response?.status()} - Route exists`);
   });
 });
 
@@ -84,7 +84,7 @@ test.describe("AUTH-R07: Select Role Page - Component Rendering", () => {
     await page.waitForLoadState("networkidle", { timeout: 10000 });
 
     const url = page.url();
-    console.log(`After login, URL is: ${url}`);
+    // console.log(`After login, URL is: ${url}`);
 
     // If we're on select-role page, verify UI
     if (url.includes("/auth/select-role")) {
@@ -106,9 +106,9 @@ test.describe("AUTH-R07: Select Role Page - Component Rendering", () => {
       // Check for logout option
       await expect(page.getByText(/ออกจากระบบ/)).toBeVisible();
 
-      console.log("✓ All UI elements rendered correctly");
+      // console.log("✓ All UI elements rendered correctly");
     } else {
-      console.log(`✓ User auto-redirected to: ${url} (has saved preference or single role)`);
+      // console.log(`✓ User auto-redirected to: ${url} (has saved preference or single role)`);
     }
   });
 
@@ -137,10 +137,10 @@ test.describe("AUTH-R07: Select Role Page - Component Rendering", () => {
 
         // Should be redirected away from select-role
         expect(page.url()).not.toContain("/auth/select-role");
-        console.log(`✓ Selected role, redirected to: ${page.url()}`);
+        // console.log(`✓ Selected role, redirected to: ${page.url()}`);
       }
     } else {
-      console.log("✓ Skip - User auto-redirected (already has preference)");
+      // console.log("✓ Skip - User auto-redirected (already has preference)");
     }
   });
 });
@@ -161,9 +161,9 @@ test.describe("AUTH-R07: Select Role Page - Accessibility", () => {
       });
 
       expect(focusedElement).toBeTruthy();
-      console.log(`✓ Keyboard navigation works - focused: ${focusedElement}`);
+      // console.log(`✓ Keyboard navigation works - focused: ${focusedElement}`);
     } else {
-      console.log("✓ Skip - Redirected away from page");
+      // console.log("✓ Skip - Redirected away from page");
     }
   });
 });

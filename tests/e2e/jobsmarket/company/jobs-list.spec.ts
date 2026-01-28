@@ -1,27 +1,41 @@
 import { test, expect } from '@playwright/test';
+import {
+  createTestCompany,
+  createTestJob,
+  type TestCompany,
+} from "../../helpers/factories";
+import { signInAsCompany } from "../../helpers/auth-helper";
 
 /**
  * E2E tests for COMP-R05 Jobs List Page
  * Route: /companies/[id]/dashboard/jobs
  */
 
-test.describe('COMP-R05 Jobs List Page', () => {
-  const TEST_COMPANY_EMAIL = process.env.TEST_COMPANY_EMAIL;
-  const TEST_COMPANY_PASSWORD = process.env.TEST_COMPANY_PASSWORD;
-  const TEST_COMPANY_ID = process.env.TEST_COMPANY_ID || 'test-company-123';
+// Shared test data
+let company: TestCompany;
 
-  test.skip(!TEST_COMPANY_EMAIL || !TEST_COMPANY_PASSWORD, 'Company credentials not configured');
+test.describe('COMP-R05 Jobs List Page', () => {
+  test.beforeAll(async () => {
+    // Create test company with published jobs
+    company = await createTestCompany({
+      testName: "jobs-list",
+      withPublishedJobs: 2,
+    });
+
+    // Create a draft job
+    await createTestJob({
+      companyId: company.companyId,
+      status: "draft",
+      title: "ตำแหน่งร่าง",
+      testName: "jobs-list-draft",
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    // Login as company user
-    await page.goto('/jobsmarket/auth/login');
-    await page.getByLabel('อีเมล').fill(TEST_COMPANY_EMAIL!);
-    await page.getByPlaceholder('กรอกรหัสผ่าน').fill(TEST_COMPANY_PASSWORD!);
-    await page.getByRole('button', { name: /เข้าสู่ระบบ/ }).click();
-    await expect(page).toHaveURL(/dashboard/);
+    await signInAsCompany(page, company);
 
     // Navigate to jobs list
-    await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs`);
+    await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs`);
   });
 
   test.describe('Page Load and Layout', () => {

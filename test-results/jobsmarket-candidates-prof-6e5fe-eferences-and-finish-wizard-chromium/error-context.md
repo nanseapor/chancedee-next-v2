@@ -3,160 +3,19 @@
 ```yaml
 - generic [active] [ref=e1]:
   - main [ref=e2]:
-    - generic [ref=e4]:
-      - complementary [ref=e5]:
-        - link "ChanceDee" [ref=e7] [cursor=pointer]:
-          - /url: /jobsmarket
-          - img "ChanceDee" [ref=e8]
-        - navigation [ref=e9]:
-          - list [ref=e10]:
-            - listitem [ref=e11]:
-              - button "แดชบอร์ด" [disabled] [ref=e12]:
-                - img [ref=e14]
-                - generic [ref=e16]: แดชบอร์ด
-            - listitem [ref=e17]:
-              - link "โปรไฟล์" [ref=e18] [cursor=pointer]:
-                - /url: /jobsmarket/candidates/03NUyj0mO5MSNlMFTe2DX9nuVAz1/profile
-                - img [ref=e20]
-                - generic [ref=e22]: โปรไฟล์
-            - listitem [ref=e23]:
-              - button "ค้นหางาน" [disabled] [ref=e24]:
-                - img [ref=e26]
-                - generic [ref=e28]: ค้นหางาน
-            - listitem [ref=e29]:
-              - button "ใบสมัคร" [disabled] [ref=e30]:
-                - img [ref=e32]
-                - generic [ref=e34]: ใบสมัคร
-            - listitem [ref=e35]:
-              - button "รายการที่บันทึก" [disabled] [ref=e36]:
-                - img [ref=e38]
-                - generic [ref=e40]: รายการที่บันทึก
-            - listitem [ref=e41]:
-              - button "การตั้งค่า" [disabled] [ref=e42]:
-                - img [ref=e44]
-                - generic [ref=e47]: การตั้งค่า
-      - generic [ref=e48]:
-        - generic [ref=e49]:
-          - navigation "Breadcrumb" [ref=e51]:
-            - link "หน้าหลัก" [ref=e52] [cursor=pointer]:
-              - /url: /
-              - img [ref=e53]
-            - generic [ref=e56]:
-              - img [ref=e57]
-              - generic [ref=e59]: โปรไฟล์
-          - generic [ref=e60]:
-            - link "การแจ้งเตือน" [ref=e61] [cursor=pointer]:
-              - /url: /jobsmarket/notifications
-              - img [ref=e62]
-            - button "เมนูผู้ใช้" [ref=e66]:
-              - img "iam saranachon" [ref=e67]
-              - generic [ref=e69]: iam saranachon
-              - img [ref=e70]
-        - main [ref=e72]:
-          - generic [ref=e74]:
-            - generic [ref=e76]:
-              - generic [ref=e77]:
-                - img "iam saranachon" [ref=e79]
-                - button [ref=e80]:
-                  - img [ref=e81]
-              - generic [ref=e84]:
-                - heading "iam saranachon" [level=1] [ref=e85]
-                - generic [ref=e87]:
-                  - generic [ref=e88]: ความสมบูรณ์ของโปรไฟล์
-                  - generic [ref=e89]: 75%
-                - generic [ref=e92]:
-                  - switch "โปรไฟล์สามารถค้นหาได้" [ref=e93] [cursor=pointer]
-                  - generic [ref=e94] [cursor=pointer]: โปรไฟล์สามารถค้นหาได้
-                - button "ดูตัวอย่างโปรไฟล์" [ref=e96]:
-                  - img [ref=e97]
-                  - text: ดูตัวอย่างโปรไฟล์
-            - generic [ref=e100]:
-              - generic [ref=e101]:
-                - generic [ref=e102]:
-                  - heading "ข้อมูลส่วนตัว" [level=2] [ref=e103]
-                  - button "แก้ไข" [ref=e104]:
-                    - img [ref=e105]
-                    - text: แก้ไข
-                - generic [ref=e108]:
-                  - generic [ref=e109]:
-                    - term [ref=e110]: ชื่อ-นามสกุล (ไทย)
-                    - definition [ref=e111]: iam saranachon
-                  - generic [ref=e112]:
-                    - term [ref=e113]: อีเมล
-                    - definition [ref=e114]: iammongkol@protonmail.com
-                  - generic [ref=e115]:
-                    - term [ref=e116]: เบอร์โทรศัพท์
-                    - definition [ref=e117]: "0979577909"
-                  - generic [ref=e118]:
-                    - term [ref=e119]: วันเกิด
-                    - definition [ref=e120]: 29/03/57701 (อายุ -55676 ปี)
-                  - generic [ref=e121]:
-                    - term [ref=e122]: ที่อยู่
-                    - definition [ref=e123]: บ้านเลขที่ซอยถนน ปลายพระยา ปลายพระยา กระบี่ 81160
-              - generic [ref=e124]:
-                - generic [ref=e125]:
-                  - heading "ประสบการณ์ทำงาน" [level=2] [ref=e126]
-                  - button "แก้ไข" [ref=e127]:
-                    - img [ref=e128]
-                    - text: แก้ไข
-                - generic [ref=e134]:
-                  - heading "TEST ACCOUNT" [level=3] [ref=e135]
-                  - paragraph [ref=e136]: Institute for Information Industry
-                  - paragraph [ref=e137]: 03/2564 - 05/2568 (4 ปี 2 เดือน)
-                  - paragraph [ref=e138]: หน้าที่ความรับผิดชอบ งานที่ได้รับมอบหมาย
-              - generic [ref=e139]:
-                - generic [ref=e140]:
-                  - heading "ประวัติการศึกษา" [level=2] [ref=e141]
-                  - button "แก้ไข" [ref=e142]:
-                    - img [ref=e143]
-                    - text: แก้ไข
-                - generic [ref=e149]:
-                  - generic [ref=e151]: ปริญญาโท
-                  - heading "สามัคคีวิทยาคม" [level=3] [ref=e152]
-                  - paragraph [ref=e153]: ป้องกันตัวจากศาสตร์มืด / เทคโนโลยีการอาหาร
-                  - generic [ref=e154]:
-                    - paragraph [ref=e155]: "ปีที่จบ: 2569"
-                    - paragraph [ref=e156]: "เกรดเฉลี่ย: 2.49"
-              - generic [ref=e157]:
-                - generic [ref=e158]:
-                  - heading "ทักษะและภาษา" [level=2] [ref=e159]
-                  - button "แก้ไข" [ref=e160]:
-                    - img [ref=e161]
-                    - text: แก้ไข
-                - generic [ref=e164]:
-                  - img [ref=e165]
-                  - paragraph [ref=e168]: ยังไม่มีทักษะ
-                  - paragraph [ref=e169]: คลิกแก้ไขเพื่อเพิ่มทักษะและภาษา
-              - generic [ref=e170]:
-                - generic [ref=e171]:
-                  - heading "ความต้องการงาน" [level=2] [ref=e172]
-                  - button "แก้ไข" [ref=e173]:
-                    - img [ref=e174]
-                    - text: แก้ไข
-                - generic [ref=e177]:
-                  - img [ref=e178]
-                  - paragraph [ref=e182]: ยังไม่ได้ตั้งค่าความต้องการงาน
-                  - paragraph [ref=e183]: คลิกแก้ไขเพื่อตั้งค่าความต้องการงาน
-              - generic [ref=e184]:
-                - generic [ref=e185]:
-                  - heading "เอกสารแนบ" [level=2] [ref=e186]
-                  - button "อัปโหลด" [ref=e187]:
-                    - img [ref=e188]
-                    - text: อัปโหลด
-                - generic [ref=e191]:
-                  - img [ref=e192]
-                  - paragraph [ref=e195]: ยังไม่มีเอกสารแนบ
-                  - paragraph [ref=e196]: คลิกอัปโหลดเพื่อเพิ่มเอกสาร PDF, DOC, DOCX (สูงสุด 10MB)
-  - generic [ref=e201] [cursor=pointer]:
-    - button "Open Next.js Dev Tools" [ref=e202]:
-      - img [ref=e203]
-    - generic [ref=e206]:
-      - button "Open issues overlay" [ref=e207]:
-        - generic [ref=e208]:
-          - generic [ref=e209]: "0"
-          - generic [ref=e210]: "1"
-        - generic [ref=e211]: Issue
-      - button "Collapse issues badge" [ref=e212]:
-        - img [ref=e213]
-  - alert [ref=e215]
+    - generic [ref=e3]:
+      - link "ChanceDeeJobs" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - main [ref=e7]:
+        - img [ref=e11]
+      - paragraph [ref=e14]: © 2026 ChanceDee. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - generic [ref=e23]:
+      - text: Rendering
+      - generic [ref=e24]:
+        - generic [ref=e25]: .
+        - generic [ref=e26]: .
+        - generic [ref=e27]: .
+  - alert [ref=e28]
 ```

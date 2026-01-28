@@ -1,4 +1,9 @@
-import { test, expect, devices } from "@playwright/test";
+import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../../helpers/factories";
+import { signInAsCandidate } from "../../../helpers/auth-helper";
 
 /**
  * E2E Test: Mobile Navigation
@@ -13,33 +18,26 @@ import { test, expect, devices } from "@playwright/test";
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/profile/profile-mobile-navigation.spec.ts --project="Mobile Chrome"
  */
 
-test.describe("Mobile Navigation", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
+let candidate: TestCandidate;
 
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword || !testUid, "Test credentials not configured");
+test.describe("Mobile Navigation", () => {
+  test.beforeAll(async () => {
+    candidate = await createTestCandidate({
+      testName: "profile-mobile-navigation",
+      withCompleteProfile: true,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
     // Set mobile viewport (iPhone SE size as specified)
     await page.setViewportSize({ width: 375, height: 667 });
 
-    // Login first
-    await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(testEmail!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-    await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-    // Wait for redirect after login
-    await page.waitForURL((url) => !url.pathname.includes("/auth/login"), { timeout: 15000 });
+    await signInAsCandidate(page, candidate);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("should display bottom tab bar on mobile", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Verify bottom tab bar is visible using data-testid
     const bottomNav = page.getByTestId("bottom-tab-bar");
 
@@ -54,8 +52,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should NOT display sidebar on mobile", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Sidebar should be hidden on mobile
     const sidebar = page.locator("aside, [data-testid='sidebar']");
     const sidebarVisible = await sidebar.isVisible({ timeout: 2000 }).catch(() => false);
@@ -64,8 +60,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should display mobile header with logo and user menu", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Look for mobile header elements
     // Logo
     const logo = page.locator("img[alt*='ChanceDee'], img[alt*='Logo']");
@@ -77,8 +71,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should have 5 tabs in bottom navigation", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find all tab items within bottom tab bar
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const tabs = bottomNav.locator("a");
@@ -89,27 +81,19 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should navigate to dashboard when tapping Home tab", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Home tab within bottom nav
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const homeTab = bottomNav.locator("a").filter({
       hasText: /หน้าหลัก|Home/i,
     });
 
-    // Check if tab is disabled
-    const isDisabled = await homeTab.evaluate((el) => {
-      return el.getAttribute("href") === "#" || el.classList.contains("opacity-40");
-    });
-
-    if (isDisabled) {
-      test.skip(true, "Home tab is disabled (profile incomplete)");
-    }
-
+    // Tab should NOT be disabled - candidate has complete profile
+    // If it's disabled, that's a bug we want to catch
+    await expect(homeTab).toBeVisible();
     await homeTab.click();
 
     // Wait for navigation
-    await page.waitForURL((url) => url.pathname === `/jobsmarket/candidates/${testUid}`, {
+    await page.waitForURL((url) => url.pathname === `/jobsmarket/candidates/${candidate.candidateId}`, {
       timeout: 10000,
     });
 
@@ -118,23 +102,15 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should navigate to jobs page when tapping Jobs tab", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Jobs tab within bottom nav
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const jobsTab = bottomNav.locator("a").filter({
       hasText: /งาน|Jobs/i,
     });
 
-    // Check if tab is disabled
-    const isDisabled = await jobsTab.evaluate((el) => {
-      return el.getAttribute("href") === "#" || el.classList.contains("opacity-40");
-    });
-
-    if (isDisabled) {
-      test.skip(true, "Jobs tab is disabled (profile incomplete)");
-    }
-
+    // Tab should NOT be disabled - candidate has complete profile
+    // If it's disabled, that's a bug we want to catch
+    await expect(jobsTab).toBeVisible();
     await jobsTab.click();
 
     // Wait for navigation
@@ -145,23 +121,15 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should navigate to applications when tapping Applications tab", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Applications tab within bottom nav
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const applicationsTab = bottomNav.locator("a").filter({
       hasText: /ใบสมัคร|Applications/i,
     });
 
-    // Check if tab is disabled
-    const isDisabled = await applicationsTab.evaluate((el) => {
-      return el.getAttribute("href") === "#" || el.classList.contains("opacity-40");
-    });
-
-    if (isDisabled) {
-      test.skip(true, "Applications tab is disabled (profile incomplete)");
-    }
-
+    // Tab should NOT be disabled - candidate has complete profile
+    // If it's disabled, that's a bug we want to catch
+    await expect(applicationsTab).toBeVisible();
     await applicationsTab.click();
 
     // Wait for navigation
@@ -172,23 +140,15 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should navigate to messages when tapping Messages tab", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Messages tab within bottom nav
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const messagesTab = bottomNav.locator("a").filter({
       hasText: /ข้อความ|Messages|Chat/i,
     });
 
-    // Check if tab is disabled
-    const isDisabled = await messagesTab.evaluate((el) => {
-      return el.getAttribute("href") === "#" || el.classList.contains("opacity-40");
-    });
-
-    if (isDisabled) {
-      test.skip(true, "Messages tab is disabled (profile incomplete)");
-    }
-
+    // Tab should NOT be disabled - candidate has complete profile
+    // If it's disabled, that's a bug we want to catch
+    await expect(messagesTab).toBeVisible();
     await messagesTab.click();
 
     // Wait for navigation
@@ -201,8 +161,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should highlight active tab (Profile)", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Profile tab within bottom nav
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const profileTab = bottomNav.locator("a").filter({
@@ -218,8 +176,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should maintain bottom nav position when scrolling", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Get initial bottom nav position
     const bottomNav = page.getByTestId("bottom-tab-bar");
 
@@ -237,8 +193,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should display profile content above bottom nav", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Main content should have padding to avoid overlap with bottom nav
     // There are 2 main elements (outer and inner), we want the inner one that has pb-20
     const mainContent = page.locator("main.pb-20");
@@ -254,8 +208,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should allow touch interaction with bottom tabs", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Find Profile tab (always enabled)
     const bottomNav = page.getByTestId("bottom-tab-bar");
     const profileTab = bottomNav.locator("a").filter({
@@ -275,8 +227,6 @@ test.describe("Mobile Navigation", () => {
   });
 
   test("should display tab icons and labels", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     const bottomNav = page.getByTestId("bottom-tab-bar");
 
     // Each tab should have text label
@@ -296,8 +246,6 @@ test.describe("Mobile Navigation", () => {
     // Already set in beforeEach, but verify
     const viewport = page.viewportSize();
     expect(viewport?.width).toBe(375);
-
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
 
     // Verify mobile layout elements
     // 1. Mobile header visible

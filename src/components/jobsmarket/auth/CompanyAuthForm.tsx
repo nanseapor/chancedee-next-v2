@@ -178,7 +178,7 @@ export function CompanyAuthForm({
             >
               ฉันยอมรับ{" "}
               <a
-                href="/jobsmarket/legal/terms-of-service"
+                href="/legal/terms-of-service"
                 target="_blank"
                 className="text-primary hover:underline"
               >
@@ -186,7 +186,7 @@ export function CompanyAuthForm({
               </a>{" "}
               และ{" "}
               <a
-                href="/jobsmarket/privacy"
+                href="/privacy"
                 target="_blank"
                 className="text-primary hover:underline"
               >
@@ -210,7 +210,7 @@ export function CompanyAuthForm({
             >
               ฉันยอมรับ{" "}
               <a
-                href="/jobsmarket/legal/employer-terms"
+                href="/legal/employer-terms"
                 target="_blank"
                 className="text-primary hover:underline"
               >

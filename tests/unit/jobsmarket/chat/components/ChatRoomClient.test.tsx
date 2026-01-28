@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ChatRoomClient } from "@/app/jobsmarket/chat/[roomId]/_components/ChatRoomClient";
+import { ToastProvider } from "@/hooks/use-toast-notification";
 
 // Mock hooks
 vi.mock("@/hooks/jobsmarket/chat/use-chat-messages", () => ({
@@ -9,6 +10,18 @@ vi.mock("@/hooks/jobsmarket/chat/use-chat-messages", () => ({
 
 vi.mock("@/hooks/jobsmarket/chat/use-chat-file-upload", () => ({
   useChatFileUpload: vi.fn(),
+}));
+
+vi.mock("@/hooks/jobsmarket/chat/use-interview-actions", () => ({
+  useInterviewActions: vi.fn(() => ({
+    isLoading: false,
+    loadingAction: null,
+    handleConfirm: vi.fn(),
+    handleDecline: vi.fn(),
+    handleCancel: vi.fn(),
+    handleReschedule: vi.fn(),
+    handleScheduleNew: vi.fn(),
+  })),
 }));
 
 // Mock next/navigation
@@ -24,6 +37,11 @@ vi.mock("next/navigation", () => ({
 
 import { useChatMessages } from "@/hooks/jobsmarket/chat/use-chat-messages";
 import { useChatFileUpload } from "@/hooks/jobsmarket/chat/use-chat-file-upload";
+
+// Wrapper component with providers
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <ToastProvider>{children}</ToastProvider>
+);
 
 describe("ChatRoomClient", () => {
   const mockMessages = [
@@ -103,20 +121,20 @@ describe("ChatRoomClient", () => {
   });
 
   it("should render chat room header", () => {
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByText("บริษัท เทสต์ จำกัด")).toBeInTheDocument();
   });
 
   it("should render message list", () => {
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByText("Hello!")).toBeInTheDocument();
     expect(screen.getByText("Hi there!")).toBeInTheDocument();
   });
 
   it("should render message input", () => {
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByPlaceholderText("พิมพ์ข้อความ...")).toBeInTheDocument();
   });
@@ -134,7 +152,7 @@ describe("ChatRoomClient", () => {
       markAsRead: vi.fn(),
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     const input = screen.getByPlaceholderText("พิมพ์ข้อความ...");
     fireEvent.change(input, { target: { value: "New message" } });
@@ -155,7 +173,7 @@ describe("ChatRoomClient", () => {
       markAsRead: vi.fn(),
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByTestId("message-list-skeleton")).toBeInTheDocument();
   });
@@ -172,7 +190,7 @@ describe("ChatRoomClient", () => {
       markAsRead: vi.fn(),
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByTestId("connection-banner")).toBeInTheDocument();
   });
@@ -189,7 +207,7 @@ describe("ChatRoomClient", () => {
       markAsRead: vi.fn(),
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     // Use specific testid since both ConnectionBanner and error div show error text
     expect(screen.getByTestId("error-message")).toBeInTheDocument();
@@ -216,7 +234,7 @@ describe("ChatRoomClient", () => {
       },
     };
 
-    render(<ChatRoomClient {...propsWithInterview} />);
+    render(<ChatRoomClient {...propsWithInterview} />, { wrapper: TestWrapper });
 
     expect(screen.getByTestId("interview-card")).toBeInTheDocument();
   });
@@ -232,7 +250,7 @@ describe("ChatRoomClient", () => {
       error: null,
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     const fileInput = screen.getByTestId("file-input");
     const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
@@ -254,7 +272,7 @@ describe("ChatRoomClient", () => {
       error: null,
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByTestId("upload-progress")).toBeInTheDocument();
   });
@@ -272,7 +290,7 @@ describe("ChatRoomClient", () => {
       markAsRead,
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     await waitFor(() => {
       expect(markAsRead).toHaveBeenCalled();
@@ -292,7 +310,7 @@ describe("ChatRoomClient", () => {
       markAsRead: vi.fn(),
     });
 
-    render(<ChatRoomClient {...defaultProps} />);
+    render(<ChatRoomClient {...defaultProps} />, { wrapper: TestWrapper });
 
     const container = screen.getByTestId("message-list-container");
     fireEvent.scroll(container, { target: { scrollTop: 0 } });

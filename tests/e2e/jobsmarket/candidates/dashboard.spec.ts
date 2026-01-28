@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../helpers/factories";
+import { signInAsCandidate } from "../../helpers/auth-helper";
 
 /**
  * E2E Tests for CAND-R01 Candidate Dashboard
@@ -6,22 +11,27 @@ import { test, expect } from "@playwright/test";
  *
  * Prerequisites:
  * - Dev server running at http://localhost:3000
- * - Test credentials in .env.playwright
  *
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/dashboard.spec.ts
  */
 
-// Test credentials from .env.playwright
-const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-const TEST_CANDIDATE_ID = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID || "test123";
+// Shared test data
+let candidate: TestCandidate;
 
 test.describe("Candidate Dashboard", () => {
+  test.beforeAll(async () => {
+    // Create test candidate with complete profile
+    candidate = await createTestCandidate({
+      testName: "dashboard",
+      withCompleteProfile: true,
+    });
+  });
+
   test.describe("Unauthenticated Access", () => {
     test("should show loading state when not authenticated (will redirect once auth resolves)", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Page shows loading state while Firebase auth initializes
       // In real usage, this will resolve and redirect to login
@@ -36,26 +46,13 @@ test.describe("Candidate Dashboard", () => {
   });
 
   test.describe("Authenticated Dashboard Access", () => {
-    // Skip if credentials not available
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
-
     test.beforeEach(async ({ page }) => {
-      // Login first
-      await page.goto("/jobsmarket/auth/login");
-
-      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-      await page.getByRole("checkbox").check(); // Accept terms
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-      // Wait for auth to complete and redirect away from login page
-      // Use negative lookahead to exclude /auth/ pages
-      await page.waitForURL(/jobsmarket\/(?!auth)/, { timeout: 10000 });
+      await signInAsCandidate(page, candidate);
     });
 
     test("should display welcome header with user name", async ({ page }) => {
       // Navigate to dashboard
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Should show greeting (time-dependent)
       await expect(page.getByRole("heading", { level: 1 })).toContainText(/สวัสดี/);
@@ -65,7 +62,7 @@ test.describe("Candidate Dashboard", () => {
     });
 
     test("should display profile completion card", async ({ page }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Profile completion section should be visible (use heading to avoid strict mode violation)
       await expect(
@@ -77,7 +74,7 @@ test.describe("Candidate Dashboard", () => {
     });
 
     test("should display coin balance card", async ({ page }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Coin balance section should be visible (use heading to avoid strict mode violation)
       await expect(page.getByRole("heading", { name: /ยอดเหรียญของคุณ/ })).toBeVisible();
@@ -89,7 +86,7 @@ test.describe("Candidate Dashboard", () => {
     });
 
     test("should display application summary section", async ({ page }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Application summary should be visible (use heading to avoid strict mode violation)
       await expect(
@@ -102,7 +99,7 @@ test.describe("Candidate Dashboard", () => {
     });
 
     test("should display recent applications section", async ({ page }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Recent applications section should be visible
       await expect(
@@ -119,7 +116,7 @@ test.describe("Candidate Dashboard", () => {
     });
 
     test("should display recommended jobs section", async ({ page }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Recommended jobs section should be visible
       await expect(
@@ -129,22 +126,14 @@ test.describe("Candidate Dashboard", () => {
   });
 
   test.describe("Dashboard Interactions", () => {
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
-
     test.beforeEach(async ({ page }) => {
-      // Login
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-      await page.getByRole("checkbox").check();
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-      await page.waitForURL(/jobsmarket\/(?!auth)/, { timeout: 10000 });
+      await signInAsCandidate(page, candidate);
     });
 
     test("should navigate to profile when clicking completion card", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Click on profile completion card
       const completionCard = page.locator("text=ความสมบูรณ์ของโปรไฟล์").locator("..");
@@ -163,7 +152,7 @@ test.describe("Candidate Dashboard", () => {
     test("should show earn more modal when clicking coin card", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Click on "วิธีหาเหรียญเพิ่ม" or earn more button
       const earnButton = page.getByRole("button", { name: /วิธีหาเหรียญเพิ่ม|Earn/ });
@@ -184,7 +173,7 @@ test.describe("Candidate Dashboard", () => {
     test("should navigate to applications when clicking status card", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Click on one of the status cards
       const statusCard = page
@@ -204,7 +193,7 @@ test.describe("Candidate Dashboard", () => {
     test("should navigate to job detail when clicking recommended job", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Find first recommended job card
       const jobCard = page
@@ -229,18 +218,11 @@ test.describe("Candidate Dashboard", () => {
   });
 
   test.describe("Ownership Check", () => {
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
-
     test("should redirect to own dashboard when accessing wrong candidate ID", async ({
       page,
     }) => {
       // Login first
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-      await page.getByRole("checkbox").check();
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-      await page.waitForURL(/jobsmarket\/(?!auth)/, { timeout: 10000 });
+      await signInAsCandidate(page, candidate);
 
       // Try to access another user's dashboard
       const wrongId = "wrong-user-id-12345";
@@ -263,7 +245,7 @@ test.describe("Candidate Dashboard", () => {
         setTimeout(() => route.continue(), 500);
       });
 
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Should show loading indicator (briefly)
       const loadingIndicator = page.getByText("กำลังโหลด...");
@@ -276,22 +258,14 @@ test.describe("Candidate Dashboard", () => {
   });
 
   test.describe("Empty States", () => {
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
-
     test.beforeEach(async ({ page }) => {
-      // Login
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-      await page.getByRole("checkbox").check();
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-      await page.waitForURL(/jobsmarket\/(?!auth)/, { timeout: 10000 });
+      await signInAsCandidate(page, candidate);
     });
 
     test("should show empty state for applications if none exist", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Wait for data to load
       await page.waitForTimeout(2000);
@@ -314,7 +288,7 @@ test.describe("Candidate Dashboard", () => {
     test("should show empty state for interviews if none exist", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Wait for data to load
       await page.waitForTimeout(2000);
@@ -332,8 +306,6 @@ test.describe("Candidate Dashboard", () => {
   });
 
   test.describe("Mobile Navigation", () => {
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
-
     test("should display mobile bottom navigation on small screens", async ({
       page,
     }) => {
@@ -341,14 +313,9 @@ test.describe("Candidate Dashboard", () => {
       await page.setViewportSize({ width: 375, height: 667 });
 
       // Login
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-      await page.getByRole("checkbox").check();
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-      await page.waitForURL(/jobsmarket\/(?!auth)/, { timeout: 10000 });
+      await signInAsCandidate(page, candidate);
 
-      await page.goto(`/jobsmarket/candidates/${TEST_CANDIDATE_ID}`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}`);
 
       // Bottom navigation should be visible
       const bottomNav = page.locator("nav").last(); // Assuming bottom nav is last nav element

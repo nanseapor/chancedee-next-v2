@@ -43,7 +43,7 @@ export function SelectRoleClient() {
   // Simple auth check
   useEffect(() => {
     if (!user) {
-      router.replace("/jobsmarket/auth/login");
+      router.replace("/auth/login");
     }
   }, [user, router]);
 
@@ -69,8 +69,8 @@ export function SelectRoleClient() {
     } else {
       destination =
         role === "candidate"
-          ? `/jobsmarket/candidates/${user.uid}`
-          : `/jobsmarket/companies/default/dashboard`;
+          ? `/candidates/${user.uid}`
+          : `/companies/default/dashboard`;
     }
 
     // Navigate (replace history)
@@ -85,7 +85,7 @@ export function SelectRoleClient() {
     await logout();
 
     // Redirect to login
-    router.replace("/jobsmarket/auth/login");
+    router.replace("/auth/login");
   };
 
   // Show loading while checking auth
@@ -174,16 +174,13 @@ function isValidRedirect(url: string, role: "candidate" | "company"): boolean {
   // Must be internal URL
   if (!url.startsWith("/")) return false;
 
-  // Must start with /jobsmarket
-  if (!url.startsWith("/jobsmarket/")) return false;
-
-  // Role-appropriate paths
+  // Role-appropriate paths (clean paths without /jobsmarket prefix)
   if (role === "candidate") {
-    return /^\/jobsmarket\/(candidates\/|jobs\/|chat|notifications)/.test(url);
+    return /^\/(candidates\/|jobs\/|chat|notifications)/.test(url);
   }
 
   if (role === "company") {
-    return /^\/jobsmarket\/(companies\/|chat|notifications)/.test(url);
+    return /^\/(companies\/|chat|notifications)/.test(url);
   }
 
   return false;

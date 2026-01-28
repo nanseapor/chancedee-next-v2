@@ -22,7 +22,18 @@ import {
   webJobApplicationUpdate,
 } from "./job-applications";
 import { webCandidateInformationGetById, webCandidateInformationUpdate } from "./candidate-information";
+import { webCompanyInformationGetById } from "./company-information";
 import { webWalletTransactionCreate } from "./wallet-transactions";
+import { webPocketsUpdate, webPocketsGetById } from "./pockets";
+import { awardFirstInterviewReward } from "./wallet-rewards";
+import {
+  sendEmailNotification,
+  createInterviewScheduledEmail,
+  createInterviewRescheduledEmail,
+  createInterviewCancelledEmail,
+  createInterviewConfirmedEmail,
+  createInterviewDeclinedEmail,
+} from "./email-notifications";
 import { messagesRepository } from "../repositories/messages-repository";
 import { chatRepository } from "../repositories/chat-repository";
 import { FirebaseJobInterviewData } from "@/types/interview.types";
@@ -287,10 +298,48 @@ export async function scheduleInterview(
 
   revalidatePath("/jobsmarket/chat");
 
+  // 12. Send interview scheduled email notification
+  if (application.candidateId) {
+    const candidate = await webCandidateInformationGetById(application.candidateId);
+    if (candidate?.email) {
+      const candidateName = candidate.firstnameTH || candidate.nicknameTH || 'ผู้สมัคร';
+      const formattedDate = formatThaiDate(input.date);
+
+      const emailData = await createInterviewScheduledEmail(
+        candidateName,
+        application.jobTitle || 'ตำแหน่งงาน',
+        application.companyName || 'บริษัท',
+        formattedDate,
+        input.from,
+        input.to,
+        input.channel,
+        input.location
+      );
+
+      await sendEmailNotification({
+        email: candidate.email,
+        emailData,
+        notificationType: 'interview_scheduled',
+      });
+    }
+  }
+
   return {
     success: true,
     interviewId,
   };
+}
+
+/**
+ * Format date to Thai format
+ */
+function formatThaiDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('th-TH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }
 
 // ============================================================================
@@ -384,17 +433,32 @@ export async function confirmInterview(
   const candidateInfo = await webCandidateInformationGetById(session.candidateId);
 
   if (candidateInfo && !candidateInfo.isFirstInterviewerRewarded) {
-    // Award 100 coins
+    // Award 100 coins - create transaction record
     await webWalletTransactionCreate(
       {
         transactionId: "",
         transactionOwner: session.candidateId,
-        transactionOrigin: "system",
-        transactionType: "first_interview_reward",
+        transactionOrigin: "first_interview_reward",
+        transactionType: "deposit",
         transactionAmount: 100,
         transactionTime: Date.now(),
         remark: "รางวัลสัมภาษณ์ครั้งแรก",
       },
+      session.candidateId,
+      "coin"
+    );
+
+    // Update pocket balance
+    const currentPocket = await webPocketsGetById(session.candidateId, "coin");
+    const currentBalance = currentPocket?.balance ?? 0;
+    await webPocketsUpdate(
+      {
+        uid: session.candidateId,
+        currency: "coin",
+        balance: currentBalance + 100,
+        latest: currentPocket?.latest ?? [],
+      },
+      session.candidateId,
       session.candidateId,
       "coin"
     );
@@ -410,6 +474,39 @@ export async function confirmInterview(
     );
 
     rewardAwarded = true;
+  }
+
+  // 10. Send interview confirmed email notification to company
+  if (interview.companyId) {
+    const company = await webCompanyInformationGetById(interview.companyId);
+    // Email exists in Firestore but isn't typed in FirebaseCompanyData
+    const companyEmail = (company as { email?: string })?.email;
+    if (company && companyEmail) {
+      const companyName = company.companyName || "บริษัท";
+      const candidateName = candidateInfo?.firstnameTH || candidateInfo?.nicknameTH || "ผู้สมัคร";
+      const application = interview.applicationId
+        ? await webJobApplicationGetById(interview.applicationId)
+        : null;
+      const jobTitle = application?.jobTitle || "ตำแหน่งงาน";
+      const interviewDateStr = new Date(interview.appointment).toISOString().split("T")[0] || "";
+
+      const emailData = await createInterviewConfirmedEmail(
+        companyName,
+        candidateName,
+        jobTitle,
+        formatThaiDate(interviewDateStr),
+        interview.from,
+        interview.to,
+        interview.channel as "online" | "onsite",
+        interview.location
+      );
+
+      await sendEmailNotification({
+        email: companyEmail,
+        emailData,
+        notificationType: "interview_confirmed",
+      });
+    }
   }
 
   revalidatePath("/jobsmarket/chat");
@@ -496,6 +593,39 @@ export async function declineInterview(
         session.uid,
         interview.applicationId
       );
+    }
+  }
+
+  // 8. Send interview declined email notification to company
+  if (interview.companyId) {
+    const company = await webCompanyInformationGetById(interview.companyId);
+    // Email exists in Firestore but isn't typed in FirebaseCompanyData
+    const companyEmail = (company as { email?: string })?.email;
+    if (company && companyEmail) {
+      const companyName = company.companyName || "บริษัท";
+      const candidate = await webCandidateInformationGetById(session.candidateId);
+      const candidateName = candidate?.firstnameTH || candidate?.nicknameTH || "ผู้สมัคร";
+      const application = interview.applicationId
+        ? await webJobApplicationGetById(interview.applicationId)
+        : null;
+      const jobTitle = application?.jobTitle || "ตำแหน่งงาน";
+      const interviewDateStr = new Date(interview.appointment).toISOString().split("T")[0] || "";
+
+      const emailData = await createInterviewDeclinedEmail(
+        companyName,
+        candidateName,
+        jobTitle,
+        formatThaiDate(interviewDateStr),
+        interview.from,
+        interview.to,
+        input.reason
+      );
+
+      await sendEmailNotification({
+        email: companyEmail,
+        emailData,
+        notificationType: "interview_declined",
+      });
     }
   }
 
@@ -591,6 +721,36 @@ export async function cancelInterview(
     }
   }
 
+  // 9. Send interview cancelled email notification
+  if (interview.candidateId) {
+    const candidate = await webCandidateInformationGetById(interview.candidateId);
+    if (candidate?.email) {
+      const candidateName = candidate.firstnameTH || candidate.nicknameTH || "ผู้สมัคร";
+      const application = interview.applicationId
+        ? await webJobApplicationGetById(interview.applicationId)
+        : null;
+      const jobTitle = application?.jobTitle || "ตำแหน่งงาน";
+      const companyName = application?.companyName || "บริษัท";
+      const interviewDateStr = new Date(interview.appointment).toISOString().split("T")[0] || "";
+
+      const emailData = await createInterviewCancelledEmail(
+        candidateName,
+        jobTitle,
+        companyName,
+        formatThaiDate(interviewDateStr),
+        interview.from,
+        interview.to,
+        input.reason
+      );
+
+      await sendEmailNotification({
+        email: candidate.email,
+        emailData,
+        notificationType: "interview_cancelled",
+      });
+    }
+  }
+
   revalidatePath("/jobsmarket/chat");
 
   return {
@@ -660,7 +820,7 @@ export async function rescheduleInterview(
   }
 
   // 8. Store old interview details for message
-  const oldDate = new Date(interview.appointment).toISOString().split("T")[0];
+  const oldDate = new Date(interview.appointment).toISOString().split("T")[0] || "";
   const oldFrom = interview.from;
   const oldTo = interview.to;
 
@@ -740,6 +900,39 @@ export async function rescheduleInterview(
       } catch (error) {
         throw new Error("Message error");
       }
+    }
+  }
+
+  // 12. Send interview rescheduled email notification
+  if (interview.candidateId) {
+    const candidate = await webCandidateInformationGetById(interview.candidateId);
+    if (candidate?.email) {
+      const candidateName = candidate.firstnameTH || candidate.nicknameTH || "ผู้สมัคร";
+      const application = interview.applicationId
+        ? await webJobApplicationGetById(interview.applicationId)
+        : null;
+      const jobTitle = application?.jobTitle || "ตำแหน่งงาน";
+      const companyName = application?.companyName || "บริษัท";
+
+      const emailData = await createInterviewRescheduledEmail(
+        candidateName,
+        jobTitle,
+        companyName,
+        formatThaiDate(oldDate),
+        oldFrom,
+        oldTo,
+        formatThaiDate(input.date),
+        input.from,
+        input.to,
+        (input.channel || interview.channel) as "online" | "onsite",
+        input.location || interview.location
+      );
+
+      await sendEmailNotification({
+        email: candidate.email,
+        emailData,
+        notificationType: "interview_rescheduled",
+      });
     }
   }
 

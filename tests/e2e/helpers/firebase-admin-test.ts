@@ -98,12 +98,14 @@ export interface TestAccountClaims {
 
 /**
  * Generate unique test email
- * Format: {prefix}-{timestamp}-{random}@test.chancedee.com
+ * Format: {prefix}-{timestamp}-{random1}{random2}@test.chancedee.com
+ * Uses double random to minimize collision risk in parallel test runs
  */
 export function generateTestEmail(prefix: string = "test"): string {
   const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 8);
-  return `${prefix}-${timestamp}-${random}@test.chancedee.com`;
+  const random1 = Math.random().toString(36).substring(2, 8);
+  const random2 = Math.random().toString(36).substring(2, 6);
+  return `${prefix}-${timestamp}-${random1}${random2}@test.chancedee.com`;
 }
 
 /**

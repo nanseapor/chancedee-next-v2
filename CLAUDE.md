@@ -6,6 +6,73 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## 🎯 Testing Philosophy (MOST IMPORTANT - READ FIRST)
+
+### Core Principle: Tests Exist to Find Bugs, Not to Pass
+
+**A failing test is a success** - it found a bug before users did.
+
+| Mindset | Wrong ❌ | Right ✅ |
+|---------|---------|----------|
+| Test fails | "I failed, let me skip it" | "Great, I found a bug to fix" |
+| Data not found | "Skip so test passes" | "Fail so we investigate why" |
+| Selector doesn't match | "Use generic selector" | "Fix the selector or add data-testid" |
+| Goal | Make all tests green | **Reveal all bugs** |
+
+### Defensive Skipping is FORBIDDEN
+
+This pattern is **banned** - it hides bugs instead of revealing them:
+
+```typescript
+// ❌ NEVER DO THIS - Hides bugs
+if (await cards.count() === 0) {
+  test.skip(true, "No applications available");
+}
+```
+
+**Why it's wrong:**
+- Factory DID create the data
+- If UI doesn't show it → **THAT'S A BUG**
+- By skipping, we ship the bug to production
+- Users will find it instead of tests finding it
+
+### Correct Approach: Let Tests Fail
+
+```typescript
+// ✅ CORRECT - Let it fail if data doesn't appear
+const { applicationId } = await createTestScenario();
+await expect(page.getByTestId(`application-${applicationId}`)).toBeVisible({ timeout: 15000 });
+// If this fails after 15 seconds → GOOD! We found a bug.
+```
+
+### Test Writing Rules
+
+1. **Never hide failures.** Do not use `test.skip()` to avoid failures. If a test can't find data that was created, that's a bug - let it fail.
+
+2. **Use specific IDs from factories.** Never look for "any matching element" - look for THE element you created.
+   ```typescript
+   // ❌ WRONG - Generic selector
+   const anyCard = page.getByRole("row").filter({ hasText: /applied/ });
+
+   // ✅ CORRECT - Specific ID from factory
+   const { applicationId } = await factory.createApplication();
+   await page.getByTestId(`application-card-${applicationId}`).click();
+   ```
+
+3. **Failures lead to improvement.** When a test fails:
+   - Investigate the root cause
+   - Fix the actual bug (in code or test)
+   - Never "fix" by skipping
+
+4. **It's okay to fail.** Claude Code is not expected to make everything pass. Honest failures are more valuable than dishonest passes.
+
+5. **Legitimate skips only.** `test.skip()` is ONLY acceptable for:
+   - Features not yet implemented (TODO)
+   - Tests requiring special infrastructure (e.g., network error simulation)
+   - Truly not applicable scenarios
+
+---
+
 ## ⛔ MANDATORY: Quality Gates (STOP Points)
 
 ### ❗ READ THIS FIRST - NON-NEGOTIABLE

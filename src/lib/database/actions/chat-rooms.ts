@@ -3,6 +3,7 @@
 import { Filter } from "firebase-admin/firestore";
 
 import { getSessionUser } from "@/lib/firebase/admin-auth";
+import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
 import { chatRepository } from "@/lib/database/repositories/chat-repository";
 import { messagesRepository } from "@/lib/database/repositories/messages-repository";
 import { webCandidateInformationGetById } from "@/lib/database/actions/candidate-information";
@@ -47,13 +48,23 @@ export async function fetchChatRoomsMetadata(params: {
       currentUser: {
         id: sessionUser.uid,
         role: navBar,
+        candidateId: sessionUser.candidateId ?? undefined,
+        companyId: sessionUser.companyId ?? undefined,
       },
     };
   }
 
   // 4. Query chat rooms
-  const fieldPath = isCandidate ? "candidateId" : "companyId";
-  const filter = Filter.where(fieldPath, "==", userId);
+  // Note: Firestore uses snake_case field names, but we need to query with DocumentReference
+  const candidateRef = getFirebaseAdminFirestore()
+    .collection("candidate_information")
+    .doc(userId);
+  const companyRef = getFirebaseAdminFirestore()
+    .collection("company_information")
+    .doc(userId);
+  const fieldPath = isCandidate ? "candidate_id" : "company_id";
+  const queryRef = isCandidate ? candidateRef : companyRef;
+  const filter = Filter.where(fieldPath, "==", queryRef);
 
   const chatRooms = await chatRepository.getByFilter(filter);
 
@@ -63,6 +74,8 @@ export async function fetchChatRoomsMetadata(params: {
       currentUser: {
         id: sessionUser.uid,
         role: navBar,
+        candidateId: sessionUser.candidateId ?? undefined,
+        companyId: sessionUser.companyId ?? undefined,
       },
     };
   }
@@ -135,6 +148,8 @@ export async function fetchChatRoomsMetadata(params: {
     currentUser: {
       id: sessionUser.uid,
       role: navBar,
+      candidateId: sessionUser.candidateId ?? undefined,
+      companyId: sessionUser.companyId ?? undefined,
     },
   };
 }

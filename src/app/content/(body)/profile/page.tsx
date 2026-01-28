@@ -1,7 +1,7 @@
 "use client";
 
-import getCandidateDataWithToken from "@/domains/candidates/services/server/actions/candidate-data";
-import getUserDataWithToken from "@/domains/authentication/services/server/actions/user-data";
+import { getCandidateDataWithToken } from "@/domains/candidates/services/server/actions/candidate-data";
+import { getUserDataWithToken } from "@/domains/authentication/services/server/actions/user-data";
 import ProfilePageSkeleton from "@/components/user/profile-page-skeleton";
 import { UserProfileTabs } from "@/components/user/userprofile-tabs";
 import { useFirebaseAuth } from "@/hooks/use-auth";

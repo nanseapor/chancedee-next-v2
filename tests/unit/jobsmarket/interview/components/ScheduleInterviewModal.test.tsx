@@ -89,10 +89,11 @@ describe("ScheduleInterviewModal", () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
 
-      await userEvent.type(dateInput, yesterday.toISOString().split("T")[0]);
+      // Use fireEvent.change for native date inputs
+      fireEvent.change(dateInput, { target: { value: yesterday.toISOString().split("T")[0] } });
 
       const submitButton = screen.getByRole("button", { name: /ยืนยัน/i });
-      await userEvent.click(submitButton);
+      fireEvent.click(submitButton);
 
       await waitFor(() => {
         expect(screen.getByText(/วันที่ต้องเป็นอนาคต/i)).toBeInTheDocument();
@@ -107,12 +108,15 @@ describe("ScheduleInterviewModal", () => {
       render(<ScheduleInterviewModal {...defaultProps} />);
 
       const dateInput = screen.getByLabelText(/วันที่/i);
-      const today = new Date().toISOString().split("T")[0];
+      // Format today as YYYY-MM-DD in local timezone to match component logic
+      const today = new Date();
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-      await userEvent.type(dateInput, today);
+      // Use fireEvent.change for native date inputs
+      fireEvent.change(dateInput, { target: { value: todayStr } });
 
       const submitButton = screen.getByRole("button", { name: /ยืนยัน/i });
-      await userEvent.click(submitButton);
+      fireEvent.click(submitButton);
 
       await waitFor(() => {
         expect(screen.getByText(/วันที่ต้องเป็นอนาคต/i)).toBeInTheDocument();
@@ -130,10 +134,11 @@ describe("ScheduleInterviewModal", () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
 
-      await userEvent.type(dateInput, tomorrow.toISOString().split("T")[0]);
+      // Use fireEvent.change for native date inputs
+      fireEvent.change(dateInput, { target: { value: tomorrow.toISOString().split("T")[0] } });
 
       const submitButton = screen.getByRole("button", { name: /ยืนยัน/i });
-      await userEvent.click(submitButton);
+      fireEvent.click(submitButton);
 
       await waitFor(() => {
         expect(screen.queryByText(/วันที่ต้องเป็นอนาคต/i)).not.toBeInTheDocument();
@@ -242,7 +247,8 @@ describe("ScheduleInterviewModal", () => {
       const noteInput = screen.getByLabelText(/หมายเหตุ/i);
       const longNote = "a".repeat(501);
 
-      await userEvent.type(noteInput, longNote);
+      // Use fireEvent.change instead of userEvent.type for faster execution
+      fireEvent.change(noteInput, { target: { value: longNote } });
 
       const submitButton = screen.getByRole("button", { name: /ยืนยัน/i });
       await userEvent.click(submitButton);
@@ -262,7 +268,8 @@ describe("ScheduleInterviewModal", () => {
       const noteInput = screen.getByLabelText(/หมายเหตุ/i);
       const validNote = "a".repeat(500);
 
-      await userEvent.type(noteInput, validNote);
+      // Use fireEvent.change instead of userEvent.type for faster execution
+      fireEvent.change(noteInput, { target: { value: validNote } });
 
       await waitFor(() => {
         expect(screen.queryByText(/หมายเหตุต้องไม่เกิน 500 ตัวอักษร/i)).not.toBeInTheDocument();

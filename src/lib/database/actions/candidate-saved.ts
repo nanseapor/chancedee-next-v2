@@ -1,6 +1,9 @@
 "use server";
 
-import type { FirebaseJobData } from "@/types/job.types";
+import type { SavedJobWithDetails } from "./candidate-saved.types";
+
+// Re-export type for consumers
+export type { SavedJobWithDetails } from "./candidate-saved.types";
 
 import { candidateSavedJobsRepository } from "../repositories/candidate-saved-jobs-repository";
 import { jobsRepository } from "../repositories/jobs-repository";
@@ -10,14 +13,6 @@ import { jobsRepository } from "../repositories/jobs-repository";
  *
  * Server actions for fetching candidate saved jobs with full job details
  */
-
-/**
- * Saved job with full job details
- */
-export interface SavedJobWithDetails {
-  savedAt: number;
-  job: FirebaseJobData;
-}
 
 /**
  * Get all saved jobs for a candidate with full job details

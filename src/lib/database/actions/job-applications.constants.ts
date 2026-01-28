@@ -120,3 +120,33 @@ export interface SubmitApplicationResult {
   error?: 'ALREADY_APPLIED' | 'JOB_CLOSED' | 'JOB_NOT_FOUND' | 'PROFILE_INCOMPLETE' | 'NETWORK_ERROR';
   keysToInvalidate?: string[];
 }
+
+/**
+ * EditApplicationInput - Input for editApplication server action
+ * Per BLS-03-02 specification
+ */
+export interface EditApplicationInput {
+  applicationId: string;
+  expectedSalary?: number | null;
+  isNegotiable?: boolean;
+  overheadDays?: 0 | 7 | 15 | 30 | 60 | 90;
+  headlines?: string;
+}
+
+/**
+ * EditApplicationResult - Return type for editApplication server action
+ * Per BLS-03-02 specification
+ */
+export interface EditApplicationResult {
+  success: boolean;
+  error?: 'NOT_FOUND' | 'NOT_OWNER' | 'ALREADY_PROCESSED' | 'JOB_INACTIVE' | 'NETWORK_ERROR';
+  keysToInvalidate?: string[];
+}
+
+/**
+ * Editable application statuses - only 'applied' allows editing
+ * Per BLS-03-02 specification
+ */
+export const EDITABLE_STATUSES = ['applied'] as const;
+
+export type EditableStatus = typeof EDITABLE_STATUSES[number];

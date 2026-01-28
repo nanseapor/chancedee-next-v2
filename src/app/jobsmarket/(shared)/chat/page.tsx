@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useEffect, Suspense } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
+import useSWR from "swr";
 
 import { activeRoleAtom } from "@/store/jobsmarket/global-atoms";
 import { useChatRooms } from "@/hooks/jobsmarket/chat/use-chat-rooms";
@@ -10,9 +11,12 @@ import { ChatRoomList } from "@/components/jobsmarket/chat/ChatRoomList";
 import { ChatSearchBar } from "@/components/jobsmarket/chat/ChatSearchBar";
 import { ChatEmptyState } from "@/components/jobsmarket/chat/ChatEmptyState";
 import { CandidateShell } from "@/components/jobsmarket/shells/CandidateShell";
+import CompanyShell from "@/components/jobsmarket/company/shells/CompanyShell";
 import { ChatRoomClient } from "./[roomId]/_components/ChatRoomClient";
 import { getRoomDetails, loadMessageHistory } from "@/lib/database/actions/chat-messages";
+import { fetchCompanyProfile, fetchUserMembership } from "@/lib/jobsmarket/company/fetchers";
 import type { RoomDetails, OptimisticMessage } from "@/types/chat.types";
+import type { Permission } from "@/types/jobsmarket/company";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -57,6 +61,46 @@ export default function ChatListPage() {
     navBar,
     searchQuery,
   });
+
+  // Fetch company data for CompanyShell when user is a company user
+  const { data: companyData } = useSWR(
+    navBar === "company" && currentUser?.companyId
+      ? ["company-profile", currentUser.companyId]
+      : null,
+    async () => {
+      if (!currentUser?.companyId) return null;
+      return fetchCompanyProfile(currentUser.companyId);
+    }
+  );
+
+  // Fetch user's company role for permission checks
+  const { data: membershipData } = useSWR(
+    navBar === "company" && currentUser?.id && currentUser?.companyId
+      ? ["company-membership", currentUser.id, currentUser.companyId]
+      : null,
+    async () => {
+      if (!currentUser?.id || !currentUser?.companyId) return null;
+      return fetchUserMembership(currentUser.id, currentUser.companyId);
+    }
+  );
+
+  // Create permission check function based on user's company role
+  // Per COMP-R00 Section 4.2, role-based permissions
+  const hasPermission = useMemo(() => {
+    const role = membershipData?.role;
+    const ROLE_PERMISSIONS: Record<string, Permission[]> = {
+      admin: ["post_jobs", "edit_jobs", "view_applications", "accept_reject_applications", "schedule_interviews", "manage_team", "company_settings"],
+      hr_manager: ["post_jobs", "edit_jobs", "view_applications", "accept_reject_applications", "schedule_interviews", "company_settings"],
+      recruiter: ["post_jobs", "edit_jobs", "view_applications", "accept_reject_applications", "schedule_interviews"],
+      interviewer: ["schedule_interviews", "view_applications"],
+      viewer: ["view_applications"],
+    };
+
+    return (permission: Permission) => {
+      if (!role) return false;
+      return ROLE_PERMISSIONS[role]?.includes(permission) ?? false;
+    };
+  }, [membershipData?.role]);
 
   // Selected room from URL
   const selectedRoomId = searchParams.get("room");
@@ -218,20 +262,32 @@ export default function ChatListPage() {
   );
 
   // Wrap in appropriate shell based on role
-  // For now, using CandidateShell as default
-  // TODO: Add CompanyShell support when role switching is implemented
-  if (navBar === "candidate" && currentUser?.id) {
+  // CandidateShell for candidates, CompanyShell for company users
+  if (navBar === "candidate" && currentUser?.candidateId) {
     return (
       <CandidateShell
-        candidateId={currentUser.id}
+        candidateId={currentUser.candidateId}
         isOnboarded={true}
-        currentPath="/jobsmarket/chat"
+        currentPath="/chat"
       >
         {content}
       </CandidateShell>
     );
   }
 
-  // Fallback without shell (for company role or loading state)
+  // CompanyShell for company users when company data is loaded
+  if (navBar === "company" && companyData && membershipData?.isMember) {
+    return (
+      <CompanyShell
+        company={companyData}
+        hasPermission={hasPermission}
+      >
+        {content}
+      </CompanyShell>
+    );
+  }
+
+  // Fallback: show content without shell while loading company data
+  // or if company data is unavailable
   return content;
 }

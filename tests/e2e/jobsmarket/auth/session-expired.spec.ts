@@ -142,6 +142,6 @@ test.describe("AUTH-R08: Session Expired Page - Accessibility", () => {
     focusedElement = await page.evaluate(() => document.activeElement?.tagName);
     expect(focusedElement).toBe("A"); // Go home link
 
-    console.log("✓ Keyboard navigation works correctly");
+    // console.log("✓ Keyboard navigation works correctly");
   });
 });

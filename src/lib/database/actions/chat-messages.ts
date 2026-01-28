@@ -410,7 +410,8 @@ export async function getRoomDetails(input: {
       id: roomId,
       candidateId: room.candidateId,
       companyId: room.companyId,
-      jobId: null, // Could be enhanced with job context
+      applicationId: room.applicationId || null,
+      jobId: room.jobId || null,
     },
     otherParty: {
       id: otherPartyId,
@@ -423,6 +424,6 @@ export async function getRoomDetails(input: {
       role: isCandidate ? "candidate" : "company",
     },
     interview,
-    jobId: null,
+    jobId: room.jobId || null,
   };
 }

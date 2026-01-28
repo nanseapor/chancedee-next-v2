@@ -1,12 +1,12 @@
 import { test, expect, Page } from '@playwright/test';
+import {
+  createTestCompany,
+  type TestCompany,
+} from "../../helpers/factories";
+import { signInAsCompany } from "../../helpers/auth-helper";
 
-// Test configuration from .env.playwright
-const TEST_COMPANY_ID = process.env.PLAYWRIGHT_TEST_COMPANY_COMPANY_ID || 'YT55dLJcJTVBwQOxuazu';
-const TEST_COMPANY_EMAIL = process.env.PLAYWRIGHT_TEST_COMPANY_EMAIL || 'sangdow.w@peopleone.co.th';
-const TEST_COMPANY_PASSWORD = process.env.PLAYWRIGHT_TEST_COMPANY_PASSWORD || 'Peopleone2022*';
-
-// Test job ID created by integration test (see tests/integration/create-e2e-test-job.test.ts)
-const TEST_JOB_ID = 'q4RCakH0H36pSeV1r5xi';
+// Shared test data
+let company: TestCompany;
 
 // Helper to wait for page load
 async function waitForPageLoad(page: Page) {
@@ -25,20 +25,17 @@ async function waitForPageLoad(page: Page) {
   });
 }
 
-// No longer needed - using hardcoded TEST_JOB_ID
-
 test.describe('COMP-R07: Job Detail Page', () => {
-  // Authenticate before all tests
-  test.beforeEach(async ({ page }) => {
-    // Login as company user
-    await page.goto('/jobsmarket/auth/login');
-    await page.getByRole('textbox', { name: 'อีเมล' }).fill(TEST_COMPANY_EMAIL);
-    await page.getByPlaceholder('กรอกรหัสผ่าน').fill(TEST_COMPANY_PASSWORD);
-    await page.getByRole('checkbox', { name: /ยอมรับ/ }).check();
-    await page.getByRole('button', { name: 'เข้าสู่ระบบ', exact: true }).click();
+  test.beforeAll(async () => {
+    // Create test company with a published job for job detail tests
+    company = await createTestCompany({
+      testName: "job-detail",
+      withPublishedJobs: 1,
+    });
+  });
 
-    // Wait for redirect after login
-    await page.waitForURL(/\/jobsmarket\/(companies|candidates)/, { timeout: 10000 });
+  test.beforeEach(async ({ page }) => {
+    await signInAsCompany(page, company);
   });
 
   // ==========================================
@@ -46,7 +43,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   // ==========================================
   test.describe('Page Load & Navigation', () => {
     test('should load job detail page successfully', async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.locator('text=404')).not.toBeVisible();
@@ -55,7 +52,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display company shell with navigation', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const hasNav =
@@ -65,7 +62,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display tabs (Overview, Applications, Settings)', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.getByRole('tab', { name: 'ภาพรวม' })).toBeVisible();
@@ -75,7 +72,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should switch tabs when clicked', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await page.getByRole('tab', { name: 'ใบสมัคร' }).click();
@@ -90,7 +87,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should return 404 for non-existent job', async ({ page }) => {
       await page.goto(
-        `/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/non-existent-job-12345`
+        `/jobsmarket/companies/${company.companyId}/dashboard/jobs/non-existent-job-12345`
       );
       await page.waitForLoadState('networkidle');
 
@@ -108,7 +105,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('View Mode', () => {
     test('should display job header with title and status', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -117,7 +114,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display Edit button', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       // Edit button may not be visible for closed jobs, just check page loads
@@ -126,7 +123,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display stats cards', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const cards = page.locator('[class*="card"]');
@@ -135,7 +132,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display views chart or empty state', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.getByRole('heading', { name: 'การเข้าชม 30 วันล่าสุด' })).toBeVisible();
@@ -147,7 +144,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display recent applications section', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.getByRole('heading', { name: 'ใบสมัครล่าสุด' })).toBeVisible();
@@ -156,7 +153,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display job details section', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       await expect(page.getByRole('heading', { name: 'ตัวอย่างประกาศงาน' })).toBeVisible();
@@ -170,7 +167,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('Status Actions', () => {
     test('should show action menu when clicked', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const actionsButton = page
@@ -185,7 +182,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should show duplicate option in menu', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const actionsButton = page.locator('button:has([class*="more"])').first();
@@ -212,7 +209,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('Edit Mode', () => {
     test('should enter edit mode when Edit button clicked', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -225,7 +222,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display form fields in edit mode', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -239,7 +236,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should show Save and Cancel buttons in edit mode', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -255,7 +252,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should disable Save button when no changes made', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -271,7 +268,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should enable Save button when changes made', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -290,7 +287,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should show validation error for empty required field', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.getByRole('button', { name: 'แก้ไข' });
@@ -308,7 +305,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should return to view mode when Cancel clicked (no changes)', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -330,7 +327,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('Change Tracking', () => {
     test('should show change indicator when field modified', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.getByRole('button', { name: 'แก้ไข' });
@@ -348,7 +345,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should show unsaved changes message', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -371,7 +368,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('Navigation Guards', () => {
     test('should show confirmation modal when canceling with unsaved changes', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.getByRole('button', { name: 'แก้ไข' });
@@ -392,7 +389,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should discard changes when Discard clicked', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -418,7 +415,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
   test.describe('Enhanced Form Fields', () => {
     test('should display employment type dropdown', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -433,7 +430,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display job type dropdown', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.getByRole('button', { name: 'แก้ไข' });
@@ -448,7 +445,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display positions input with +/- buttons', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -466,7 +463,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should increment positions when + clicked', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');
@@ -487,7 +484,7 @@ test.describe('COMP-R07: Job Detail Page', () => {
 
     test('should display work location field', async ({ page }) => {
 
-      await page.goto(`/jobsmarket/companies/${TEST_COMPANY_ID}/dashboard/jobs/${TEST_JOB_ID}`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/jobs/${company.jobIds[0]}`);
       await waitForPageLoad(page);
 
       const editButton = page.locator('button:has-text("แก้ไข")');

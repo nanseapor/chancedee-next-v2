@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { useJobDetail } from '@/hooks/jobsmarket/jobs/use-job-detail';
 import type { FirebaseJobData } from '@/types/job.types';
 
@@ -8,29 +8,44 @@ vi.mock('@/lib/database/actions/jobs', () => ({
   webJobGetById: vi.fn(),
 }));
 
-// Mock SWR
+// Mock SWR - use a controlled mock for predictable behavior
+const mockSWRData = {
+  data: undefined as unknown,
+  error: undefined as Error | undefined,
+  isLoading: false,
+};
+
 vi.mock('swr', () => ({
-  default: vi.fn((key, fetcher) => {
-    if (!key) {
-      return {
-        data: undefined,
-        error: undefined,
-        isLoading: false,
-        mutate: vi.fn(),
-      };
-    }
-
-    // Call fetcher immediately for testing
-    const fetchedData = fetcher ? fetcher() : undefined;
-
-    return {
-      data: fetchedData,
-      error: undefined,
-      isLoading: false,
-      mutate: vi.fn(),
-    };
-  }),
+  default: vi.fn(() => ({
+    get data() {
+      return mockSWRData.data;
+    },
+    get error() {
+      return mockSWRData.error;
+    },
+    get isLoading() {
+      return mockSWRData.isLoading;
+    },
+    mutate: vi.fn(),
+  })),
 }));
+
+// Helper to reset SWR mock state
+function resetSWRMock() {
+  mockSWRData.data = undefined;
+  mockSWRData.error = undefined;
+  mockSWRData.isLoading = false;
+}
+
+// Helper to set mock data
+function setSWRData(data: unknown) {
+  mockSWRData.data = data;
+}
+
+// Helper to set mock error
+function setSWRError(error: Error) {
+  mockSWRData.error = error;
+}
 
 describe('useJobDetail', () => {
   const mockJob: FirebaseJobData = {
@@ -50,10 +65,12 @@ describe('useJobDetail', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSWRMock();
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    resetSWRMock();
   });
 
   describe('Initialization', () => {
@@ -80,33 +97,31 @@ describe('useJobDetail', () => {
   });
 
   describe('Data Fetching', () => {
-    it('should fetch job data when jobId is provided', async () => {
-      const { webJobGetById } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobGetById).mockResolvedValue(mockJob);
-
+    it('should fetch job data when jobId is provided', () => {
       const { result } = renderHook(() => useJobDetail('job-123'));
 
       expect(result.current).toBeDefined();
     });
 
-    it('should return job data on successful fetch', async () => {
-      const { webJobGetById } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobGetById).mockResolvedValue(mockJob);
+    it('should return job data on successful fetch', () => {
+      // Set the mock data before rendering
+      setSWRData(mockJob);
 
       const { result } = renderHook(() => useJobDetail('job-123'));
 
-      await waitFor(() => {
-        expect(result.current.job).toBeDefined();
-      });
+      expect(result.current.job).toBeDefined();
+      expect(result.current.job?.uid).toBe('job-123');
     });
 
-    it('should return error on fetch failure', async () => {
-      const { webJobGetById } = await import('@/lib/database/actions/jobs');
-      vi.mocked(webJobGetById).mockRejectedValue(new Error('Fetch failed'));
+    it('should return error on fetch failure', () => {
+      // Set the mock error before rendering
+      setSWRError(new Error('Fetch failed'));
 
       const { result } = renderHook(() => useJobDetail('job-123'));
 
       expect(result.current).toBeDefined();
+      expect(result.current.error).toBeDefined();
+      expect(result.current.error?.message).toBe('Fetch failed');
     });
   });
 

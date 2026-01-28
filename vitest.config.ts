@@ -11,7 +11,7 @@ export default defineConfig({
     include: ["tests/unit/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "html", "lcov"],
       exclude: [
         "node_modules/",
         "tests/",
@@ -19,6 +19,13 @@ export default defineConfig({
         "**/*.d.ts",
         "**/*.test.{ts,tsx}",
       ],
+      // Enforce coverage thresholds per PROJECT_INSTRUCTIONS (90%+ required)
+      thresholds: {
+        statements: 90,
+        branches: 85,
+        functions: 90,
+        lines: 90,
+      },
     },
   },
   resolve: {

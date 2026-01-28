@@ -82,7 +82,7 @@ function JobCardList({
     <div data-testid="job-card" className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-card">
       <div className="flex gap-4">
         {/* Company Logo */}
-        <Link href={`/jobsmarket/companies/${job.companyId}`} className="shrink-0">
+        <Link href={`/companies/${job.companyId}`} className="shrink-0">
           <div className="w-12 h-12 relative rounded-md overflow-hidden border bg-muted">
             {job.companyLogo ? (
               <Image src={job.companyLogo} alt={job.companyName} fill className="object-cover" />
@@ -98,11 +98,11 @@ function JobCardList({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <Link href={`/jobsmarket/jobs/${job.uid}`} className="hover:underline">
+              <Link href={`/jobs/${job.uid}`} className="hover:underline">
                 <h3 className="font-semibold text-base line-clamp-1">{job.title}</h3>
               </Link>
               <Link
-                href={`/jobsmarket/companies/${job.companyId}`}
+                href={`/companies/${job.companyId}`}
                 className="text-sm text-muted-foreground hover:underline"
               >
                 {job.companyName}
@@ -160,7 +160,7 @@ function JobCardCompact({
   showSaveButton: boolean;
 }) {
   return (
-    <Link href={`/jobsmarket/jobs/${job.uid}`} data-testid="job-card" className="block border rounded-lg p-3 hover:shadow-md transition-shadow bg-card">
+    <Link href={`/jobs/${job.uid}`} data-testid="job-card" className="block border rounded-lg p-3 hover:shadow-md transition-shadow bg-card">
       <div className="text-center space-y-2">
         {/* Company Logo */}
         <div className="w-10 h-10 relative rounded-md overflow-hidden border bg-muted mx-auto">
@@ -216,7 +216,7 @@ function JobCardSaved({
     <div data-testid="job-card" className={cn('border rounded-lg p-4 hover:shadow-md transition-shadow bg-card', isUnavailable && 'opacity-60')}>
       <div className="flex gap-4">
         {/* Company Logo */}
-        <Link href={`/jobsmarket/companies/${job.companyId}`} className="shrink-0">
+        <Link href={`/companies/${job.companyId}`} className="shrink-0">
           <div className="w-12 h-12 relative rounded-md overflow-hidden border bg-muted">
             {job.companyLogo ? (
               <Image src={job.companyLogo} alt={job.companyName} fill className="object-cover" />
@@ -232,11 +232,11 @@ function JobCardSaved({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <Link href={`/jobsmarket/jobs/${job.uid}`} className="hover:underline">
+              <Link href={`/jobs/${job.uid}`} className="hover:underline">
                 <h3 className="font-semibold text-base line-clamp-1">{job.title}</h3>
               </Link>
               <Link
-                href={`/jobsmarket/companies/${job.companyId}`}
+                href={`/companies/${job.companyId}`}
                 className="text-sm text-muted-foreground hover:underline"
               >
                 {job.companyName}

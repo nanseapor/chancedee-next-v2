@@ -200,7 +200,7 @@ export function CandidateAuthForm({
           >
             ฉันยอมรับ{" "}
             <a
-              href="/jobsmarket/legal/terms-of-service"
+              href="/legal/terms-of-service"
               target="_blank"
               className="text-primary hover:underline"
             >
@@ -208,7 +208,7 @@ export function CandidateAuthForm({
             </a>{" "}
             และ{" "}
             <a
-              href="/jobsmarket/privacy"
+              href="/privacy"
               target="_blank"
               className="text-primary hover:underline"
             >

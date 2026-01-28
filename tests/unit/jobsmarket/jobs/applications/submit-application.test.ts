@@ -181,10 +181,11 @@ describe('BLS-03-01: submitApplication', () => {
       const result = await submitApplication(input, mockUser.uid);
 
       // Assert
+      // Per schema, null is converted to undefined (see job-applications.ts line 719)
       expect(result.success).toBe(true);
       expect(mockCreate).toHaveBeenCalledWith(
         expect.objectContaining({
-          expectedSalary: null,
+          expectedSalary: undefined,
         }),
         mockUser.uid
       );
@@ -291,6 +292,7 @@ describe('BLS-03-01: submitApplication', () => {
       const result = await submitApplication(input, mockUser.uid);
 
       // Assert
+      // Per schema, undefined is used instead of null for expectedSalary
       expect(result.success).toBe(true);
       expect(mockCreate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -299,7 +301,7 @@ describe('BLS-03-01: submitApplication', () => {
           companyId: 'company-789',
           companyName: 'Test Company',
           status: 'applied',
-          expectedSalary: null,
+          expectedSalary: undefined, // Schema uses undefined, not null
           isNegotiable: true, // Default
           overheadDays: 0, // Default
           headlines: '', // Default

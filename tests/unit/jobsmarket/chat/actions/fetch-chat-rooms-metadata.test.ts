@@ -15,6 +15,18 @@ vi.mock("@/lib/firebase/admin-auth", () => ({
   getSessionUser: vi.fn(),
 }));
 
+// Mock Firebase Admin Firestore
+vi.mock("@/lib/firebase/admin", () => ({
+  getFirebaseAdminFirestore: vi.fn(() => ({
+    collection: vi.fn(() => ({
+      doc: vi.fn(() => ({
+        id: "mock-doc-id",
+        path: "mock-collection/mock-doc-id",
+      })),
+    })),
+  })),
+}));
+
 // Mock chat repository
 vi.mock("@/lib/database/repositories/chat-repository", () => ({
   chatRepository: {

@@ -31,7 +31,7 @@ export function ResetSuccess({ email, onResend }: ResetSuccessProps) {
   const router = useRouter();
 
   const handleBackToLogin = () => {
-    router.push("/jobsmarket/auth/login");
+    router.push("/auth/login");
   };
 
   return (

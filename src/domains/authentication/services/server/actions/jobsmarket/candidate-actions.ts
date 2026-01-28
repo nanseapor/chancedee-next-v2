@@ -9,12 +9,15 @@
 "use server";
 
 import { headers } from "next/headers";
+import { Filter } from "firebase-admin/firestore";
 import { generateDocumentId } from "@/lib/database/utils/firebase-utils";
 import { login } from "@/domains/authentication/services/server/actions/session";
 import { webUserAccountCreate } from "@/lib/database/actions/user-accounts";
 import { webUserInfoCreate } from "@/lib/database/actions/user-info";
 import { webCandidateInformationCreate } from "@/lib/database/actions/candidate-information";
 import { webConsentRecordCreate } from "@/lib/database/actions/consent-records";
+import { awardSignupBonus, awardReferralBonus } from "@/lib/database/actions/wallet-rewards";
+import { webCandidateReferralGetByFilter } from "@/lib/database/actions/candidate-referral";
 
 /**
  * Create candidate account (Email/Password flow)
@@ -94,19 +97,16 @@ export async function createCandidateAccountEmail(data: {
       isSearchable: true,
     }, data.firebaseUid, data.firebaseUid);
 
-    // Step 7: Create wallets document with signup bonus
-    // TODO: Implement wallet creation when wallet actions are available
-    // await webWalletsCreate({
-    //   uid: generateDocumentId("wallets"),
-    //   user_id: data.firebaseUid,
-    //   total_coins: 100, // BLS-01 §6 Sign-up bonus
-    //   available_coins: 100,
-    //   reserved_coins: 0,
-    //   total_earned: 100,
-    //   total_spent: 0,
-    //   created_at: Timestamp.now(),
-    //   updated_at: Timestamp.now(),
-    // });
+    // Step 7: Award signup bonus (BLS-10-03)
+    await awardSignupBonus(data.firebaseUid);
+
+    // Step 7b: Award referral bonus if referral code provided (BLS-10-04)
+    if (data.referralCode) {
+      const referrerId = await lookupReferrerByCode(data.referralCode);
+      if (referrerId) {
+        await awardReferralBonus(data.firebaseUid, referrerId);
+      }
+    }
 
     // Step 8: Create consent_records document
     await webConsentRecordCreate({
@@ -230,19 +230,16 @@ export async function createCandidateAccountGoogle(data: {
       isSearchable: true,
     }, data.firebaseUid, data.firebaseUid);
 
-    // Step 6: Create wallets document with signup bonus
-    // TODO: Implement wallet creation when wallet actions are available
-    // await webWalletsCreate({
-    //   uid: generateDocumentId("wallets"),
-    //   user_id: data.firebaseUid,
-    //   total_coins: 100, // BLS-01 §6 Sign-up bonus
-    //   available_coins: 100,
-    //   reserved_coins: 0,
-    //   total_earned: 100,
-    //   total_spent: 0,
-    //   created_at: Timestamp.now(),
-    //   updated_at: Timestamp.now(),
-    // });
+    // Step 6: Award signup bonus (BLS-10-03)
+    await awardSignupBonus(data.firebaseUid);
+
+    // Step 6b: Award referral bonus if referral code provided (BLS-10-04)
+    if (data.referralCode) {
+      const referrerId = await lookupReferrerByCode(data.referralCode);
+      if (referrerId) {
+        await awardReferralBonus(data.firebaseUid, referrerId);
+      }
+    }
 
     // Step 7: Create consent_records document
     await webConsentRecordCreate({
@@ -300,4 +297,36 @@ function hashIp(ip: string): string {
     hash = hash & hash;
   }
   return Math.abs(hash).toString(16).padStart(16, "0");
+}
+
+/**
+ * Look up a referrer's user ID by their referral code
+ * Per BLS-10-04: Referral bonus validation
+ *
+ * @param referralCode - The referral code to look up
+ * @returns The referrer's user ID or null if not found
+ */
+async function lookupReferrerByCode(referralCode: string): Promise<string | null> {
+  if (!referralCode || referralCode.trim() === "") {
+    return null;
+  }
+
+  try {
+    // Query candidate_referral collection for matching refer_code
+    const referrals = await webCandidateReferralGetByFilter(
+      Filter.where("refer_code", "==", referralCode.trim())
+    );
+
+    const firstReferral = referrals?.[0];
+    if (firstReferral?.uid) {
+      // The referrer's user ID is the uid of the referral document
+      // (the document is keyed by the user's ID)
+      return firstReferral.uid;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error looking up referrer by code:", error);
+    return null;
+  }
 }

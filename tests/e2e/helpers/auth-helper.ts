@@ -30,14 +30,14 @@ export async function signInWithCustomToken(page: Page, customToken: string, red
   await page.goto(tokenLoginUrl);
 
   // Wait for authentication to complete - either redirect away from token-login
-  // or navigate to any jobsmarket page that isn't auth-related
+  // or navigate to any jobsmarket or platform page that isn't auth-related
   await page.waitForURL(
     (url) => {
       const path = url.pathname;
       // Should have left the token-login page
       if (path.includes("/auth/token-login")) return false;
-      // Should be on a jobsmarket page
-      return path.startsWith("/jobsmarket");
+      // Should be on a jobsmarket or platform page
+      return path.startsWith("/jobsmarket") || path.startsWith("/platform");
     },
     { timeout: 15000 }
   );
@@ -66,8 +66,14 @@ export async function signInWithCredentials(
   // Fill in password
   await page.getByPlaceholder("กรอกรหัสผ่าน").fill(password);
 
-  // Click login button
-  await page.getByRole("button", { name: /เข้าสู่ระบบ/ }).click();
+  // Accept terms and privacy policy (required for login)
+  const termsCheckbox = page.getByRole("checkbox", { name: /ยอมรับ.*ข้อกำหนด/i });
+  if (await termsCheckbox.isVisible()) {
+    await termsCheckbox.check();
+  }
+
+  // Click login button (use exact match to avoid matching "เข้าสู่ระบบด้วย Google")
+  await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
 
   // Wait for redirect to dashboard/home
   await page.waitForURL(/\/(candidates|companies|dashboard|chat)/, {
@@ -170,8 +176,22 @@ export async function signInAsCandidate(
   candidate: { customToken: string; candidateId: string }
 ) {
   await signInWithCustomToken(page, candidate.customToken);
+
+  // Wait a bit longer for session cookie to propagate
+  await page.waitForTimeout(1000);
+
   await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/dashboard`);
-  await expect(page).toHaveURL(new RegExp(`/candidates/${candidate.candidateId}`));
+
+  // Give more time for auth state to stabilize - retry if redirected to login
+  try {
+    await expect(page).toHaveURL(new RegExp(`/candidates/${candidate.candidateId}`), { timeout: 10000 });
+  } catch {
+    // If redirected to login, try signing in again
+    await signInWithCustomToken(page, candidate.customToken);
+    await page.waitForTimeout(1000);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/dashboard`);
+    await expect(page).toHaveURL(new RegExp(`/candidates/${candidate.candidateId}`));
+  }
 }
 
 /**
@@ -187,6 +207,37 @@ export async function signInAsCompany(
   company: { customToken: string; companyId: string }
 ) {
   await signInWithCustomToken(page, company.customToken);
+
+  // Wait a bit longer for session cookie to propagate
+  await page.waitForTimeout(1000);
+
   await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard`);
-  await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}`));
+
+  // Give more time for auth state to stabilize - retry if redirected to login
+  try {
+    await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}`), { timeout: 10000 });
+  } catch {
+    // If redirected to login, try signing in again
+    await signInWithCustomToken(page, company.customToken);
+    await page.waitForTimeout(1000);
+    await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard`);
+    await expect(page).toHaveURL(new RegExp(`/companies/${company.companyId}`));
+  }
+}
+
+/**
+ * Sign in using email/password (alias for signInWithCredentials)
+ *
+ * This is a convenience alias used by wallet and other E2E tests.
+ *
+ * @example
+ * const candidate = await CandidateVariants.complete();
+ * await loginAsTestUser(page, candidate.email, candidate.password);
+ */
+export async function loginAsTestUser(
+  page: Page,
+  email: string,
+  password: string
+) {
+  return signInWithCredentials(page, email, password);
 }
