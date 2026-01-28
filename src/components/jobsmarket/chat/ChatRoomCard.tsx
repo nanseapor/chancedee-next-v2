@@ -102,7 +102,7 @@ export function ChatRoomCard({
 
   return (
     <div
-      data-testid="chat-room-card"
+      data-testid={`chat-room-${uid}`}
       role="button"
       tabIndex={0}
       aria-label={ariaLabel}

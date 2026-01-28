@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   updateUserNotificationPreferences,
-  DEFAULT_NOTIFICATION_PREFERENCES,
   type NotificationPreferences,
 } from "@/domains/authentication/services/server/actions/jobsmarket/notification-preferences";
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "@/domains/authentication/services/server/actions/jobsmarket/notification-preferences.types";
 import { webUserDataPropsUpdate } from "@/lib/database/actions/user-data-props";
 
 // Mock the database action

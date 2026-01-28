@@ -49,7 +49,7 @@ const HeroSectionAligned = async ({ homeData }: { homeData: Home }) => {
           {/* Button styling aligned with reference site */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <Link
-              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/social"}
+              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/login"}
             >
               <Button 
                 size="lg" 
@@ -61,7 +61,7 @@ const HeroSectionAligned = async ({ homeData }: { homeData: Home }) => {
             </Link>
             
             <Link
-              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/email/sign-in"}
+              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/login"}
               className="flex items-center justify-center h-12 px-6 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
             >
               ประกาศงาน

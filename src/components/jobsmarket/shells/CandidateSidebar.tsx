@@ -31,7 +31,7 @@ export function CandidateSidebar({
   const navItems = [
     {
       id: "dashboard",
-      href: `/jobsmarket/candidates/${candidateId}`,
+      href: `/candidates/${candidateId}`,
       icon: <DashboardIcon />,
       labelTh: "แดชบอร์ด",
       labelEn: "Dashboard",
@@ -40,7 +40,7 @@ export function CandidateSidebar({
     },
     {
       id: "profile",
-      href: `/jobsmarket/candidates/${candidateId}/profile`,
+      href: `/candidates/${candidateId}/profile`,
       icon: <ProfileIcon />,
       labelTh: "โปรไฟล์",
       labelEn: "Profile",
@@ -49,7 +49,7 @@ export function CandidateSidebar({
     },
     {
       id: "jobs",
-      href: "/jobsmarket/jobs",
+      href: "/jobs",
       icon: <JobsIcon />,
       labelTh: "ค้นหางาน",
       labelEn: "Find Jobs",
@@ -59,7 +59,7 @@ export function CandidateSidebar({
     },
     {
       id: "applications",
-      href: `/jobsmarket/candidates/${candidateId}/applications`,
+      href: `/candidates/${candidateId}/applications`,
       icon: <ApplicationsIcon />,
       labelTh: "ใบสมัคร",
       labelEn: "Applications",
@@ -68,7 +68,7 @@ export function CandidateSidebar({
     },
     {
       id: "saved",
-      href: `/jobsmarket/candidates/${candidateId}/saved`,
+      href: `/candidates/${candidateId}/saved`,
       icon: <SavedIcon />,
       labelTh: "รายการที่บันทึก",
       labelEn: "Saved",
@@ -77,7 +77,7 @@ export function CandidateSidebar({
     },
     {
       id: "settings",
-      href: `/jobsmarket/candidates/${candidateId}/settings`,
+      href: `/candidates/${candidateId}/settings`,
       icon: <SettingsIcon />,
       labelTh: "การตั้งค่า",
       labelEn: "Settings",
@@ -101,7 +101,7 @@ export function CandidateSidebar({
     <aside data-testid="sidebar" className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-64 lg:bg-white lg:border-r lg:border-gray-200">
       {/* Logo Header */}
       <div className="flex items-center h-14 px-6 border-b border-gray-200">
-        <Logo href="/jobsmarket" className="" />
+        <Logo href="/" className="" />
       </div>
 
       {/* Navigation Items */}

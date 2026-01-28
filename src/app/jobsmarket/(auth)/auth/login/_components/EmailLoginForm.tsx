@@ -107,7 +107,7 @@ export function EmailLoginForm({
               <div className="flex items-center justify-between">
                 <FormLabel>รหัสผ่าน</FormLabel>
                 <Link
-                  href="/jobsmarket/auth/reset"
+                  href="/auth/reset"
                   className="text-sm text-primary hover:underline"
                   tabIndex={-1}
                 >
@@ -160,7 +160,7 @@ export function EmailLoginForm({
           >
             ยอมรับ{" "}
             <Link
-              href="/jobsmarket/legal/terms"
+              href="/legal/terms"
               className="text-primary hover:underline"
               target="_blank"
             >
@@ -168,7 +168,7 @@ export function EmailLoginForm({
             </Link>{" "}
             และ{" "}
             <Link
-              href="/jobsmarket/privacy"
+              href="/privacy"
               className="text-primary hover:underline"
               target="_blank"
             >

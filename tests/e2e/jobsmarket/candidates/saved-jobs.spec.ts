@@ -1,47 +1,34 @@
 import { test, expect } from '@playwright/test';
 import { seedSavedJob, cleanupSavedJob, cleanupMultipleSavedJobs } from './saved-jobs-helpers';
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../helpers/factories";
+import { signInAsCandidate } from "../../helpers/auth-helper";
 
 /**
  * CAND-R05 Phase A: Saved Jobs - E2E Tests
  * Route: /candidates/[id]/saved
- *
- * Test credentials from .env.playwright
  */
 
-const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL || 'xalanaseon@hotmail.com';
-const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD || 'P@ssw0rd@1';
-const TEST_UID = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID || 'bywpdkLOSTWjvV8JhhQL6LNditJ3';
-
-const SAVED_JOBS_URL = `/jobsmarket/candidates/${TEST_UID}/saved`;
+// Shared test data
+let candidate: TestCandidate;
 
 test.describe('CAND-R05: Saved Jobs Page', () => {
-
-  // Helper to login
-  async function login(page: any) {
-    await page.goto('/jobsmarket/auth/login');
-    await page.fill('input[type="email"]', TEST_EMAIL);
-    await page.fill('input[type="password"]', TEST_PASSWORD);
-
-    // Check terms acceptance checkbox (shadcn checkbox, click the label area)
-    await page.locator('[for="terms"]').click();
-
-    await page.click('button[type="submit"]');
-
-    // Wait for login to complete (check for session cookie or success indicator)
-    // Don't rely on redirect since login page may not redirect automatically
-    await page.waitForTimeout(2000); // Give login time to complete
-
-    // Navigate directly to saved jobs page
-    await page.goto(SAVED_JOBS_URL);
-    await page.waitForLoadState('networkidle');
-  }
+  test.beforeAll(async () => {
+    // Create test candidate with complete profile
+    candidate = await createTestCandidate({
+      testName: "saved-jobs",
+      withCompleteProfile: true,
+    });
+  });
 
   test.describe('Authentication & Access', () => {
     test('redirects to login when not authenticated', async ({ page, context }) => {
       // Clear cookies to simulate logged out state
       await context.clearCookies();
 
-      await page.goto(SAVED_JOBS_URL);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/saved`);
 
       await expect(page).toHaveURL(/\/auth\/login/);
     });
@@ -49,7 +36,9 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
 
   test.describe('Page Structure', () => {
     test.beforeEach(async ({ page }) => {
-      await login(page);
+      await signInAsCandidate(page, candidate);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/saved`);
+      await page.waitForLoadState('domcontentloaded');
     });
     test('displays page with 3 tabs', async ({ page }) => {
       // Check page title
@@ -69,7 +58,9 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
 
   test.describe('Jobs Tab Content', () => {
     test.beforeEach(async ({ page }) => {
-      await login(page);
+      await signInAsCandidate(page, candidate);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/saved`);
+      await page.waitForLoadState('domcontentloaded');
     });
 
     test('displays saved jobs list', async ({ page }) => {
@@ -106,7 +97,7 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
 
     test.beforeEach(async ({ page }) => {
       // Seed 2 test jobs: 1 active and 1 closed
-      const activeJob = await seedSavedJob(TEST_UID, {
+      const activeJob = await seedSavedJob(candidate.candidateId, {
         title: 'Active Test Job',
         companyName: 'Active Company',
         isActive: true,
@@ -114,7 +105,7 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
       });
       seededJobIds.push(activeJob.jobId);
 
-      const closedJob = await seedSavedJob(TEST_UID, {
+      const closedJob = await seedSavedJob(candidate.candidateId, {
         title: 'Closed Test Job',
         companyName: 'Closed Company',
         isActive: false,
@@ -123,12 +114,14 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
       seededJobIds.push(closedJob.jobId);
 
       // Login and navigate
-      await login(page);
+      await signInAsCandidate(page, candidate);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/saved`);
+      await page.waitForLoadState('domcontentloaded');
     });
 
     test.afterEach(async () => {
       // Cleanup seeded jobs
-      await cleanupMultipleSavedJobs(seededJobIds, TEST_UID);
+      await cleanupMultipleSavedJobs(seededJobIds, candidate.candidateId);
       seededJobIds.length = 0;
     });
 
@@ -170,7 +163,9 @@ test.describe('CAND-R05: Saved Jobs Page', () => {
 
   test.describe('Tab Navigation', () => {
     test.beforeEach(async ({ page }) => {
-      await login(page);
+      await signInAsCandidate(page, candidate);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/saved`);
+      await page.waitForLoadState('domcontentloaded');
     });
 
     test('Searches tab shows coming soon', async ({ page }) => {

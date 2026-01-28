@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../../helpers/factories";
+import { signInAsCandidate } from "../../../helpers/auth-helper";
 
 /**
  * E2E Test: Document Upload
@@ -16,19 +21,13 @@ import fs from "fs";
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/profile/profile-document-upload.spec.ts --project=chromium
  */
 
+let candidate: TestCandidate;
+
+// Create a test PDF file before tests
+const testFilesDir = path.join(process.cwd(), "tests/fixtures");
+const testPdfPath = path.join(testFilesDir, "test-document.pdf");
+
 test.describe("Document Upload", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
-
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword || !testUid, "Test credentials not configured");
-
-  // Create a test PDF file before tests
-  const testFilesDir = path.join(process.cwd(), "tests/fixtures");
-  const testPdfPath = path.join(testFilesDir, "test-document.pdf");
-
   test.beforeAll(async () => {
     // Ensure fixtures directory exists
     if (!fs.existsSync(testFilesDir)) {
@@ -42,22 +41,17 @@ test.describe("Document Upload", () => {
       );
       fs.writeFileSync(testPdfPath, minimalPdf);
     }
+
+    candidate = await createTestCandidate({
+      testName: "profile-document-upload",
+      withCompleteProfile: true,
+    });
   });
 
   test.beforeEach(async ({ page }) => {
-    // Login first
-    await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(testEmail!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-    await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-    // Wait for redirect after login
-    await page.waitForURL((url) => !url.pathname.includes("/auth/login"), { timeout: 15000 });
-
-    // Navigate to profile
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-    await page.waitForLoadState("networkidle");
+    await signInAsCandidate(page, candidate);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("should display Documents section", async ({ page }) => {
@@ -117,40 +111,25 @@ test.describe("Document Upload", () => {
     // Find Documents section
     const documentsSection = page.getByTestId("documents-section");
 
-    // Check if any documents exist
+    // First, ensure we have a document to delete by uploading one
+    const uploadButton = documentsSection.getByRole("button", { name: /อัปโหลด/ });
+    await expect(uploadButton).toBeVisible({ timeout: 5000 });
+
+    // Upload a document
+    const [fileChooser] = await Promise.all([
+      page.waitForEvent('filechooser', { timeout: 5000 }),
+      uploadButton.click(),
+    ]);
+    await fileChooser.setFiles(testPdfPath);
+
+    // Wait for upload to complete - document should appear
+    await expect(page.getByText(/test-document\.pdf|อัปโหลดเอกสารสำเร็จ/i)).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Now find the delete button - it MUST exist after upload
     const deleteButton = documentsSection.getByRole("button", { name: /ลบ/ }).first();
-    const hasDocuments = await deleteButton.isVisible({ timeout: 2000 }).catch(() => false);
-
-    if (!hasDocuments) {
-      // Try to upload a document first
-      const uploadButton = documentsSection.getByRole("button", { name: /อัปโหลด/ });
-      const uploadButtonVisible = await uploadButton.isVisible({ timeout: 2000 }).catch(() => false);
-
-      if (uploadButtonVisible) {
-        try {
-          // Attempt to upload
-          const [fileChooser] = await Promise.all([
-            page.waitForEvent('filechooser', { timeout: 5000 }),
-            uploadButton.click(),
-          ]);
-
-          await fileChooser.setFiles(testPdfPath);
-
-          // Wait for upload (but don't fail if it doesn't complete)
-          await page.waitForTimeout(3000);
-
-          // Check again if delete button appeared
-          const hasDocumentsNow = await deleteButton.isVisible({ timeout: 2000 }).catch(() => false);
-          if (!hasDocumentsNow) {
-            test.skip(true, "No documents available to delete after upload attempt");
-          }
-        } catch (error) {
-          test.skip(true, "Could not upload document for testing");
-        }
-      } else {
-        test.skip(true, "No documents available and cannot upload");
-      }
-    }
+    await expect(deleteButton).toBeVisible({ timeout: 5000 });
 
     // Listen for confirm dialog
     page.on('dialog', async (dialog) => {

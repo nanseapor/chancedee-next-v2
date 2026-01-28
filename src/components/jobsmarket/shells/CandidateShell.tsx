@@ -83,7 +83,7 @@ export function CandidateShell({
       items.push({ label: "โปรไฟล์" });
     } else if (currentPathName.includes("/applications")) {
       items.push({ label: "ใบสมัครงาน" });
-    } else if (currentPathName === `/jobsmarket/candidates/${candidateId}`) {
+    } else if (currentPathName === `/candidates/${candidateId}`) {
       items.push({ label: "แดชบอร์ด" });
     }
 
@@ -107,7 +107,7 @@ export function CandidateShell({
   const handleLogout = () => {
     console.log("Logout triggered");
     // TODO: Implement actual logout logic
-    window.location.href = "/jobsmarket/auth/login";
+    window.location.href = "/auth/login";
   };
 
   return (
@@ -156,38 +156,38 @@ export function CandidateShell({
       <nav data-testid="bottom-tab-bar" className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-20">
         <div className="flex items-center justify-around h-16">
           <MobileTabItem
-            href={`/jobsmarket/candidates/${candidateId}`}
+            href={`/candidates/${candidateId}`}
             icon={<HomeIcon />}
             label="หน้าหลัก"
-            isActive={(pathname || currentPath) === `/jobsmarket/candidates/${candidateId}`}
+            isActive={(pathname || currentPath) === `/candidates/${candidateId}`}
             disabled={!isOnboarded}
           />
           <MobileTabItem
-            href="/jobsmarket/jobs"
+            href="/jobs"
             icon={<JobsIcon />}
             label="งาน"
-            isActive={(pathname || currentPath)?.startsWith("/jobsmarket/jobs")}
+            isActive={(pathname || currentPath)?.startsWith("/jobs")}
             disabled={!isOnboarded}
           />
           <MobileTabItem
-            href={`/jobsmarket/candidates/${candidateId}/applications`}
+            href={`/candidates/${candidateId}/applications`}
             icon={<ApplicationsIcon />}
             label="ใบสมัคร"
-            isActive={(pathname || currentPath)?.startsWith(`/jobsmarket/candidates/${candidateId}/applications`)}
+            isActive={(pathname || currentPath)?.startsWith(`/candidates/${candidateId}/applications`)}
             disabled={!isOnboarded}
           />
           <MobileTabItem
-            href="/jobsmarket/chat"
+            href="/chat"
             icon={<ChatIcon />}
             label="ข้อความ"
-            isActive={(pathname || currentPath)?.startsWith("/jobsmarket/chat")}
+            isActive={(pathname || currentPath)?.startsWith("/chat")}
             disabled={!isOnboarded}
           />
           <MobileTabItem
-            href={`/jobsmarket/candidates/${candidateId}/profile`}
+            href={`/candidates/${candidateId}/profile`}
             icon={<ProfileIcon />}
             label="โปรไฟล์"
-            isActive={(pathname || currentPath)?.startsWith(`/jobsmarket/candidates/${candidateId}/profile`)}
+            isActive={(pathname || currentPath)?.startsWith(`/candidates/${candidateId}/profile`)}
             disabled={false} // Always allow profile access
           />
         </div>

@@ -1,4 +1,9 @@
 import { test, expect, Page } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../helpers/factories";
+import { signInAsCandidate } from "../../helpers/auth-helper";
 
 /**
  * E2E Test: Candidate Settings Route
@@ -7,15 +12,16 @@ import { test, expect, Page } from "@playwright/test";
  * User Journey: Candidate manages their privacy and notification settings
  *
  * Prerequisites:
- * - Test user with profile completed
  * - Dev server running
- * - Test credentials in .env.playwright
  *
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/settings.spec.ts --project=chromium
  *
  * @see tests/unit/jobsmarket/candidates/settings/ - 74 tests, 100% component coverage
  * @see tests/integration/jobsmarket/candidates/settings.test.ts - 20 tests, 100% DB coverage
  */
+
+// Shared test data
+let candidate: TestCandidate;
 
 /**
  * Helper: Wait for toggle save to complete
@@ -38,42 +44,19 @@ async function waitForToggleSave(page: Page) {
 }
 
 test.describe("CAND-R03: Candidate Settings", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
-
-  // Skip if credentials not available
-  test.skip(
-    !testEmail || !testPassword || !testUid,
-    "Test credentials not configured"
-  );
+  test.beforeAll(async () => {
+    // Create test candidate with complete profile
+    candidate = await createTestCandidate({
+      testName: "settings",
+      withCompleteProfile: true,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
+    await signInAsCandidate(page, candidate);
     // Navigate to settings page
-    await page.goto(`/jobsmarket/candidates/${testUid}/settings`);
-    await page.waitForLoadState("networkidle");
-
-    // Check if we're on login page (session expired)
-    if (page.url().includes("/auth/login")) {
-      // Login
-      await page.getByLabel("อีเมล").fill(testEmail!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-      await page.getByRole("checkbox").check();
-      await page
-        .getByRole("button", { name: "เข้าสู่ระบบ", exact: true })
-        .click();
-
-      // Wait for redirect back to settings
-      await page.waitForURL(
-        (url) => !url.pathname.includes("/auth/login"),
-        { timeout: 15000 }
-      );
-
-      // Navigate to settings again after login
-      await page.goto(`/jobsmarket/candidates/${testUid}/settings`);
-      await page.waitForLoadState("networkidle");
-    }
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/settings`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test.describe("Page Load & Rendering", () => {
@@ -244,7 +227,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
         await expect(toggle).toBeDisabled({ timeout: 500 });
       } catch {
         // If we can't catch it disabled, that's okay - save was fast
-        console.log("Toggle save was too fast to catch disabled state");
+        // console.log("Toggle save was too fast to catch disabled state");
       }
     });
   });
@@ -528,7 +511,7 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await context.clearCookies();
 
       // Navigate to settings
-      await page.goto(`/jobsmarket/candidates/${testUid}/settings`);
+      await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/settings`);
 
       // Should redirect to login
       await page.waitForURL("**/auth/login", { timeout: 10000 });
@@ -543,10 +526,10 @@ test.describe("CAND-R03: Candidate Settings", () => {
       await page.goto(`/jobsmarket/candidates/${wrongUid}/settings`);
 
       // Should redirect to own settings
-      await page.waitForURL(`**/candidates/${testUid}/settings`, {
+      await page.waitForURL(`**/candidates/${candidate.candidateId}/settings`, {
         timeout: 10000,
       });
-      expect(page.url()).toContain(`/candidates/${testUid}/settings`);
+      expect(page.url()).toContain(`/candidates/${candidate.candidateId}/settings`);
     });
   });
 

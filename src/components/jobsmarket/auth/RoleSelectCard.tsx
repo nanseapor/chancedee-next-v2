@@ -79,7 +79,7 @@ export function RoleSelectCard({
       {/* Login Link */}
       <p className="text-center text-sm text-gray-600">
         มีบัญชีอยู่แล้ว?{" "}
-        <a href="/jobsmarket/auth/login" className="text-primary hover:underline font-medium">
+        <a href="/auth/login" className="text-primary hover:underline font-medium">
           เข้าสู่ระบบ
         </a>
       </p>

@@ -22,6 +22,8 @@ function transformToAppModel(
     companyId: extractDocumentId(firebaseModel.company_id),
     candidateId: extractDocumentId(firebaseModel.candidate_id),
     hrId: extractDocumentId(firebaseModel.responsible_hr_id),
+    applicationId: extractDocumentId(firebaseModel.application_id),
+    jobId: extractDocumentId(firebaseModel.job_id),
     candidateName: firebaseModel.candidate_name || "",
     companyName: firebaseModel.company_name || "",
     hrName: firebaseModel.responsible_hr_name || "",

@@ -25,6 +25,25 @@ import type {
  * @param {boolean} isActive - Whether the company profile is active.
  * @param {string[]} staff - A list of the company's staff members.
  */
+// Company configuration sub-types
+export interface CompanyJobDefaultsConfig {
+  default_location?: string;
+  default_job_type?: string;
+  auto_close_days?: number;
+}
+
+export interface CompanyNotificationsConfig {
+  notify_new_application?: boolean;
+  daily_summary_enabled?: boolean;
+  daily_summary_time?: string;
+  interview_reminder_hours?: number;
+}
+
+export interface CompanyConfigData {
+  job_defaults?: CompanyJobDefaultsConfig;
+  notifications?: CompanyNotificationsConfig;
+}
+
 export interface FirebaseCompanyData extends IBaseDatabaseInterface {
   uid: string;
   companyName: string;
@@ -47,6 +66,7 @@ export interface FirebaseCompanyData extends IBaseDatabaseInterface {
   status: "pending" | "approved" | "rejected" | "suspended";
   isActive: boolean;
   staff?: string[];
+  config?: CompanyConfigData;
 }
 
 /**

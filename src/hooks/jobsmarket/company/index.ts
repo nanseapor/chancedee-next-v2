@@ -16,3 +16,20 @@ export {
   type UseCompanyPermissionOptions,
   type UseCompanyPermissionReturn,
 } from "./use-company-permission";
+
+// Team management hooks (COMP-R02)
+export {
+  useCompanyTeam,
+  type UseCompanyTeamOptions,
+  type UseCompanyTeamReturn,
+} from "./use-company-team";
+
+export {
+  useTeamActions,
+  type UseTeamActionsOptions,
+  type UseTeamActionsReturn,
+} from "./use-team-actions";
+
+// Settings hooks (COMP-R03)
+export { useCompanySettings } from "./use-company-settings";
+export { useCompanyImageUpload } from "./use-company-image-upload";

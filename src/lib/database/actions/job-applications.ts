@@ -19,15 +19,25 @@ import {
   WITHDRAWABLE_STATUSES,
   ACTIVE_APPLICATION_STATUSES,
   REAPPLY_ALLOWED_STATUSES,
+  EDITABLE_STATUSES,
   type WithdrawableStatus,
   type ActiveApplicationStatus,
   type ReapplyAllowedStatus,
+  type EditableStatus,
   type ApplicationWithDetails,
   type InterviewDetails,
   type SubmitApplicationInput,
-  type SubmitApplicationResult
+  type SubmitApplicationResult,
+  type EditApplicationInput,
+  type EditApplicationResult
 } from './job-applications.constants';
 import { candidateInformationRepository } from "../repositories/candidate-information-repository";
+import { awardFirstApplicationReward } from "./wallet-rewards";
+import {
+  sendEmailNotification,
+  createApplicationAcceptedEmail,
+  createApplicationRejectedEmail,
+} from "./email-notifications";
 
 // Convert legacy jobApplicationData to new JobApplicationData schema
 function convertLegacyToNewJobApplicationData(legacy: jobApplicationData): JobApplicationData {
@@ -79,9 +89,9 @@ async function webJobApplicationGetByFilter(filter?: Filter) {
     // Fetch job titles for all applications in parallel
     const applicationsWithJobTitles = await Promise.all(
       applications.map(async (application) => {
-        // Validate status
+        // Validate status - log warning instead of throwing to handle legacy data gracefully
         if (!Object.values(MasterJobApplicationStatuses).includes(application.status as MasterJobApplicationStatuses)) {
-          throw new Error("Enum status not matched, data is corrupted");
+          console.warn(`[job-applications] Unknown status "${application.status}" for application ${application.uid}`);
         }
 
         // Fetch job title separately to maintain interface compatibility
@@ -509,14 +519,26 @@ export async function webJobApplicationAccept(input: {
       input.hrId
     );
 
-    // 5. TODO: Send email notification to candidate
-    // This would be handled by a notification service
+    // 5. Award first application reward if applicable (BLS-10-05)
+    await awardFirstApplicationReward(input.candidateId);
 
-    // 6. TODO: Send push notification
-    // This would be handled by a notification service
+    // 6. Send email notification to candidate
+    const candidate = await candidateInformationRepository.getById(input.candidateId);
+    if (candidate?.email) {
+      const emailData = await createApplicationAcceptedEmail(
+        input.name,
+        input.jobTitle,
+        input.companyName
+      );
+      await sendEmailNotification({
+        email: candidate.email,
+        emailData,
+        notificationType: 'application_accepted',
+      });
+    }
 
-    // 7. TODO: Check first application reward
-    // This would be handled by a wallet/reward service
+    // 7. TODO: Send push notification
+    // This would be handled by a notification service in a future sprint
 
     return {
       status: 200,
@@ -574,11 +596,36 @@ export async function webJobApplicationReject(
       actorId
     );
 
-    // 4. TODO: Send rejection email with feedback
-    // This would be handled by a notification service
+    // 4. Send rejection email with feedback
+    if (application.candidateId && application.jobId) {
+      const candidate = await candidateInformationRepository.getById(application.candidateId);
+      const job = await jobsRepository.getById(application.jobId);
+
+      if (candidate?.email && job) {
+        // Get company name from job data
+        const companyInfo = job.companyId
+          ? await webCompanyInformationGetById(job.companyId)
+          : null;
+        const companyName = companyInfo?.companyName || 'บริษัท';
+        const candidateName = candidate.firstnameTH || candidate.nicknameTH || 'ผู้สมัคร';
+
+        const emailData = await createApplicationRejectedEmail(
+          candidateName,
+          job.title || 'ตำแหน่งงาน',
+          companyName,
+          rejectedMessage || undefined
+        );
+
+        await sendEmailNotification({
+          email: candidate.email,
+          emailData,
+          notificationType: 'application_rejected',
+        });
+      }
+    }
 
     // 5. TODO: Send push notification
-    // This would be handled by a notification service
+    // This would be handled by a notification service in a future sprint
 
     return { success: true };
   } catch (error) {
@@ -764,6 +811,142 @@ export async function submitApplication(
     }
     if (error instanceof Error && error.message.includes('ข้อความยาวเกินไป')) {
       throw error; // Re-throw validation errors
+    }
+
+    return {
+      success: false,
+      error: 'NETWORK_ERROR',
+    };
+  }
+}
+
+/**
+ * BLS-03-02: Edit a job application
+ * Edit an existing job application before the company has reviewed it.
+ * Only available when application status is 'applied' (not yet read by company).
+ *
+ * @param input - Edit application input (applicationId, expectedSalary, isNegotiable, overheadDays, headlines)
+ * @param candidateId - The candidate's UID (must be the application owner)
+ * @returns EditApplicationResult with success/error status
+ *
+ * Per BLS-03-02 specification
+ */
+export async function editApplication(
+  input: EditApplicationInput,
+  candidateId: string
+): Promise<EditApplicationResult> {
+  try {
+    // STEP 1: Input Validation
+    // Validate applicationId (required)
+    if (!input.applicationId || typeof input.applicationId !== 'string' || input.applicationId.trim() === '') {
+      throw new Error('Application ID is required');
+    }
+
+    // Validate expectedSalary range (0 to 999,999)
+    if (input.expectedSalary !== null && input.expectedSalary !== undefined) {
+      if (input.expectedSalary < 0) {
+        throw new Error('เงินเดือนต้องมากกว่า 0');
+      }
+      if (input.expectedSalary > 999999) {
+        throw new Error('เงินเดือนสูงเกินไป');
+      }
+    }
+
+    // Validate headlines length (max 500 characters)
+    if (input.headlines && input.headlines.length > 500) {
+      throw new Error('ข้อความยาวเกินไป');
+    }
+
+    // Validate overheadDays enum
+    const validOverheadDays = [0, 7, 15, 30, 60, 90];
+    if (input.overheadDays !== undefined && !validOverheadDays.includes(input.overheadDays)) {
+      throw new Error('Invalid overhead days value');
+    }
+
+    // STEP 2: Fetch current application
+    const application = await jobApplicationsRepository.getById(input.applicationId);
+
+    if (!application) {
+      return {
+        success: false,
+        error: 'NOT_FOUND',
+      };
+    }
+
+    // STEP 3: Validate ownership
+    if (application.candidateId !== candidateId) {
+      return {
+        success: false,
+        error: 'NOT_OWNER',
+      };
+    }
+
+    // STEP 4: Validate status is editable (only 'applied' status)
+    if (!EDITABLE_STATUSES.includes(application.status as EditableStatus)) {
+      return {
+        success: false,
+        error: 'ALREADY_PROCESSED',
+      };
+    }
+
+    // STEP 5: Check job is still active
+    const job = await jobsRepository.getById(application.jobId);
+    if (!job || !job.isActive) {
+      return {
+        success: false,
+        error: 'JOB_INACTIVE',
+      };
+    }
+
+    // STEP 6: Update application with new values
+    // Merge input with existing data, preserving unchanged fields
+    const now = Date.now();
+    const updatedData: JobApplicationData = {
+      ...application,
+      expectedSalary: input.expectedSalary !== undefined
+        ? (input.expectedSalary ?? undefined)
+        : application.expectedSalary,
+      isNegotiable: input.isNegotiable !== undefined
+        ? input.isNegotiable
+        : application.isNegotiable,
+      overheadDays: input.overheadDays !== undefined
+        ? input.overheadDays
+        : application.overheadDays,
+      headlines: input.headlines !== undefined
+        ? input.headlines
+        : application.headlines,
+      updatedAt: now,
+    };
+
+    await jobApplicationsRepository.update(
+      input.applicationId,
+      updatedData,
+      candidateId
+    );
+
+    // STEP 7: Return success with cache invalidation keys
+    return {
+      success: true,
+      keysToInvalidate: [
+        `application-${candidateId}-${application.jobId}`,
+        `candidate-applications-${candidateId}`,
+      ],
+    };
+
+  } catch (error) {
+    console.error('Error editing application:', error);
+
+    // Re-throw validation errors
+    if (error instanceof Error) {
+      if (error.message.includes('เงินเดือน')) {
+        throw error;
+      }
+      if (error.message.includes('ข้อความยาวเกินไป')) {
+        throw error;
+      }
+      if (error.message.includes('Invalid overhead days')) {
+        throw error;
+      }
     }
 
     return {

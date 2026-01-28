@@ -16,11 +16,14 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import {
+  createTestCompany,
+  type TestCompany,
+} from "../../helpers/factories";
+import { signInAsCompany } from "../../helpers/auth-helper";
 
-// Test credentials
-const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_EMAIL;
-const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_PASSWORD;
-const COMPANY_ID = process.env.PLAYWRIGHT_TEST_COMPANY_ADMIN_COMPANY_ID;
+// Shared test data
+let company: TestCompany;
 
 /**
  * Wait for page load using domcontentloaded + visible element check
@@ -32,38 +35,23 @@ async function waitForPageLoad(page: Page) {
   ).toBeVisible({ timeout: 10000 });
 }
 
-/**
- * Login helper function
- */
-async function loginAsCompanyAdmin(page: Page) {
-  await page.goto("/jobsmarket/auth/login");
-  await page.getByPlaceholder("you@example.com").fill(TEST_EMAIL!);
-  await page.locator('input[type="password"]').fill(TEST_PASSWORD!);
-  await page.getByRole("checkbox", { name: /ยอมรับ/ }).check({ force: true });
-  await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-  await page.waitForURL(/dashboard|select-role/, { timeout: 10000 });
-
-  if (page.url().includes("select-role")) {
-    const roleButton = page.getByLabel("เลือกบทบาท นายจ้าง");
-    if (await roleButton.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await roleButton.getByRole("button", { name: "เข้าใช้งาน" }).click();
-      await page.waitForURL(/dashboard|companies/, { timeout: 10000 });
-    }
-  }
-}
-
 test.describe("Applications Filter Interactions - COMP-R08", () => {
-  test.skip(!TEST_EMAIL || !TEST_PASSWORD || !COMPANY_ID, "Test credentials not configured");
+  test.beforeAll(async () => {
+    // Create test company with published jobs for filter tests
+    company = await createTestCompany({
+      testName: "applications-filter",
+      withPublishedJobs: 2,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    await loginAsCompanyAdmin(page);
+    await signInAsCompany(page, company);
     await page.setViewportSize({ width: 1280, height: 800 });
   });
 
   test.describe("Status Filter", () => {
     test("should show all status checkboxes", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -78,7 +66,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should toggle status checkbox when clicked", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -97,7 +85,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should select all statuses when clicking ทั้งหมด button", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -112,7 +100,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should clear all statuses when clicking ล้าง button", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -135,7 +123,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should filter applications by selected status", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -160,7 +148,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
   test.describe("Job Filter", () => {
     test("should show job selector dropdown", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -173,7 +161,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should open job dropdown when clicked", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -189,7 +177,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
   test.describe("Sort Filter", () => {
     test("should show sort selector dropdown", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -202,7 +190,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should open sort dropdown when clicked", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -216,7 +204,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should show all sort options", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -237,7 +225,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
   test.describe("Apply and Clear Filters", () => {
     test("should apply filters when clicking ใช้ตัวกรอง button", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -262,7 +250,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
     test("should clear all filters when clicking ล้างตัวกรอง button", async ({ page }) => {
       // Start with a filtered URL
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications?status=applied&sort=oldest`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications?status=applied&sort=oldest`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -282,7 +270,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
   test.describe("URL Synchronization", () => {
     test("should sync status filter to URL", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -300,7 +288,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
     test("should load filters from URL on page load", async ({ page }) => {
       // Navigate with URL parameters
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications?status=applied`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications?status=applied`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -310,7 +298,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
     });
 
     test("should persist filters on browser refresh", async ({ page }) => {
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -339,7 +327,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
   test.describe("Mobile Filter Sheet", () => {
     test("should show filter button on mobile", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -351,7 +339,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
     test("should open filter sheet when clicking mobile filter button", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 
@@ -396,7 +384,7 @@ test.describe("Applications Filter Interactions - COMP-R08", () => {
 
     test("should close filter sheet after applying filters on mobile", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/companies/${COMPANY_ID}/dashboard/applications`);
+      await page.goto(`/jobsmarket/companies/${company.companyId}/dashboard/applications`);
       await waitForPageLoad(page);
       await page.waitForTimeout(1000);
 

@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../../helpers/factories";
+import { signInAsCandidate } from "../../../helpers/auth-helper";
 
 /**
  * E2E Test: Fresh Graduate Toggle
@@ -13,29 +18,20 @@ import { test, expect } from "@playwright/test";
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/profile/profile-fresh-graduate.spec.ts --project=chromium
  */
 
-test.describe("Fresh Graduate Toggle", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
+let candidate: TestCandidate;
 
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword || !testUid, "Test credentials not configured");
+test.describe("Fresh Graduate Toggle", () => {
+  test.beforeAll(async () => {
+    candidate = await createTestCandidate({
+      testName: "profile-fresh-graduate",
+      withCompleteProfile: true,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    // Login first
-    await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(testEmail!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-    await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-    // Wait for redirect after login
-    await page.waitForURL((url) => !url.pathname.includes("/auth/login"), { timeout: 15000 });
-
-    // Navigate to profile
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-    await page.waitForLoadState("networkidle");
+    await signInAsCandidate(page, candidate);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("should display Fresh Graduate toggle in Work Experience section", async ({ page }) => {

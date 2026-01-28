@@ -87,6 +87,21 @@ export const FirebaseCompanyInformationSchema = BaseFirebaseSchema.extend({
   
   /** A list of staff members associated with the company */
   staff: z.array(z.string()).optional(),
+
+  /** Company configuration settings */
+  config: z.object({
+    job_defaults: z.object({
+      default_location: z.string().optional(),
+      default_job_type: z.string().optional(),
+      auto_close_days: z.number().optional(),
+    }).optional(),
+    notifications: z.object({
+      notify_new_application: z.boolean().optional(),
+      daily_summary_enabled: z.boolean().optional(),
+      daily_summary_time: z.string().optional(),
+      interview_reminder_hours: z.number().optional(),
+    }).optional(),
+  }).optional(),
 });
 
 /**
@@ -117,8 +132,23 @@ export const FirebaseCompanyDataSchema = BaseAppSchema.extend({
   
   /** CRITICAL FIELD - Controls UI visibility (soft delete) */
   isActive: z.boolean(),
-  
+
   staff: z.array(z.string()).optional(),
+
+  /** Company configuration settings */
+  config: z.object({
+    job_defaults: z.object({
+      default_location: z.string().optional(),
+      default_job_type: z.string().optional(),
+      auto_close_days: z.number().optional(),
+    }).optional(),
+    notifications: z.object({
+      notify_new_application: z.boolean().optional(),
+      daily_summary_enabled: z.boolean().optional(),
+      daily_summary_time: z.string().optional(),
+      interview_reminder_hours: z.number().optional(),
+    }).optional(),
+  }).optional(),
 });
 
 /**

@@ -70,7 +70,7 @@ const HeroSectionExactMaster = async ({ homeData }: { homeData: Home }) => {
             )}
           >
             <Link
-              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/social"}
+              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/login"}
               className={clsx(`text-base no-underline`)}
             >
               <Button
@@ -92,7 +92,7 @@ const HeroSectionExactMaster = async ({ homeData }: { homeData: Home }) => {
               </Button>
             </Link>
             <Link
-              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/email/sign-in"}
+              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/login"}
               className={clsx(`text-base no-underline`)}
             >
               <p

@@ -9,7 +9,7 @@ import { PerformanceMonitor } from "@/lib/performance-monitor";
 import { seedCandidateData } from "@/lib/utils/shared/utils";
 import { candidateDataProps } from "@/types/candidate.types";
 
-const getCandidateDataWithToken = async (idToken: string) => {
+export async function getCandidateDataWithToken(idToken: string) {
   return PerformanceMonitor.measure("getCandidateDataWithToken", async () => {
     const user = await getFirebaseAdminAuth().verifyIdToken(idToken);
     if (!user) {
@@ -36,9 +36,7 @@ const getCandidateDataWithToken = async (idToken: string) => {
     }
     return candidateData;
   });
-};
-
-export default getCandidateDataWithToken;
+}
 
 export async function updateCandidateDataProps(
   uid: string,

@@ -1,4 +1,9 @@
 import { test, expect, type Page } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../../helpers/factories";
+import { signInAsCandidate } from "../../../helpers/auth-helper";
 
 /**
  * E2E Test: Profile Section Editing
@@ -7,11 +12,13 @@ import { test, expect, type Page } from "@playwright/test";
  * User Journey: Existing user edits profile sections
  *
  * Prerequisites:
- * - Test user with isOnboarded: true
  * - Dev server running
  *
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/profile/profile-edit-section.spec.ts --project=chromium
  */
+
+// Shared test data
+let candidate: TestCandidate;
 
 // Helper: Get section by heading
 // Use more specific selector: bg-white rounded-lg (the actual section cards)
@@ -34,30 +41,19 @@ async function waitForDrawerClose(page: Page, drawerTitle: string) {
 }
 
 test.describe("Profile Section Editing", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_CANDIDATE_UID;
-
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword || !testUid, "Test credentials not configured");
+  test.beforeAll(async () => {
+    // Create test candidate with complete profile
+    candidate = await createTestCandidate({
+      testName: "profile-edit",
+      withCompleteProfile: true,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to profile page (reloads between each test to reset React state)
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-    await page.waitForLoadState("networkidle");
-
-    // Check if we're on login page (session expired)
-    if (page.url().includes("/auth/login")) {
-      // Login
-      await page.getByLabel("อีเมล").fill(testEmail!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-      await page.getByRole("checkbox").check();
-      await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-      // Wait for redirect
-      await page.waitForURL((url) => !url.pathname.includes("/auth/login"), { timeout: 15000 });
-    }
+    await signInAsCandidate(page, candidate);
+    // Navigate to profile page
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("should load profile in view mode", async ({ page }) => {

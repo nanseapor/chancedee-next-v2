@@ -2,9 +2,22 @@
 
 import { Filter, Query } from "firebase-admin/firestore";
 import { getFirebaseAdminFirestore } from "@/lib/firebase/admin";
+import { getSessionUser } from "@/lib/firebase/admin-auth";
 import { transactionType } from "@/types/wallet.types";
 import { walletTransactionsRepository } from "../repositories/wallet-transactions-repository";
 import { FirebaseCurrencyType, FirebaseWalletTransactionType } from "../schemas/wallet-transactions.schema";
+import type {
+  GetTransactionHistoryInput,
+  TransactionWithCurrency,
+  GetTransactionHistoryResult,
+} from "./wallet-transactions.types";
+
+// Re-export types for consumers
+export type {
+  GetTransactionHistoryInput,
+  TransactionWithCurrency,
+  GetTransactionHistoryResult,
+} from "./wallet-transactions.types";
 
 const webWalletTransactionGetById = async (uid: string) => {
   try {
@@ -129,8 +142,100 @@ const webWalletTransactionCreate = async (
   }
 };
 
+/**
+ * Get paginated transaction history for a user's wallet
+ *
+ * @specification BLS-10-02
+ * - User must be authenticated
+ * - User must be wallet owner
+ * - Returns transactions ordered by time DESC
+ * - Supports cursor-based pagination
+ */
+const getTransactionHistoryPaginated = async (
+  input: GetTransactionHistoryInput
+): Promise<GetTransactionHistoryResult> => {
+  const { userId, currency, limit: inputLimit, startAfter } = input;
+
+  // Default limit is 20, max is 100
+  const DEFAULT_LIMIT = 20;
+  const MAX_LIMIT = 100;
+
+  // Validate currency
+  if (currency !== "coin" && currency !== "star") {
+    throw new Error("INVALID_CURRENCY");
+  }
+
+  // Validate and cap limit
+  let limit = inputLimit ?? DEFAULT_LIMIT;
+  if (limit < 0) {
+    throw new Error("INVALID_LIMIT");
+  }
+  if (limit > MAX_LIMIT) {
+    limit = MAX_LIMIT;
+  }
+
+  // Check authentication
+  const session = await getSessionUser();
+  if (!session) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  // Check ownership - user must own the wallet they're querying
+  if (session.candidateId !== userId) {
+    throw new Error("FORBIDDEN");
+  }
+
+  // Build query
+  const db = getFirebaseAdminFirestore();
+  let query: Query = db
+    .collection("wallet_transactions")
+    .where("transaction_receiver", "==", userId)
+    .where("transaction_currency", "==", currency)
+    .orderBy("transaction_time", "desc")
+    .limit(limit + 1); // Fetch one extra to determine hasMore
+
+  // Apply cursor if provided
+  if (startAfter) {
+    const cursorDoc = await db.collection("wallet_transactions").doc(startAfter).get();
+    if (cursorDoc.exists) {
+      query = query.startAfter(cursorDoc);
+    }
+  }
+
+  // Execute query
+  const snapshot = await query.get();
+
+  // Map documents to response format
+  const allDocs = snapshot.docs.map((doc) => {
+    const data = doc.data() as FirebaseWalletTransactionType;
+    return {
+      transactionId: doc.id,
+      transactionOwner: data.transaction_owner,
+      transactionOrigin: data.transaction_origin,
+      transactionType: data.transaction_type,
+      transactionAmount: data.transaction_amount,
+      transactionTime: data.transaction_time?.toMillis?.() ?? 0,
+      transactionCurrency: data.transaction_currency,
+      remark: data.remark,
+    };
+  });
+
+  // Determine if there are more results
+  const hasMore = allDocs.length > limit;
+  const transactions = hasMore ? allDocs.slice(0, limit) : allDocs;
+  const lastTransaction = transactions[transactions.length - 1];
+  const lastVisible = lastTransaction ? lastTransaction.transactionId : null;
+
+  return {
+    transactions,
+    hasMore,
+    lastVisible,
+  };
+};
+
 export {
   webWalletTransactionCreate,
   webWalletTransactionGetByFilter,
-  webWalletTransactionGetById
+  webWalletTransactionGetById,
+  getTransactionHistoryPaginated
 };

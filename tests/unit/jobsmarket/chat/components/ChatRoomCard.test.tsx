@@ -125,14 +125,14 @@ describe("ChatRoomCard", () => {
     it("should highlight when isSelected is true", () => {
       render(<ChatRoomCard {...defaultProps} isSelected={true} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       expect(card).toHaveClass("bg-secondary-50");
     });
 
     it("should not highlight when isSelected is false", () => {
       render(<ChatRoomCard {...defaultProps} isSelected={false} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       expect(card).not.toHaveClass("bg-secondary-50");
     });
   });
@@ -142,7 +142,7 @@ describe("ChatRoomCard", () => {
       const onSelect = vi.fn();
       render(<ChatRoomCard {...defaultProps} onSelect={onSelect} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       fireEvent.click(card);
 
       expect(onSelect).toHaveBeenCalledWith("room-123");
@@ -152,7 +152,7 @@ describe("ChatRoomCard", () => {
       const onSelect = vi.fn();
       render(<ChatRoomCard {...defaultProps} onSelect={onSelect} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       fireEvent.keyDown(card, { key: "Enter" });
 
       expect(onSelect).toHaveBeenCalledWith("room-123");
@@ -178,7 +178,7 @@ describe("ChatRoomCard", () => {
     it("should have appropriate aria-label", () => {
       render(<ChatRoomCard {...defaultProps} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       expect(card).toHaveAttribute(
         "aria-label",
         expect.stringContaining("บริษัท ทดสอบ จำกัด")
@@ -188,7 +188,7 @@ describe("ChatRoomCard", () => {
     it("should indicate unread status in aria-label", () => {
       render(<ChatRoomCard {...defaultProps} unreadCount={3} />);
 
-      const card = screen.getByTestId("chat-room-card");
+      const card = screen.getByTestId(`chat-room-${defaultProps.uid}`);
       expect(card).toHaveAttribute(
         "aria-label",
         expect.stringContaining("3 ข้อความที่ยังไม่ได้อ่าน")

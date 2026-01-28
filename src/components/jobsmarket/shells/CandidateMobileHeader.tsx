@@ -49,7 +49,7 @@ export function CandidateMobileHeader({
       className={`sticky top-0 z-30 h-14 border-b border-gray-200 bg-white flex items-center justify-between px-4 relative ${className}`}
     >
       {/* Left: Logo */}
-      <Logo variant="compact" href="/jobsmarket" />
+      <Logo variant="compact" href="/" />
 
       {/* Right: Actions */}
       <div className="flex items-center gap-3">

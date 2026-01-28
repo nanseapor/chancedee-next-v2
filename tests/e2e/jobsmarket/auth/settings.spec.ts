@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../helpers/factories";
+import { signInAsCandidate } from "../../helpers/auth-helper";
 
 /**
  * E2E tests for AUTH-R06 Settings Page
@@ -6,22 +11,20 @@ import { test, expect } from "@playwright/test";
  * notification preferences, and deletion workflows
  */
 
-// Check for test credentials
-const TEST_EMAIL = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-const TEST_PASSWORD = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
+// Shared test data
+let candidate: TestCandidate;
 
 test.describe("AUTH-R06 Settings Page", () => {
-  test.skip(!TEST_EMAIL || !TEST_PASSWORD, "Test credentials not configured");
+  test.beforeAll(async () => {
+    // Create test candidate for settings tests
+    candidate = await createTestCandidate({
+      testName: "auth-settings",
+      withCompleteProfile: true,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    // Login before each test
-    await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(TEST_EMAIL!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_PASSWORD!);
-    await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-
-    // Wait for redirect and navigate to settings
-    await page.waitForURL(/\/jobsmarket\/(role-selection|dashboard|settings)/);
+    await signInAsCandidate(page, candidate);
     await page.goto("/jobsmarket/auth/settings");
   });
 
@@ -100,7 +103,7 @@ test.describe("AUTH-R06 Settings Page", () => {
 
   test.describe("Account tab functionality", () => {
     test("should display user email", async ({ page }) => {
-      await expect(page.getByText(TEST_EMAIL!)).toBeVisible();
+      await expect(page.getByText(candidate.email)).toBeVisible();
     });
 
     test("should show email verification status", async ({ page }) => {

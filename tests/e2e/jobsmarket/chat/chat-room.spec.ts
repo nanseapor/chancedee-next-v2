@@ -1,41 +1,45 @@
+/**
+ * @fileoverview E2E tests for chat room functionality
+ * @specification CHAT-R02: Chat Room
+ *
+ * Tests the chat room interface including messaging, file attachments,
+ * interview card display, and real-time updates.
+ */
+
 import { test, expect } from "@playwright/test";
-
-// Load test credentials
-const TEST_CANDIDATE_EMAIL = process.env.E2E_TEST_CANDIDATE_EMAIL;
-const TEST_CANDIDATE_PASSWORD = process.env.E2E_TEST_CANDIDATE_PASSWORD;
-const TEST_COMPANY_EMAIL = process.env.E2E_TEST_COMPANY_EMAIL;
-const TEST_COMPANY_PASSWORD = process.env.E2E_TEST_COMPANY_PASSWORD;
-
-// Test room ID - should have existing messages
-const TEST_ROOM_ID = process.env.E2E_TEST_CHAT_ROOM_ID || "test-chat-room";
-const TEST_ROOM_WITH_INTERVIEW_ID = process.env.E2E_TEST_CHAT_ROOM_WITH_INTERVIEW_ID || "test-chat-room-interview";
+import {
+  createTestInterviewScenario,
+  type TestInterviewScenario,
+} from "../../helpers/factories";
+import { signInWithCustomToken } from "../../helpers/auth-helper";
 
 test.describe("CHAT-R02: Chat Room", () => {
-  test.skip(
-    !TEST_CANDIDATE_EMAIL || !TEST_CANDIDATE_PASSWORD,
-    "Test credentials not configured"
-  );
+  let scenario: TestInterviewScenario;
+
+  test.beforeAll(async () => {
+    // Create a complete interview scenario with chat room
+    scenario = await createTestInterviewScenario({
+      interviewStatus: "pending",
+      testName: "chat-room-tests",
+    });
+  });
 
   test.describe("Access & Navigation", () => {
     test.beforeEach(async ({ page }) => {
-      // Login as candidate
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
+      // Sign in as candidate using token-based auth
+      await signInWithCustomToken(page, scenario.candidate.customToken);
     });
 
     test("should load chat room page", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       await expect(page.getByTestId("chat-room-header")).toBeVisible();
     });
 
     test("should show other party name in header", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
-      // Header should contain other party's name
+      // Header should contain other party's name (company name in this case)
       const header = page.getByTestId("chat-room-header");
       await expect(header).toBeVisible();
 
@@ -47,7 +51,7 @@ test.describe("CHAT-R02: Chat Room", () => {
     test("should navigate back to chat list on mobile", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
 
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       await page.getByTestId("back-button").click();
 
@@ -57,18 +61,12 @@ test.describe("CHAT-R02: Chat Room", () => {
 
   test.describe("Message Display", () => {
     test.beforeEach(async ({ page }) => {
-      // Login and navigate to chat room
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
-
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
     });
 
     test("should display message history", async ({ page }) => {
-      // Wait for messages to load
+      // Wait for messages to load (the scenario creates an interview message)
       await page.waitForSelector('[data-testid="message-bubble"]', {
         timeout: 10000,
       });
@@ -102,7 +100,7 @@ test.describe("CHAT-R02: Chat Room", () => {
         '[data-testid="message-bubble"][data-is-own="false"]'
       );
 
-      // Should have both types of messages (assuming test room has conversation)
+      // Should have messages (the scenario creates an interview message from company)
       const hasOwnMessages = (await ownMessage.count()) > 0;
       const hasOtherMessages = (await otherMessage.count()) > 0;
 
@@ -129,21 +127,15 @@ test.describe("CHAT-R02: Chat Room", () => {
         .locator('[data-testid="message-bubble"]')
         .count();
 
-      // If there are more messages, count should increase
-      // (This depends on the test data having more than 50 messages)
+      // Count should be at least the same (may be more if pagination triggers)
       expect(newCount).toBeGreaterThanOrEqual(initialCount);
     });
   });
 
   test.describe("Send Text Message", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
-
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
       await page.waitForSelector('[data-testid="chat-room-header"]');
     });
 
@@ -206,13 +198,8 @@ test.describe("CHAT-R02: Chat Room", () => {
 
   test.describe("File Attachment", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
-
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
       await page.waitForSelector('[data-testid="chat-room-header"]');
     });
 
@@ -270,8 +257,7 @@ test.describe("CHAT-R02: Chat Room", () => {
       await page.getByTestId("attachment-button").click();
       const fileChooser = await fileChooserPromise;
 
-      // Create a large fake file (>10MB would require actual large buffer)
-      // For E2E, we test with validation message
+      // Create a large fake file (>10MB)
       await fileChooser.setFiles({
         name: "large-file.zip",
         mimeType: "application/zip",
@@ -287,11 +273,6 @@ test.describe("CHAT-R02: Chat Room", () => {
     test("should receive new messages without refresh", async ({
       browser,
     }) => {
-      test.skip(
-        !TEST_COMPANY_EMAIL || !TEST_COMPANY_PASSWORD,
-        "Company credentials needed for real-time test"
-      );
-
       // Create two browser contexts - one for candidate, one for company
       const candidateContext = await browser.newContext();
       const companyContext = await browser.newContext();
@@ -300,27 +281,15 @@ test.describe("CHAT-R02: Chat Room", () => {
       const companyPage = await companyContext.newPage();
 
       try {
-        // Login as candidate
-        await candidatePage.goto("/jobsmarket/auth/login");
-        await candidatePage.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-        await candidatePage
-          .getByPlaceholder("กรอกรหัสผ่าน")
-          .fill(TEST_CANDIDATE_PASSWORD!);
-        await candidatePage.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-        await candidatePage.waitForURL(/dashboard|chat/);
-        await candidatePage.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+        // Sign in as candidate
+        await signInWithCustomToken(candidatePage, scenario.candidate.customToken);
+        await candidatePage.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
-        // Login as company
-        await companyPage.goto("/jobsmarket/auth/login");
-        await companyPage.getByLabel("อีเมล").fill(TEST_COMPANY_EMAIL!);
-        await companyPage
-          .getByPlaceholder("กรอกรหัสผ่าน")
-          .fill(TEST_COMPANY_PASSWORD!);
-        await companyPage.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-        await companyPage.waitForURL(/dashboard|chat/);
+        // Sign in as company
+        await signInWithCustomToken(companyPage, scenario.company.customToken);
+        await companyPage.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
         // Company sends a message
-        await companyPage.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
         const realtimeMessage = `Realtime test ${Date.now()}`;
         await companyPage.getByPlaceholder("พิมพ์ข้อความ...").fill(realtimeMessage);
         await companyPage.getByTestId("send-button").click();
@@ -338,17 +307,13 @@ test.describe("CHAT-R02: Chat Room", () => {
 
   test.describe("Interview Card Display", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
     });
 
     test("should display interview card if interview exists", async ({
       page,
     }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_WITH_INTERVIEW_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       await expect(page.getByTestId("interview-card")).toBeVisible({
         timeout: 10000,
@@ -356,7 +321,7 @@ test.describe("CHAT-R02: Chat Room", () => {
     });
 
     test("should show interview date and time", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_WITH_INTERVIEW_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       const interviewCard = page.getByTestId("interview-card");
       await expect(interviewCard).toBeVisible();
@@ -368,35 +333,31 @@ test.describe("CHAT-R02: Chat Room", () => {
       await expect(page.getByText(/\d{2}:\d{2}/)).toBeVisible();
     });
 
-    test("should show interview status", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_WITH_INTERVIEW_ID}`);
+    test("should show interview status badge", async ({ page }) => {
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
-      await expect(page.getByTestId("status-badge")).toBeVisible();
+      await expect(page.getByTestId("interview-status-badge")).toBeVisible();
     });
 
-    test("should NOT show action buttons (Phase 2)", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_WITH_INTERVIEW_ID}`);
+    test("should show action buttons for candidate on pending interview", async ({ page }) => {
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Wait for interview card to load
       await expect(page.getByTestId("interview-card")).toBeVisible();
 
-      // Should NOT have confirm/decline buttons
+      // Should have confirm/decline buttons for candidate
       await expect(
         page.getByRole("button", { name: /ยืนยัน/i })
-      ).toHaveCount(0);
+      ).toBeVisible();
       await expect(
         page.getByRole("button", { name: /ปฏิเสธ/i })
-      ).toHaveCount(0);
+      ).toBeVisible();
     });
   });
 
   test.describe("Access Control", () => {
     test("should redirect if not participant", async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
 
       // Try to access a room user is not part of
       await page.goto("/jobsmarket/chat/non-participant-room-xyz");
@@ -413,7 +374,7 @@ test.describe("CHAT-R02: Chat Room", () => {
       // Clear any existing auth
       await page.context().clearCookies();
 
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Should redirect to login
       await expect(page).toHaveURL(/\/auth\/login/);
@@ -422,16 +383,12 @@ test.describe("CHAT-R02: Chat Room", () => {
 
   test.describe("Responsive Layout", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
     });
 
     test("should show full-screen on mobile", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Chat room should take full screen
       const chatRoom = page.getByTestId("chat-room-container");
@@ -443,29 +400,23 @@ test.describe("CHAT-R02: Chat Room", () => {
 
     test("should show in side panel on desktop", async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 });
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Should have two-panel layout
-      const chatList = page.getByTestId("chat-list-panel");
       const chatRoom = page.getByTestId("chat-room-container");
 
-      // Both should be visible on desktop
+      // Chat room should be visible on desktop
       await expect(chatRoom).toBeVisible();
-      // Chat list might also be visible in split view
     });
   });
 
   test.describe("Error Handling", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/jobsmarket/auth/login");
-      await page.getByLabel("อีเมล").fill(TEST_CANDIDATE_EMAIL!);
-      await page.getByPlaceholder("กรอกรหัสผ่าน").fill(TEST_CANDIDATE_PASSWORD!);
-      await page.getByRole("button", { name: /เข้าสู่ระบบ/i }).click();
-      await page.waitForURL(/dashboard|chat/);
+      await signInWithCustomToken(page, scenario.candidate.customToken);
     });
 
     test("should show error when connection lost", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Simulate offline
       await page.context().setOffline(true);
@@ -477,7 +428,7 @@ test.describe("CHAT-R02: Chat Room", () => {
     });
 
     test("should recover when connection restored", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Go offline then online
       await page.context().setOffline(true);
@@ -492,7 +443,7 @@ test.describe("CHAT-R02: Chat Room", () => {
     });
 
     test("should show error for failed message send", async ({ page }) => {
-      await page.goto(`/jobsmarket/chat/${TEST_ROOM_ID}`);
+      await page.goto(`/jobsmarket/chat/${scenario.chatRoomId}`);
 
       // Go offline before sending
       await page.context().setOffline(true);

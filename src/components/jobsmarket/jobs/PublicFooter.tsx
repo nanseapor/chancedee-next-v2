@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function PublicFooter() {
   const currentYear = new Date().getFullYear();
@@ -10,7 +11,13 @@ export function PublicFooter() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-block">
-              <span className="text-lg font-bold text-primary">ChanceDee</span>
+              <Image
+                src="/images/brand/horizontal-logo.svg"
+                alt="ChanceDee"
+                width={120}
+                height={28}
+                className="h-7 w-auto"
+              />
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
               แพลตฟอร์มหางานชั้นนำของไทย
@@ -21,8 +28,8 @@ export function PublicFooter() {
           <div>
             <h3 className="font-semibold text-sm mb-3">สำหรับผู้หางาน</h3>
             <ul className="space-y-2">
-              <FooterLink href="/jobsmarket/jobs">ค้นหางาน</FooterLink>
-              <FooterLink href="/jobsmarket/companies">ดูบริษัท</FooterLink>
+              <FooterLink href="/jobs">ค้นหางาน</FooterLink>
+              <FooterLink href="/companies">ดูบริษัท</FooterLink>
             </ul>
           </div>
 
@@ -30,7 +37,7 @@ export function PublicFooter() {
           <div>
             <h3 className="font-semibold text-sm mb-3">สำหรับผู้ประกอบการ</h3>
             <ul className="space-y-2">
-              <FooterLink href="/jobsmarket/auth/register?role=company">ลงประกาศงาน</FooterLink>
+              <FooterLink href="/auth/register?role=company">ลงประกาศงาน</FooterLink>
             </ul>
           </div>
 
@@ -38,8 +45,8 @@ export function PublicFooter() {
           <div>
             <h3 className="font-semibold text-sm mb-3">ข้อมูลเพิ่มเติม</h3>
             <ul className="space-y-2">
-              <FooterLink href="/jobsmarket/legal/terms">ข้อกำหนดการใช้งาน</FooterLink>
-              <FooterLink href="/jobsmarket/privacy">นโยบายความเป็นส่วนตัว</FooterLink>
+              <FooterLink href="/legal/terms">ข้อกำหนดการใช้งาน</FooterLink>
+              <FooterLink href="/privacy">นโยบายความเป็นส่วนตัว</FooterLink>
             </ul>
           </div>
         </div>

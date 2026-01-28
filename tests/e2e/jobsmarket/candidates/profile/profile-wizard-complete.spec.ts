@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../../helpers/factories";
+import { signInAsCandidate } from "../../../helpers/auth-helper";
 
 /**
  * E2E Test: Profile Wizard Completion Flow
@@ -13,31 +18,24 @@ import { test, expect } from "@playwright/test";
  * Run: npx playwright test tests/e2e/jobsmarket/candidates/profile/profile-wizard-complete.spec.ts --project=chromium
  */
 
-test.describe("Profile Wizard Completion Flow", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_NEW_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_NEW_CANDIDATE_PASSWORD;
-  const testUid = process.env.PLAYWRIGHT_TEST_NEW_CANDIDATE_UID;
+let candidate: TestCandidate;
 
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword || !testUid, "Test credentials not configured");
+test.describe("Profile Wizard Completion Flow", () => {
+  test.beforeAll(async () => {
+    // Create candidate WITHOUT complete profile to test wizard flow
+    candidate = await createTestCandidate({
+      testName: "profile-wizard-complete",
+      withCompleteProfile: false,
+    });
+  });
 
   test.beforeEach(async ({ page }) => {
-    // Login first
-    await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(testEmail!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
-    await page.getByRole("checkbox").check();
-    await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
-
-    // Wait for redirect after login
-    await page.waitForURL((url) => !url.pathname.includes("/auth/login"), { timeout: 15000 });
+    await signInAsCandidate(page, candidate);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("should redirect new user to wizard on profile access", async ({ page }) => {
-    // Try to access profile directly
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // New user should be redirected to wizard or see wizard UI
     // Check for wizard-specific elements (Step 1)
     await expect(
@@ -46,8 +44,6 @@ test.describe("Profile Wizard Completion Flow", () => {
   });
 
   test("should complete Step 1: Personal Information", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Wait for Step 1 to load
     await page.waitForSelector("input[name='firstnameTH'], input[name='first_name_th']", {
       timeout: 10000,
@@ -72,8 +68,6 @@ test.describe("Profile Wizard Completion Flow", () => {
   });
 
   test("should complete Step 2: Work Experience (or skip as fresh graduate)", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Navigate to Step 2 (assuming we're already past Step 1)
     // Look for Fresh Graduate toggle or Work Experience form
     const freshGradToggle = page.getByText(/จบใหม่|Fresh Graduate/i);
@@ -100,8 +94,6 @@ test.describe("Profile Wizard Completion Flow", () => {
   });
 
   test("should complete Step 3: Education", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Wait for education section
     await page.waitForSelector("text=/การศึกษา|Education/i", { timeout: 10000 });
 
@@ -136,8 +128,6 @@ test.describe("Profile Wizard Completion Flow", () => {
   });
 
   test("should complete Step 4: Skills", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Wait for skills section
     await page.waitForSelector("text=/ทักษะ|Skills/i", { timeout: 10000 });
 
@@ -166,8 +156,6 @@ test.describe("Profile Wizard Completion Flow", () => {
   });
 
   test("should complete Step 5: Job Preferences and finish wizard", async ({ page }) => {
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Wait for preferences section
     await page.waitForSelector("text=/ความต้องการงาน|Job Preferences/i", { timeout: 10000 });
 
@@ -186,7 +174,7 @@ test.describe("Profile Wizard Completion Flow", () => {
     // Verify redirect to dashboard or profile view
     await page.waitForURL((url) => {
       return (
-        url.pathname.includes(`/candidates/${testUid}`) &&
+        url.pathname.includes(`/candidates/${candidate.candidateId}`) &&
         !url.pathname.includes("/wizard") &&
         !url.pathname.includes("/edit")
       );
@@ -198,11 +186,9 @@ test.describe("Profile Wizard Completion Flow", () => {
 
   test("should verify isOnboarded is true after wizard completion", async ({ page }) => {
     // Complete wizard first (simplified - just submit final step)
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
-
     // Try to access profile after supposed completion
     // If wizard is complete, profile should load without redirect to wizard
-    await page.goto(`/jobsmarket/candidates/${testUid}/profile`);
+    await page.goto(`/jobsmarket/candidates/${candidate.candidateId}/profile`);
 
     // Should see profile view, not wizard
     // Look for profile-specific elements (View mode, not Edit mode)

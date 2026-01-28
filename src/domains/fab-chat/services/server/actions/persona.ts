@@ -1,8 +1,8 @@
 "use server";
 
 import { DEFAULT_CANDIDATE_DATA } from "@/constants/candidateConstants";
-import getUserDataWithToken from "@/domains/authentication/services/server/actions/user-data";
-import getCandidateDataWithToken from "@/domains/candidates/services/server/actions/candidate-data";
+import { getUserDataWithToken } from "@/domains/authentication/services/server/actions/user-data";
+import { getCandidateDataWithToken } from "@/domains/candidates/services/server/actions/candidate-data";
 import {
     createCandidateDataProps,
     updateCandidateDataProps,

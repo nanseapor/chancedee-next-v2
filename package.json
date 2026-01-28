@@ -65,6 +65,7 @@
     "html-react-parser": "^5.1.18",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.3",
+    "isomorphic-dompurify": "^2.30.0",
     "jotai": "^2.10.1",
     "jsdom": "^25.0.1",
     "jspdf": "^3.0.1",

@@ -50,7 +50,7 @@ const HeroSectionCorrectAligned = async ({ homeData }: { homeData: Home }) => {
           {/* Buttons matching screenshot styling */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <Link
-              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/social"}
+              href={user?.info.roles.includes('candidate') ? `/candidates/${user.uid}/` : "/auth/login"}
             >
               <Button 
                 size="lg" 
@@ -62,7 +62,7 @@ const HeroSectionCorrectAligned = async ({ homeData }: { homeData: Home }) => {
             </Link>
             
             <Link
-              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/email/sign-in"}
+              href={user?.info.roles.includes('company') && !user?.info.roles.includes('pending') ? `/companies/${user.info.companyId}/dashboard/jobs` : "/auth/login"}
               className="flex items-center justify-center text-base font-medium text-foreground hover:text-primary transition-colors"
             >
               ประกาศงาน

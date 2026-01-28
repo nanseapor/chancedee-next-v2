@@ -1,4 +1,8 @@
 import { test, expect } from "@playwright/test";
+import {
+  createTestCandidate,
+  type TestCandidate,
+} from "../../helpers/factories";
 
 /**
  * E2E Tests for AUTH-R01 Login Page
@@ -193,15 +197,18 @@ test.describe("Login Page", () => {
 
 /**
  * Tests requiring authentication setup
- * Uses test credentials from .env.playwright
+ * Uses factory-created test candidate
  */
 test.describe("Authentication Flow", () => {
-  // Get test credentials from environment
-  const testEmail = process.env.PLAYWRIGHT_TEST_CANDIDATE_EMAIL;
-  const testPassword = process.env.PLAYWRIGHT_TEST_CANDIDATE_PASSWORD;
+  let candidate: TestCandidate;
 
-  // Skip if credentials not available
-  test.skip(!testEmail || !testPassword, 'Test credentials not configured');
+  test.beforeAll(async () => {
+    // Create test candidate for login tests
+    candidate = await createTestCandidate({
+      testName: "login-flow",
+      withCompleteProfile: false,
+    });
+  });
 
   test("should show error for invalid credentials", async ({ page }) => {
     await page.goto("/jobsmarket/auth/login");
@@ -216,8 +223,8 @@ test.describe("Authentication Flow", () => {
 
   test("should redirect to dashboard on successful login", async ({ page }) => {
     await page.goto("/jobsmarket/auth/login");
-    await page.getByLabel("อีเมล").fill(testEmail!);
-    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(testPassword!);
+    await page.getByLabel("อีเมล").fill(candidate.email);
+    await page.getByPlaceholder("กรอกรหัสผ่าน").fill(candidate.password);
     await page.getByRole("checkbox").check();
     await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
 

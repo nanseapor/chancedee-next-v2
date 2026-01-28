@@ -16,7 +16,7 @@ const CTASection = () => {
         <Card className="flex justify-between rounded-xl bg-primary-50 px-9 py-7">
           <div className="flex w-full flex-col items-start justify-center gap-6">
             <p className="flex min-h-[72px] max-w-sm">
-              เตรียมปะทะกับโอกาสในชีวิตของคุณสร้างรีซูเม่ของคุณให้
+              เตรียมปะทะกับโอกาสในชีวิตของคุณสร้างเรซูเม่ของคุณให้
               พร้อม เริ่มต้นชีวิตการทำงานที่นี่ Chacedee Jobs Market
             </p>
             <Link href="/candidate/resume">

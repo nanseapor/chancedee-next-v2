@@ -39,11 +39,11 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("candidate")
                 ? `/candidates/${user.uid}/resume`
-                : "/auth/social"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >
-            สร้างรีซูเม่
+            สร้างเรซูเม่
           </Link>
           <Link
             href={
@@ -60,7 +60,7 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("candidate")
                 ? `/candidates/${user.uid}/`
-                : "/auth/social"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >
@@ -95,7 +95,7 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("company") && !user?.info.roles.includes("pending")
                 ? `/companies/${user.info.companyId}/dashboard`
-                : "/auth/email/sign-in"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >
@@ -105,7 +105,7 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("company") && !user?.info.roles.includes("pending")
                 ? `/companies/${user.info.companyId}/dashboard/jobs`
-                : "/auth/email/sign-in"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >
@@ -115,7 +115,7 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("company") && !user?.info.roles.includes("pending")
                 ? `/companies/${user.info.companyId}/dashboard/profile`
-                : "/auth/email/sign-in"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >
@@ -125,7 +125,7 @@ const Footer = async () => {
             href={
               user?.info.roles.includes("company") && !user?.info.roles.includes("pending")
                 ? `/companies/${user.info.companyId}/dashboard`
-                : "/auth/email/sign-in"
+                : "/auth/login"
             }
             className={clsx("font-light")}
           >

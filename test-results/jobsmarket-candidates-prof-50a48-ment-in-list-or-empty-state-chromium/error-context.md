@@ -1,0 +1,159 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - link "ChanceDee" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "ChanceDee" [ref=e8]
+        - navigation [ref=e9]:
+          - list [ref=e10]:
+            - listitem [ref=e11]:
+              - button "แดชบอร์ด" [disabled] [ref=e12]:
+                - img [ref=e14]
+                - generic [ref=e16]: แดชบอร์ด
+            - listitem [ref=e17]:
+              - link "โปรไฟล์" [ref=e18] [cursor=pointer]:
+                - /url: /candidates/IPcYcKu6OrdXTHwrSLQVDT6ZxHx1/profile
+                - img [ref=e20]
+                - generic [ref=e22]: โปรไฟล์
+            - listitem [ref=e23]:
+              - button "ค้นหางาน" [disabled] [ref=e24]:
+                - img [ref=e26]
+                - generic [ref=e28]: ค้นหางาน
+            - listitem [ref=e29]:
+              - button "ใบสมัคร" [disabled] [ref=e30]:
+                - img [ref=e32]
+                - generic [ref=e34]: ใบสมัคร
+            - listitem [ref=e35]:
+              - button "รายการที่บันทึก" [disabled] [ref=e36]:
+                - img [ref=e38]
+                - generic [ref=e40]: รายการที่บันทึก
+            - listitem [ref=e41]:
+              - button "การตั้งค่า" [disabled] [ref=e42]:
+                - img [ref=e44]
+                - generic [ref=e47]: การตั้งค่า
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - navigation "Breadcrumb" [ref=e51]:
+            - link "หน้าหลัก" [ref=e52] [cursor=pointer]:
+              - /url: /
+              - img [ref=e53]
+            - generic [ref=e56]:
+              - img [ref=e57]
+              - generic [ref=e59]: โปรไฟล์
+          - generic [ref=e60]:
+            - link "การแจ้งเตือน" [ref=e61] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e62]
+            - button "เมนูผู้ใช้" [ref=e66]:
+              - generic [ref=e68]: ผู
+              - generic "ผู้ใช้" [ref=e70]
+              - img [ref=e71]
+        - main [ref=e73]:
+          - generic [ref=e75]:
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - img [ref=e80]
+                - button [ref=e83]:
+                  - img [ref=e84]
+              - generic [ref=e87]:
+                - heading "ทดสอบ ผู้สมัคร" [level=1] [ref=e88]
+                - generic [ref=e90]:
+                  - generic [ref=e91]: ความสมบูรณ์ของโปรไฟล์
+                  - generic [ref=e92]: 70%
+                - generic [ref=e95]:
+                  - switch "โปรไฟล์สามารถค้นหาได้" [checked] [ref=e96] [cursor=pointer]
+                  - generic [ref=e97] [cursor=pointer]: โปรไฟล์สามารถค้นหาได้
+                - button "ดูตัวอย่างโปรไฟล์" [ref=e99]:
+                  - img [ref=e100]
+                  - text: ดูตัวอย่างโปรไฟล์
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - generic [ref=e105]:
+                  - heading "ข้อมูลส่วนตัว" [level=2] [ref=e106]
+                  - button "แก้ไข" [ref=e107]:
+                    - img [ref=e108]
+                    - text: แก้ไข
+                - generic [ref=e111]:
+                  - generic [ref=e112]:
+                    - term [ref=e113]: ชื่อ-นามสกุล (ไทย)
+                    - definition [ref=e114]: ทดสอบ ผู้สมัคร
+                  - generic [ref=e115]:
+                    - term [ref=e116]: อีเมล
+                    - definition [ref=e117]: candidate-1768563059346-68ssquqfy1@test.chancedee.com
+                  - generic [ref=e118]:
+                    - term [ref=e119]: เบอร์โทรศัพท์
+                    - definition [ref=e120]: "0891234567"
+                  - generic [ref=e121]:
+                    - term [ref=e122]: วันเกิด
+                    - definition [ref=e123]: 29/02/27008 (อายุ -24983 ปี)
+                  - generic [ref=e124]:
+                    - term [ref=e125]: เพศ
+                    - definition [ref=e126]: ชาย
+                  - generic [ref=e127]:
+                    - term [ref=e128]: ที่อยู่
+                    - definition [ref=e129]: 123 Test Street คลองตันเหนือ วัฒนา กรุงเทพมหานคร 10110
+              - generic [ref=e130]:
+                - generic [ref=e131]:
+                  - heading "ประสบการณ์ทำงาน" [level=2] [ref=e132]
+                  - button "แก้ไข" [ref=e133]:
+                    - img [ref=e134]
+                    - text: แก้ไข
+                - generic [ref=e140]:
+                  - heading "Software Developer" [level=3] [ref=e141]
+                  - paragraph [ref=e142]: Test Company 1
+                  - paragraph [ref=e143]: 01/2018 - ปัจจุบัน (8 ปี)
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - heading "ประวัติการศึกษา" [level=2] [ref=e146]
+                  - button "แก้ไข" [ref=e147]:
+                    - img [ref=e148]
+                    - text: แก้ไข
+                - generic [ref=e154]:
+                  - generic [ref=e156]: ปริญญาตรี
+                  - heading "Test University 1" [level=3] [ref=e157]
+                  - paragraph [ref=e158]: Computer Science
+                  - generic [ref=e159]:
+                    - paragraph [ref=e160]: "ปีที่จบ: 2017"
+                    - paragraph [ref=e161]: "เกรดเฉลี่ย: 3.50"
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - heading "ทักษะและภาษา" [level=2] [ref=e164]
+                  - button "แก้ไข" [ref=e165]:
+                    - img [ref=e166]
+                    - text: แก้ไข
+                - generic [ref=e169]:
+                  - img [ref=e170]
+                  - paragraph [ref=e173]: ยังไม่มีทักษะ
+                  - paragraph [ref=e174]: คลิกแก้ไขเพื่อเพิ่มทักษะและภาษา
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - heading "ความต้องการงาน" [level=2] [ref=e177]
+                  - button "แก้ไข" [ref=e178]:
+                    - img [ref=e179]
+                    - text: แก้ไข
+                - paragraph [ref=e185]: กำลังโหลด...
+              - generic [ref=e186]:
+                - generic [ref=e187]:
+                  - heading "เอกสารแนบ" [level=2] [ref=e188]
+                  - button "อัปโหลด" [ref=e189]:
+                    - img [ref=e190]
+                    - text: อัปโหลด
+                - paragraph [ref=e194]: กำลังโหลด...
+  - region "Notifications alt+T"
+  - generic [ref=e199] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e200]:
+      - img [ref=e201]
+    - generic [ref=e204]:
+      - button "Open issues overlay" [ref=e205]:
+        - generic [ref=e206]:
+          - generic [ref=e207]: "0"
+          - generic [ref=e208]: "1"
+        - generic [ref=e209]: Issue
+      - button "Collapse issues badge" [ref=e210]:
+        - img [ref=e211]
+  - alert [ref=e213]
+```

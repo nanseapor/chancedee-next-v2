@@ -109,7 +109,7 @@ export async function loginWithPostRouting(
       // In production, this would create the account automatically per BLS-01
       return {
         success: true,
-        redirectUrl: "/jobsmarket/auth/register?from=google",
+        redirectUrl: "/auth/register?from=google",
         userId: uid,
       };
     }

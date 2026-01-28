@@ -10,7 +10,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CancelConfirmDialog } from "@/app/jobsmarket/chat/[roomId]/_components/CancelConfirmDialog";
 
@@ -85,7 +85,8 @@ describe("CancelConfirmDialog", () => {
       const reasonInput = screen.getByLabelText(/เหตุผลในการยกเลิก/i);
       const longReason = "a".repeat(501);
 
-      await userEvent.type(reasonInput, longReason);
+      // Use fireEvent.change instead of userEvent.type for faster execution
+      fireEvent.change(reasonInput, { target: { value: longReason } });
 
       const confirmButton = screen.getByRole("button", { name: /ยืนยันยกเลิก/i });
       await userEvent.click(confirmButton);
@@ -105,7 +106,8 @@ describe("CancelConfirmDialog", () => {
       const reasonInput = screen.getByLabelText(/เหตุผลในการยกเลิก/i);
       const validReason = "a".repeat(500);
 
-      await userEvent.type(reasonInput, validReason);
+      // Use fireEvent.change instead of userEvent.type for faster execution
+      fireEvent.change(reasonInput, { target: { value: validReason } });
 
       await waitFor(() => {
         expect(screen.queryByText(/เหตุผลต้องไม่เกิน 500 ตัวอักษร/i)).not.toBeInTheDocument();
