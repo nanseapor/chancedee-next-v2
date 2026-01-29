@@ -8,10 +8,11 @@
 
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { userAtom } from "@/store/atom-store";
+import { dashboardUrlAtom } from "@/store/jobsmarket/global-atoms";
 
 import CompanyHeader from "../navigation/CompanyHeader";
 import CompanySidebar from "../navigation/CompanySidebar";
@@ -38,6 +39,11 @@ export default function CompanyShell({
 }: CompanyShellProps) {
   const router = useRouter();
   const user = useAtomValue(userAtom);
+  const setDashboardUrl = useSetAtom(dashboardUrlAtom);
+
+  useEffect(() => {
+    setDashboardUrl(`/companies/${company.uid}/dashboard`);
+  }, [setDashboardUrl, company.uid]);
 
   const handleLogout = useCallback(async () => {
     // TODO: Implement logout logic

@@ -70,7 +70,7 @@ export function ProgressBar({
   return (
     <div className={cn("w-full bg-gray-200 rounded-full h-2", className)}>
       <div
-        className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+        className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-out"
         style={{
           width: `${progress}%`,
           transition: animate ? "width 0.3s ease-out" : "width 0.3s ease-out",

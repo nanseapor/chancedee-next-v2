@@ -20,7 +20,7 @@ export interface LogoProps {
   className?: string;
 }
 
-export function Logo({ variant = "default", href = "/", className = "" }: LogoProps) {
+export function Logo({ variant = "default", href = process.env.NEXT_PUBLIC_CONTENT_HOST || "/", className = "" }: LogoProps) {
   const isCompact = variant === "compact";
 
   if (isCompact) {

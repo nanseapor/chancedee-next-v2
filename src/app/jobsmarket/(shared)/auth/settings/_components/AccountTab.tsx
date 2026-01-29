@@ -93,10 +93,10 @@ export function AccountTab() {
         <p className="text-sm text-muted-foreground">Email</p>
 
         <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-base">{firebaseUser?.email}</span>
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <span className="text-base truncate min-w-0">{firebaseUser?.email}</span>
             {providers.length > 0 && providers[0] && (
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="shrink-0">
                 {providers[0].providerId === "google.com" && "Google"}
                 {providers[0].providerId === "facebook.com" && "Facebook"}
                 {providers[0].providerId === "password" && "อีเมล"}
@@ -122,40 +122,40 @@ export function AccountTab() {
 
         <Card className="divide-y">
           {/* Google */}
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-red-600">
+          <div className="flex items-center justify-between gap-2 p-4 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
                 G
               </div>
-              <span>Google</span>
+              <span className="truncate">Google</span>
             </div>
-            <Badge variant={hasGoogleProvider ? "default" : "outline"}>
+            <Badge variant={hasGoogleProvider ? "default" : "outline"} className="whitespace-nowrap shrink-0">
               {hasGoogleProvider ? "เชื่อมต่อแล้ว" : "ไม่ได้เชื่อมต่อ"}
             </Badge>
           </div>
 
           {/* Facebook */}
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+          <div className="flex items-center justify-between gap-2 p-4 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
                 f
               </div>
-              <span>Facebook</span>
+              <span className="truncate">Facebook</span>
             </div>
-            <Badge variant={hasFacebookProvider ? "default" : "outline"}>
+            <Badge variant={hasFacebookProvider ? "default" : "outline"} className="whitespace-nowrap shrink-0">
               {hasFacebookProvider ? "เชื่อมต่อแล้ว" : "ไม่ได้เชื่อมต่อ"}
             </Badge>
           </div>
 
           {/* Email/Password */}
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600">
+          <div className="flex items-center justify-between gap-2 p-4 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600">
                 ✉
               </div>
-              <span>อีเมล/รหัสผ่าน</span>
+              <span className="truncate">อีเมล/รหัสผ่าน</span>
             </div>
-            <Badge variant={hasPasswordProvider ? "default" : "outline"}>
+            <Badge variant={hasPasswordProvider ? "default" : "outline"} className="whitespace-nowrap shrink-0">
               {hasPasswordProvider ? "เชื่อมต่อแล้ว" : "ไม่ได้เชื่อมต่อ"}
             </Badge>
           </div>

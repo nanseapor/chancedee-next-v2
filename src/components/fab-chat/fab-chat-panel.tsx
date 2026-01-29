@@ -13,21 +13,11 @@ import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, startTransition } from "react";
+import { LoadingSpinner } from "../common/loading-spinner";
 import { Button } from "../ui/button";
 import { ChatSkeleton } from "./chat-skeleton";
 import { FabChatPersonaStepper } from "./fab-chat-persona-stepper";
 import { FabChatWelcome } from "./fab-chat-welcome";
-
-const LoadingSpinner = () => (
-  <div className="relative mb-8">
-    <div className="w-20 h-20 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin shadow-lg" />
-    <div
-      className="absolute inset-0 w-20 h-20 rounded-full border-4 border-transparent border-r-primary-400 animate-spin opacity-60"
-      style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
-    />
-    <div className="absolute inset-2 w-16 h-16 rounded-full bg-gradient-to-br from-primary-500/10 to-primary-600/20 blur-sm" />
-  </div>
-);
 
 export function FabChatPanel() {
   const [isOpen, setIsOpen] = useAtom(fabChatOpenAtom);
@@ -178,7 +168,7 @@ export function FabChatPanel() {
               role="status"
               aria-label="กำลังตรวจสอบข้อมูลผู้ใช้"
             >
-              <LoadingSpinner />
+              <div className="mb-8"><LoadingSpinner size="lg" /></div>
               <div className="text-center max-w-lg px-6">
                 <div className="font-bold text-2xl mb-4 text-primary-800 tracking-tight">
                   กำลังตรวจสอบข้อมูล
@@ -231,7 +221,7 @@ export function FabChatPanel() {
               aria-label="กำลังโหลด Career Advisor"
             >
               <div className="flex flex-col items-center justify-center pt-8 pb-4">
-                <LoadingSpinner />
+                <div className="mb-8"><LoadingSpinner size="lg" /></div>
                 <div className="text-center max-w-lg px-6">
                   <div className="font-bold text-lg mb-2 text-primary-800 dark:text-primary-200 tracking-tight">
                     กำลังโหลด Career Advisor
@@ -378,7 +368,7 @@ export function FabChatPanel() {
               role="status"
               aria-label="กำลังตรวจสอบข้อมูลผู้ใช้"
             >
-              <LoadingSpinner />
+              <div className="mb-8"><LoadingSpinner size="lg" /></div>
               <div className="text-center max-w-lg px-6">
                 <div className="font-bold text-2xl mb-4 text-primary-800 tracking-tight">
                   กำลังตรวจสอบข้อมูล
@@ -431,7 +421,7 @@ export function FabChatPanel() {
               aria-label="กำลังโหลด Career Advisor"
             >
               <div className="flex flex-col items-center justify-center pt-8 pb-4">
-                <LoadingSpinner />
+                <div className="mb-8"><LoadingSpinner size="lg" /></div>
                 <div className="text-center max-w-lg px-6">
                   <div className="font-bold text-lg mb-2 text-primary-800 dark:text-primary-200 tracking-tight">
                     กำลังโหลด Career Advisor

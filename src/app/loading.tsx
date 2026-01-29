@@ -5,7 +5,7 @@ const loading = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center space-y-2">
         <LoadingSpinner size="lg" className="border-4" />
-        <h2 className="text-lg font-semibold text-gray-700">Loading...</h2>
+        <h2 className="text-lg font-semibold text-gray-700">กำลังโหลด...</h2>
       </div>
     </div>
   );

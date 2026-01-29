@@ -22,14 +22,14 @@ export function SettingsTabs({ activeTab, onTabChange, isPending }: SettingsTabs
   const visibleTabs = tabs.filter(tab => tab.visible);
 
   return (
-    <div className="flex border-b">
+    <div className="flex border-b overflow-x-auto">
       {visibleTabs.map(tab => (
         <Button
           key={tab.id}
           variant="ghost"
           onClick={() => onTabChange(tab.id)}
           className={cn(
-            "flex-1 px-4 py-3 h-auto text-sm font-medium rounded-none border-b-2",
+            "shrink-0 px-4 py-3 h-auto text-sm font-medium rounded-none border-b-2",
             activeTab === tab.id
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted hover:bg-transparent"

@@ -81,7 +81,7 @@ export function SettingsClient() {
   // Show loading skeleton while checking auth
   if (authLoading || !firebaseUser) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
         <Card>
           <CardHeader>
             <Skeleton className="h-10 w-48" />
@@ -108,7 +108,7 @@ export function SettingsClient() {
   const isPending = activeRole === "pending";
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
+    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">

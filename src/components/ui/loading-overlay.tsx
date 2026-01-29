@@ -82,7 +82,7 @@ export function LoadingOverlay({
         <div className="text-center space-y-4">
           {/* Spinner */}
           <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
           </div>
 
           {/* Title */}

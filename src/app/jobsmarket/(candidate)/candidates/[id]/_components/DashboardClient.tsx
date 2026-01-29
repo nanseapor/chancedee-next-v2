@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { useCandidateAuth, useCandidateOnboardingCheck } from "@/hooks/jobsmarket/use-candidate-auth";
 import { webCandidateInformationGetById } from "@/lib/database/actions/candidate-information";
@@ -81,20 +82,15 @@ export function DashboardClient({ candidateId }: DashboardClientProps) {
     authResult.state === "owner_check" ||
     authResult.state === "onboard_check"
   ) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="mt-2 text-sm text-gray-500">กำลังโหลด...</p>
-        </div>
-      </div>
-    );
+    // Server-side layout already verified auth via requireCandidateOwner(),
+    // so client-side auth check is brief. Return null to avoid a second loading flash.
+    return null;
   }
 
   // Error state
   if (profileError) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-[calc(100dvh-10rem)] px-4">
         <div className="text-center max-w-md">
           <svg
             className="mx-auto h-12 w-12 text-gray-400"
@@ -129,9 +125,9 @@ export function DashboardClient({ candidateId }: DashboardClientProps) {
   // Profile loading state
   if (authResult.state === "ready" && !profile && !profileError) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[calc(100dvh-10rem)]">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <LoadingSpinner size="md" />
           <p className="mt-2 text-sm text-gray-500">กำลังโหลดข้อมูล...</p>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useAtomValue, useSetAtom } from 'jotai';
 import useSWR from 'swr';
-import { sessionStateAtom } from '@/store/jobsmarket/global-atoms';
+import { sessionStateAtom, dashboardUrlAtom } from '@/store/jobsmarket/global-atoms';
 import { userAtom } from '@/store/atom-store';
 import { User, Settings, LogOut } from 'lucide-react';
 import { UserMenu } from '@/components/jobsmarket/global/UserMenu';
@@ -21,6 +21,7 @@ export function PublicHeader() {
   const sessionState = useAtomValue(sessionStateAtom);
   const currentUser = useAtomValue(userAtom);
   const setUser = useSetAtom(userAtom);
+  const dashboardUrl = useAtomValue(dashboardUrlAtom);
   const isAuthenticated = sessionState === 'authenticated' && currentUser;
 
   const [idToken, setIdToken] = useState<string>();
@@ -65,18 +66,19 @@ export function PublicHeader() {
     }
   }, [setUser]);
 
+  const navLinkClass = "flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full";
+
   const navLinks = (
     <>
-      <Link
-        href="/jobs"
-        className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
-      >
+      {isAuthenticated && dashboardUrl && (
+        <Link href={dashboardUrl} className={navLinkClass}>
+          แดชบอร์ด
+        </Link>
+      )}
+      <Link href="/jobs" className={navLinkClass}>
         หางาน
       </Link>
-      <Link
-        href="/companies"
-        className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
-      >
+      <Link href="/companies" className={navLinkClass}>
         บริษัท
       </Link>
     </>
@@ -98,7 +100,7 @@ export function PublicHeader() {
       <div className="px-4 2xl:px-[12rem] flex items-center justify-around w-full">
         <div className="flex w-full items-center justify-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0">
+          <Link href={process.env.NEXT_PUBLIC_CONTENT_HOST || '/'} className="flex items-center gap-3 shrink-0">
             <ChancedeeLogo />
           </Link>
 
@@ -117,6 +119,14 @@ export function PublicHeader() {
         <MobileNavbar>
           <div className="rounded-b-lg bg-background px-4 text-foreground shadow-xl py-8 border-t">
             <nav className="flex flex-col">
+              {isAuthenticated && dashboardUrl && (
+                <Link
+                  href={dashboardUrl}
+                  className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
+                >
+                  แดชบอร์ด
+                </Link>
+              )}
               <Link
                 href="/jobs"
                 className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
@@ -213,7 +223,7 @@ function MobileAuthMenu({ userId, userName, avatarUrl, onLogout }: Authenticated
   };
 
   return (
-    <div className="flex flex-col px-4">
+    <div className="flex flex-col">
       <div className="flex items-center gap-3 py-2 pl-4">
         {avatarUrl ? (
           <img src={avatarUrl} alt={userName} className="w-8 h-8 rounded-full object-cover" />

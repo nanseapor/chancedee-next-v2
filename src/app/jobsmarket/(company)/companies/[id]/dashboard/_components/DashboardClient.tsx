@@ -22,7 +22,7 @@ const MOCK_METRICS: DashboardMetricsData = {
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-6 p-6 max-w-7xl" data-testid="dashboard-skeleton">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 max-w-7xl" data-testid="dashboard-skeleton">
       {/* Metrics skeleton */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
@@ -73,7 +73,7 @@ export default function DashboardClient({ companyId }: DashboardClientProps) {
   // Handle fetch errors
   if (error) {
     return (
-      <div className="p-6 max-w-7xl">
+      <div className="p-3 sm:p-6 max-w-7xl">
         <div className="text-center py-8 text-red-600">
           <p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>
         </div>
@@ -89,10 +89,10 @@ export default function DashboardClient({ companyId }: DashboardClientProps) {
   const canPostJobs = hasPermission('post_jobs');
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 max-w-7xl">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold">แดชบอร์ด</h1>
+        <h1 className="text-lg sm:text-2xl font-bold">แดชบอร์ด</h1>
         <p className="text-muted-foreground">
           ยินดีต้อนรับภาพรวมบริษัทของคุณ
         </p>

@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useSetAtom } from "jotai";
 import { usePathname } from "next/navigation";
 
-import { activeRoleAtom } from "@/store/jobsmarket/global-atoms";
+import { activeRoleAtom, dashboardUrlAtom } from "@/store/jobsmarket/global-atoms";
 import { webCandidateInformationGetById } from "@/lib/database/actions/candidate-information";
 import type { BreadcrumbItem } from "@/components/jobsmarket/global/Breadcrumb";
 import type { Role } from "@/components/jobsmarket/global/RoleSwitcher";
@@ -45,6 +45,7 @@ export function CandidateShell({
   currentPath,
 }: CandidateShellProps) {
   const setActiveRole = useSetAtom(activeRoleAtom);
+  const setDashboardUrl = useSetAtom(dashboardUrlAtom);
   const pathname = usePathname();
   const [userName, setUserName] = useState<string>("ผู้ใช้");
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | undefined>();
@@ -52,7 +53,8 @@ export function CandidateShell({
   // Set active role to candidate on mount
   useEffect(() => {
     setActiveRole("candidate");
-  }, [setActiveRole]);
+    setDashboardUrl(`/candidates/${candidateId}`);
+  }, [setActiveRole, setDashboardUrl, candidateId]);
 
   // Fetch candidate data for user name and avatar
   useEffect(() => {

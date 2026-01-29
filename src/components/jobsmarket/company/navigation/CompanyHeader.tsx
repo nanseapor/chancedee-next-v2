@@ -57,7 +57,7 @@ export default function CompanyHeader({
       <div className="flex h-14 items-center px-4 gap-4">
         {/* Company logo and name */}
         <Link
-          href={`/companies/${company.uid}/dashboard`}
+          href={process.env.NEXT_PUBLIC_CONTENT_HOST || `/companies/${company.uid}/dashboard`}
           className="flex items-center gap-2 font-semibold"
         >
           {company.profilePhoto ? (

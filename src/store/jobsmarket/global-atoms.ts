@@ -60,3 +60,10 @@ export interface AuthError {
 }
 
 export const authErrorAtom = atom<AuthError | null>(null);
+
+/**
+ * Dashboard URL for the current authenticated user's active role.
+ * Set by CandidateShell or CompanyShell on mount.
+ * Used by PublicHeader to show a "Back to Dashboard" link.
+ */
+export const dashboardUrlAtom = atom<string | null>(null);

@@ -2,8 +2,8 @@
 
 import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Separator } from "@/components/ui/separator";
-import type { Category } from "@/lib/categories";
 import { JOBS_HOST } from "@/config/hosts";
+import type { Category } from "@/lib/categories";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import ChancedeeLogo from "../media/chancedee-logo";
@@ -38,7 +38,7 @@ export default function Navbar({ categories }: { categories: Category[] }) {
               href="/ai-assistant"
               className="flex items-center justify-center text-center rounded-lg hover:bg-primary-100 p-2 px-4 transition-colors font-light duration-500 h-full"
             >
-              Chancedee mentor - AI
+              Mentor - AI
             </Link>
             <Link
               href={JOBS_HOST}
@@ -71,7 +71,7 @@ export default function Navbar({ categories }: { categories: Category[] }) {
                 href="/ai-assistant"
                 className="flex cursor-pointer pl-4 py-2 items-center text-lg text-secondary-900 transition-colors hover:text-foreground"
               >
-                Chancedee mentor - AI
+                Mentor - AI
                 <br />
               </Link>
               <Link
