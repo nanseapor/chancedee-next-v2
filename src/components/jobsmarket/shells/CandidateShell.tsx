@@ -116,6 +116,8 @@ export function CandidateShell({
       <CandidateMobileHeader
         userName={userName}
         userAvatarUrl={userAvatarUrl}
+        candidateId={candidateId}
+        isOnboarded={isOnboarded}
         unreadNotifications={0} // TODO: Get from notifications API
         onLogout={handleLogout}
         className="lg:hidden"

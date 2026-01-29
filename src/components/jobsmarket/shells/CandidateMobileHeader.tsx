@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { User, Settings, LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { User, Settings, LogOut, Home, Briefcase, FileText, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 import { Logo } from "@/components/jobsmarket/global/Logo";
@@ -24,6 +25,10 @@ export interface CandidateMobileHeaderProps {
   userName: string;
   /** User's avatar URL */
   userAvatarUrl?: string;
+  /** Candidate ID for building nav links */
+  candidateId?: string;
+  /** Whether the candidate has completed onboarding */
+  isOnboarded?: boolean;
   /** Unread notification count */
   unreadNotifications?: number;
   /** Available roles for role switcher (shown in user menu) */
@@ -40,6 +45,8 @@ export interface CandidateMobileHeaderProps {
 
 export function CandidateMobileHeader({
   userName,
+  candidateId,
+  isOnboarded = false,
   unreadNotifications = 0,
   availableRoles,
   currentRole,
@@ -47,6 +54,18 @@ export function CandidateMobileHeader({
   onLogout,
   className = "",
 }: CandidateMobileHeaderProps) {
+  const pathname = usePathname();
+
+  const navItems = candidateId
+    ? [
+        { id: "dashboard", href: `/candidates/${candidateId}`, icon: Home, label: "แดชบอร์ด", matchExact: true, requireOnboarded: true },
+        { id: "profile", href: `/candidates/${candidateId}/profile`, icon: User, label: "โปรไฟล์", matchExact: false, requireOnboarded: false },
+        { id: "jobs", href: "/jobs", icon: Briefcase, label: "ค้นหางาน", matchExact: false, requireOnboarded: true },
+        { id: "applications", href: `/candidates/${candidateId}/applications`, icon: FileText, label: "ใบสมัคร", matchExact: false, requireOnboarded: true },
+        { id: "saved", href: `/candidates/${candidateId}/saved`, icon: Heart, label: "รายการที่บันทึก", matchExact: false, requireOnboarded: true },
+        { id: "settings", href: `/candidates/${candidateId}/settings`, icon: Settings, label: "การตั้งค่า", matchExact: true, requireOnboarded: true },
+      ]
+    : [];
   return (
     <header
       className={`sticky top-0 z-30 h-14 border-b border-gray-200 bg-white flex items-center justify-between px-4 relative ${className}`}
@@ -79,21 +98,55 @@ export function CandidateMobileHeader({
 
             <Separator className="mb-2" />
 
-            {/* Navigation links */}
+            {/* Sidebar navigation items */}
+            {navItems.length > 0 && (
+              <nav className="flex flex-col mb-2">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.matchExact
+                    ? pathname === item.href
+                    : pathname.startsWith(item.href);
+                  const isDisabled = item.requireOnboarded && !isOnboarded;
+
+                  if (isDisabled) {
+                    return (
+                      <span
+                        key={item.id}
+                        className="flex items-center gap-3 px-2 py-3 text-sm text-gray-400 opacity-50 cursor-not-allowed rounded-lg"
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span>{item.label}</span>
+                      </span>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      className={`flex items-center gap-3 px-2 py-3 text-sm rounded-lg ${
+                        isActive
+                          ? "text-secondary-700 bg-secondary-50 font-medium"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
+
+            {/* Account links */}
+            <Separator className="mb-2" />
             <nav className="flex flex-col">
               <Link
                 href="/auth/settings"
                 className="flex items-center gap-3 px-2 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg"
               >
                 <User className="w-4 h-4" />
-                <span>โปรไฟล์</span>
-              </Link>
-              <Link
-                href="/auth/settings"
-                className="flex items-center gap-3 px-2 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg"
-              >
-                <Settings className="w-4 h-4" />
-                <span>การตั้งค่า</span>
+                <span>บัญชีผู้ใช้</span>
               </Link>
             </nav>
 
