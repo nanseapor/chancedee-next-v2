@@ -134,7 +134,7 @@ export function WorkExperienceEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <div className="mt-6">
+        <div className="mt-6 px-4">
           <Step2WorkExperience
             initialData={initialData}
             onSubmit={handleSubmit}

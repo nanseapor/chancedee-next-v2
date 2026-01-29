@@ -152,7 +152,7 @@ export function EducationEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <div className="mt-6">
+        <div className="mt-6 px-4">
           <Step3Education
             initialData={initialData}
             onSubmit={handleSubmit}

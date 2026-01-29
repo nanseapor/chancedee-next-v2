@@ -121,7 +121,7 @@ export function AboutMeEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 px-4 space-y-6">
           <div className="space-y-2">
             <Label htmlFor="about_me">เกี่ยวกับตัวคุณ (ไม่บังคับ)</Label>
             <Textarea

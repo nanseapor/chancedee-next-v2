@@ -103,7 +103,7 @@ export function DocumentsSection({ uid }: DocumentsSectionProps) {
     if (type === "application/pdf") {
       return <FileText className="w-5 h-5 text-red-500" />;
     }
-    return <File className="w-5 h-5 text-blue-500" />;
+    return <File className="w-5 h-5 text-secondary-500" />;
   };
 
   const formatDate = (timestamp: number) => {
@@ -143,10 +143,10 @@ export function DocumentsSection({ uid }: DocumentsSectionProps) {
 
       {/* Upload Progress */}
       {isUploading && (
-        <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+        <div className="mb-4 p-4 bg-secondary-50 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-blue-900">กำลังอัปโหลด...</span>
-            <span className="text-sm font-semibold text-blue-900">{progress}%</span>
+            <span className="text-sm font-medium text-secondary-900">กำลังอัปโหลด...</span>
+            <span className="text-sm font-semibold text-secondary-900">{progress}%</span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>

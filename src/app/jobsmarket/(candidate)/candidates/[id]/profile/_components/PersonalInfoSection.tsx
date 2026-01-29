@@ -61,7 +61,7 @@ export function PersonalInfoSection({
           onClick={onEdit}
           variant="ghost"
           size="default"
-          className="text-blue-600 hover:text-blue-700 gap-2"
+          className="text-secondary-600 hover:text-secondary-700 gap-2"
         >
           <Pencil className="w-4 h-4" />
           แก้ไข

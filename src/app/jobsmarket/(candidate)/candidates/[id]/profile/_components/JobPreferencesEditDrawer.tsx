@@ -126,7 +126,7 @@ export function JobPreferencesEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <div className="mt-6">
+        <div className="mt-6 px-4">
           <Step5JobPreferences
             initialData={initialData}
             onSubmit={handleSubmit}

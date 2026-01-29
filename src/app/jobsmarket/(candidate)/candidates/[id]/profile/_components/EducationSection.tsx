@@ -40,7 +40,7 @@ export function EducationSection({
           onClick={onEdit}
           variant="ghost"
           size="default"
-          className="text-blue-600 hover:text-blue-700 gap-2"
+          className="text-secondary-600 hover:text-secondary-700 gap-2"
         >
           <Pencil className="w-4 h-4" />
           แก้ไข
@@ -60,12 +60,12 @@ export function EducationSection({
             <div
               key={education.id || index}
               data-testid={`education-${education.id || index}`}
-              className="border-l-4 border-blue-500 pl-4 py-2"
+              className="border-l-4 border-secondary-500 pl-4 py-2"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
                       {education.educationLabel || getEducationLevelLabel(education.educationLevel)}
                     </span>
                   </div>

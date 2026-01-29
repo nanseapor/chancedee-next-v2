@@ -37,7 +37,7 @@ export function ProfileHeader({
   const { uploadPhoto, validatePhoto } = useFileUpload();
   const { addToast } = useToast();
 
-  const { percentage } = useProfileCompletion({
+  const { percentage, missingSections } = useProfileCompletion({
     uid: candidate.uid,
     first_name_th: candidate.firstnameTH,
     last_name_th: candidate.lastnameTH,
@@ -147,6 +147,17 @@ export function ProfileHeader({
               </span>
             </div>
             <Progress value={percentage} className="h-2" />
+            {missingSections.length > 0 && (
+              <div className="mt-2 text-xs text-gray-500">
+                <span>ยังขาด: </span>
+                {missingSections.map((s, i) => (
+                  <span key={s.key}>
+                    {i > 0 && ", "}
+                    {s.label_th} ({s.label_en})
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Searchable Toggle */}

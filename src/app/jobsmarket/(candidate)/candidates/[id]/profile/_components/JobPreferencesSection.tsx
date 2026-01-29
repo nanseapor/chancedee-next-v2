@@ -74,7 +74,7 @@ export function JobPreferencesSection({
             onClick={onEdit}
             variant="ghost"
             size="default"
-            className="text-blue-600 hover:text-blue-700 gap-2"
+            className="text-secondary-600 hover:text-secondary-700 gap-2"
           >
             <Pencil className="w-4 h-4" />
             แก้ไข
@@ -82,7 +82,7 @@ export function JobPreferencesSection({
         </div>
         <div className="text-center py-8">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-4 h-4 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className="w-4 h-4 border-2 border-secondary-200 border-t-secondary-600 rounded-full animate-spin"></div>
             <p className="text-gray-500">กำลังโหลด...</p>
           </div>
         </div>
@@ -99,7 +99,7 @@ export function JobPreferencesSection({
             onClick={onEdit}
             variant="ghost"
             size="default"
-            className="text-blue-600 hover:text-blue-700 gap-2"
+            className="text-secondary-600 hover:text-secondary-700 gap-2"
           >
             <Pencil className="w-4 h-4" />
             แก้ไข
@@ -141,7 +141,7 @@ export function JobPreferencesSection({
           onClick={onEdit}
           variant="ghost"
           size="default"
-          className="text-blue-600 hover:text-blue-700 gap-2"
+          className="text-secondary-600 hover:text-secondary-700 gap-2"
         >
           <Pencil className="w-4 h-4" />
           แก้ไข

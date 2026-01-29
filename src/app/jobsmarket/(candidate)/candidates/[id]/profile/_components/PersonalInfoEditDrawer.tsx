@@ -127,7 +127,7 @@ export function PersonalInfoEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <div className="mt-6">
+        <div className="mt-6 px-4">
           <Step1PersonalInfo
             initialData={initialData}
             onSubmit={handleSubmit}

@@ -128,7 +128,7 @@ export function SkillsEditDrawer({
         </SheetHeader>
 
         {/* Form */}
-        <div className="mt-6">
+        <div className="mt-6 px-4">
           <Step4Skills
             initialData={initialData}
             onSubmit={handleSubmit}

@@ -66,7 +66,7 @@ export function WorkExperienceSection({
           onClick={onEdit}
           variant="ghost"
           size="default"
-          className="text-blue-600 hover:text-blue-700 gap-2"
+          className="text-secondary-600 hover:text-secondary-700 gap-2"
         >
           <Pencil className="w-4 h-4" />
           แก้ไข
@@ -89,7 +89,7 @@ export function WorkExperienceSection({
               className="relative pl-8 pb-6 border-l-2 border-gray-200 last:border-0"
             >
               {/* Timeline dot */}
-              <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
+              <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-secondary-500 border-4 border-white"></div>
 
               {/* Work details */}
               <div>
