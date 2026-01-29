@@ -19,34 +19,44 @@ export function WorkExperienceSection({
   onEdit,
 }: WorkExperienceSectionProps) {
   const formatDuration = (work: workHistory) => {
-    const startMonth = String(work.startMonth).padStart(2, "0");
-    const startYear = work.startYear;
+    if (!work.startYear) return "-";
+
+    const startPart = work.startMonth
+      ? `${String(work.startMonth).padStart(2, "0")}/${work.startYear}`
+      : `${work.startYear}`;
 
     if (work.isCurrent) {
-      return `${startMonth}/${startYear} - ปัจจุบัน`;
+      return `${startPart} - ปัจจุบัน`;
     }
 
-    if (work.endMonth && work.endYear) {
-      const endMonth = String(work.endMonth).padStart(2, "0");
-      const endYear = work.endYear;
-      return `${startMonth}/${startYear} - ${endMonth}/${endYear}`;
+    if (work.endYear) {
+      const endPart = work.endMonth
+        ? `${String(work.endMonth).padStart(2, "0")}/${work.endYear}`
+        : `${work.endYear}`;
+      return `${startPart} - ${endPart}`;
     }
 
-    return `${startMonth}/${startYear}`;
+    return startPart;
   };
 
   const calculateYearsMonths = (work: workHistory) => {
-    const start = new Date(work.startYear, work.startMonth - 1);
+    if (!work.startYear) return "-";
+    const start = new Date(work.startYear, (work.startMonth || 1) - 1);
     const end = work.isCurrent
       ? new Date()
-      : work.endYear && work.endMonth
-      ? new Date(work.endYear, work.endMonth - 1)
+      : work.endYear
+      ? new Date(work.endYear, (work.endMonth || 1) - 1)
       : new Date();
+
+    // Boundary: reject if start is after end or duration exceeds 80 years
+    if (start > end) return "-";
 
     const diffMs = end.getTime() - start.getTime();
     const diffMonths = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30.44));
     const years = Math.floor(diffMonths / 12);
     const months = diffMonths % 12;
+
+    if (years > 80) return "-";
 
     if (years === 0) {
       return `${months} เดือน`;
