@@ -102,7 +102,7 @@ const webCandidateSavePersonalInfo = async (
     const existing = await candidateInformationRepository.getById(uid);
 
     // Convert birthdate string to Timestamp (if provided)
-    const birthdateTimestamp = data.birthdate ? new Date(data.birthdate).getTime() / 1000 : undefined;
+    const birthdateTimestamp = data.birthdate ? new Date(data.birthdate).getTime() : undefined;
 
     // Support both phone_number and phone field names
     const phoneNumber = data.phone_number || data.phone;

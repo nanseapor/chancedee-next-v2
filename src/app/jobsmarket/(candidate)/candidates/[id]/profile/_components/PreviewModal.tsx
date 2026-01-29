@@ -107,7 +107,7 @@ export function PreviewModal({
               {candidate.birthdate && (
                 <div>
                   <span className="font-medium">วันเกิด:</span>{' '}
-                  <span>{new Date(candidate.birthdate * 1000).toLocaleDateString('th-TH')}</span>
+                  <span>{new Date(candidate.birthdate).toLocaleDateString('th-TH')}</span>
                 </div>
               )}
               {candidate.gender && (

@@ -55,7 +55,7 @@ export function PersonalInfoEditDrawer({
       email: candidate.email || "",
       phone_number: candidate.phone || "",
       birthdate: candidate.birthdate
-        ? new Date(candidate.birthdate * 1000).toISOString().split("T")[0]
+        ? new Date(candidate.birthdate).toISOString().split("T")[0]
         : "",
       gender: candidate.gender || "",
       marital_status: candidate.maritalStatus || "",

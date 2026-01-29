@@ -22,23 +22,26 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 // Format birthdate helper
 function formatBirthdate(timestamp?: number): string {
   if (!timestamp) return "-";
-  const date = new Date(timestamp * 1000);
+  const date = new Date(timestamp);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 }
 
-// Calculate age helper
+// Calculate age helper with boundary validation
 function calculateAge(timestamp?: number): string {
   if (!timestamp) return "-";
-  const birthDate = new Date(timestamp * 1000);
+  const birthDate = new Date(timestamp);
   const today = new Date();
+  // Reject future dates or dates producing unreasonable ages
+  if (birthDate > today) return "-";
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }
+  if (age < 0 || age > 150) return "-";
   return `${age} ปี`;
 }
 
