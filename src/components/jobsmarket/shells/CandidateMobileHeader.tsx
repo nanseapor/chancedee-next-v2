@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, Settings, LogOut, Home, Briefcase, FileText, Heart } from "lucide-react";
+import { User, Settings, LogOut, Home, Briefcase, FileText, Heart, Building2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 import { Logo } from "@/components/jobsmarket/global/Logo";
@@ -60,7 +60,8 @@ export function CandidateMobileHeader({
     ? [
         { id: "dashboard", href: `/candidates/${candidateId}`, icon: Home, label: "แดชบอร์ด", matchExact: true, requireOnboarded: true },
         { id: "profile", href: `/candidates/${candidateId}/profile`, icon: User, label: "โปรไฟล์", matchExact: false, requireOnboarded: false },
-        { id: "jobs", href: "/jobs", icon: Briefcase, label: "ค้นหางาน", matchExact: false, requireOnboarded: true },
+        { id: "jobs", href: "/jobs", icon: Briefcase, label: "ค้นหางาน", matchExact: false, requireOnboarded: false },
+        { id: "companies", href: "/companies", icon: Building2, label: "บริษัท", matchExact: false, requireOnboarded: false },
         { id: "applications", href: `/candidates/${candidateId}/applications`, icon: FileText, label: "ใบสมัคร", matchExact: false, requireOnboarded: true },
         { id: "saved", href: `/candidates/${candidateId}/saved`, icon: Heart, label: "รายการที่บันทึก", matchExact: false, requireOnboarded: true },
         { id: "settings", href: `/candidates/${candidateId}/settings`, icon: Settings, label: "การตั้งค่า", matchExact: true, requireOnboarded: true },

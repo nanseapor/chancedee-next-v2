@@ -171,7 +171,7 @@ export function CandidateShell({
             icon={<JobsIcon />}
             label="งาน"
             isActive={(pathname || currentPath)?.startsWith("/jobs")}
-            disabled={!isOnboarded}
+            disabled={false}
           />
           <MobileTabItem
             href={`/candidates/${candidateId}/applications`}
