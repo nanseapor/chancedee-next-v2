@@ -22,6 +22,7 @@ export function PublicHeader() {
   const currentUser = useAtomValue(userAtom);
   const setUser = useSetAtom(userAtom);
   const dashboardUrl = useAtomValue(dashboardUrlAtom);
+  const setDashboardUrl = useSetAtom(dashboardUrlAtom);
   const isAuthenticated = sessionState === 'authenticated' && currentUser;
 
   const [idToken, setIdToken] = useState<string>();
@@ -37,6 +38,14 @@ export function PublicHeader() {
     },
     userDataSWRConfig,
   );
+
+  // Set dashboard URL when authenticated but atom is still null
+  // (happens on direct page access outside CandidateShell/CompanyShell)
+  useEffect(() => {
+    if (isAuthenticated && currentUser && !dashboardUrl) {
+      setDashboardUrl(`/candidates/${currentUser.uid}`);
+    }
+  }, [isAuthenticated, currentUser, dashboardUrl, setDashboardUrl]);
 
   useEffect(() => {
     if (currentUser) {
