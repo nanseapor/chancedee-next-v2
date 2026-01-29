@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { authenticateSession } from "@/domains/authentication/services/server/actions/auth-engine-actions";
 
 export const metadata = {
   title: "ข้อความ | Chancedee Jobs",
@@ -12,23 +10,15 @@ export const metadata = {
 /**
  * Chat Layout
  *
- * Provides Suspense boundary, metadata, and authentication guard for chat pages.
- * Per CHAT-R01 RIS - Chat requires authentication.
- * Shell selection is handled by the page component based on activeRoleAtom.
+ * Provides Suspense boundary and metadata for chat pages.
+ * Authentication is handled by the parent (shared) layout via requireAuth().
+ * Shell selection is handled by SharedShell in the parent layout.
  */
-export default async function ChatLayout({
+export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Server-side authentication check
-  const auth = await authenticateSession();
-
-  if (!auth) {
-    // No valid session - redirect to login with return URL
-    redirect("/auth/login?redirect=/chat&from=protected");
-  }
-
   return (
     <Suspense fallback={<ChatLayoutSkeleton />}>
       {children}

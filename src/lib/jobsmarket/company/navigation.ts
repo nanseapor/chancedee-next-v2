@@ -10,6 +10,7 @@ import {
   Briefcase,
   Users,
   FileText,
+  MessageSquare,
   Settings,
 } from "lucide-react";
 import type { NavItem, Permission } from "@/types/jobsmarket/company";
@@ -47,6 +48,15 @@ export const COMPANY_NAV_ITEMS: NavItem[] = [
     order: 3,
   },
   {
+    key: "chat",
+    label: "ข้อความ",
+    href: "/chat",
+    icon: MessageSquare,
+    showOnMobile: true,
+    order: 4,
+    absoluteHref: true,
+  },
+  {
     key: "team",
     label: "ทีมงาน",
     href: "/team",
@@ -54,7 +64,7 @@ export const COMPANY_NAV_ITEMS: NavItem[] = [
     badgeKey: "team",
     requiredPermission: "manage_team",
     showOnMobile: false,
-    order: 4,
+    order: 5,
   },
   {
     key: "settings",
@@ -63,7 +73,7 @@ export const COMPANY_NAV_ITEMS: NavItem[] = [
     icon: Settings,
     requiredPermission: "company_settings",
     showOnMobile: false,
-    order: 5,
+    order: 6,
   },
 ];
 
@@ -91,5 +101,8 @@ export function getVisibleNavItems(
  * Build full href with company ID
  */
 export function buildNavHref(companyId: string, navItem: NavItem): string {
+  if (navItem.absoluteHref) {
+    return navItem.href;
+  }
   return `/jobsmarket/companies/${companyId}${navItem.href}`;
 }

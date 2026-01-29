@@ -34,6 +34,9 @@ export interface NavItem {
 
   /** Order in navigation (lower = higher) */
   order: number;
+
+  /** If true, href is absolute (not prefixed with company path) */
+  absoluteHref?: boolean;
 }
 
 /**
